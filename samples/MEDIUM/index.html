@@ -63,7 +63,14 @@
       background: var(--card); border-radius: var(--radius); padding: 32px 24px;
       box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
     }
-    .card .icon { font-size: 2.4rem; margin-bottom: 12px; }
+    .card .icon {
+      width: 52px; height: 52px; margin-bottom: 16px; border-radius: 12px;
+      display: grid; place-items: center; background: #e6f4f2; color: var(--primary);
+    }
+    .pain .card .icon { background: #fde8e8; color: #b42318; }
+    .ic { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .logo { display: inline-flex; align-items: center; gap: 8px; }
+    .logo .ic { width: 24px; height: 24px; }
     .card h3 { margin-bottom: 8px; }
     .card p { color: var(--muted); }
 
@@ -81,7 +88,11 @@
     .price { font-size: 2.4rem; font-weight: 800; color: var(--primary); margin: 12px 0; }
     .price small { font-size: 1rem; color: var(--muted); font-weight: 400; }
     .price-card ul { list-style: none; text-align: left; margin-top: 16px; }
-    .price-card li { padding: 6px 0; border-bottom: 1px dashed #e2e8f0; }
+    .price-card li { padding: 6px 0 6px 26px; border-bottom: 1px dashed #e2e8f0; position: relative; }
+    .price-card li::before { content: ""; position: absolute; left: 4px; }
+    .price-card li.yes::before { top: 13px; width: 10px; height: 5px; border-left: 2px solid var(--primary); border-bottom: 2px solid var(--primary); transform: rotate(-45deg); }
+    .price-card li.no { color: var(--muted); }
+    .price-card li.no::before { top: 17px; width: 11px; border-top: 2px solid #cbd5e1; }
 
     /* FAQ */
     details {
@@ -91,6 +102,7 @@
     summary { font-weight: 700; cursor: pointer; }
     details p { margin-top: 10px; color: var(--muted); }
 
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 32px 0; font-size: 0.9rem; }
 
     /* 手機版 */
@@ -105,7 +117,7 @@
   <!-- ① 導覽列 -->
   <nav>
     <div class="container">
-      <a href="#" class="logo">📡 三峽租屋雷達</a>
+      <a href="#" class="logo"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/><path d="M12 12l6-6"/></svg>三峽租屋雷達</a>
       <div class="menu">
         <a href="#pain">痛點</a>
         <a href="#features">功能</a>
@@ -118,7 +130,7 @@
   <!-- ② 主視覺 -->
   <header class="hero">
     <div class="container">
-      <h1>租房前先掃雷達<br />避開雷房東、雷室友 🏠</h1>
+      <h1>租房前先掃雷達<br />避開雷房東、雷室友</h1>
       <p>國立臺北大學學生專屬的真實租屋評價平台。學長姐的血淚經驗，幫你找到三峽最安心的窩。</p>
       <a href="#pricing" class="btn btn-accent">搶先體驗 →</a>
     </div>
@@ -127,12 +139,12 @@
   <!-- ③ 痛點 -->
   <section id="pain" class="pain">
     <div class="container">
-      <h2 class="section-title">你是不是也遇過這些事？😫</h2>
+      <h2 class="section-title">你是否也遇過這些狀況？</h2>
       <p class="section-sub">每學期都有上千位北大學生在找房子</p>
       <div class="grid">
-        <div class="card"><div class="icon">💸</div><h3>押金拿不回來</h3><p>退租時房東東扣西扣，押金只剩一半。</p></div>
-        <div class="card"><div class="icon">🪳</div><h3>照片跟現場差很多</h3><p>網路上看起來明亮乾淨，現場卻潮濕發霉。</p></div>
-        <div class="card"><div class="icon">🔇</div><h3>隔音差到崩潰</h3><p>隔壁講電話聽得一清二楚，期末考前睡不著。</p></div>
+        <div class="card"><div class="icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M16 15h2"/></svg></div><h3>押金拿不回來</h3><p>退租時房東東扣西扣，押金只剩一半。</p></div>
+        <div class="card"><div class="icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></div><h3>照片跟現場差很多</h3><p>網路上看起來明亮乾淨，現場卻潮濕發霉。</p></div>
+        <div class="card"><div class="icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9l5 6"/><path d="M21 9l-5 6"/></svg></div><h3>隔音差到崩潰</h3><p>隔壁講電話聽得一清二楚，期末考前睡不著。</p></div>
       </div>
     </div>
   </section>
@@ -140,12 +152,12 @@
   <!-- ④ 功能介紹 -->
   <section id="features">
     <div class="container">
-      <h2 class="section-title">三大核心功能 ✨</h2>
+      <h2 class="section-title">三大核心功能</h2>
       <p class="section-sub">讓資訊透明，讓租屋不再靠運氣</p>
       <div class="grid">
-        <div class="card"><div class="icon">⭐</div><h3>真實評價</h3><p>僅限北大信箱驗證的學生留言，每一則都是真實住過的心得。</p></div>
-        <div class="card"><div class="icon">📋</div><h3>房東紅黑榜</h3><p>押金退還率、修繕速度、溝通態度，一目瞭然。</p></div>
-        <div class="card"><div class="icon">🤝</div><h3>找室友媒合</h3><p>依作息、預算、生活習慣配對，找到合得來的室友。</p></div>
+        <div class="card"><div class="icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3l-5.5 2.9 1-6.2L3 9.6l6.2-.9z"/></svg></div><h3>真實評價</h3><p>僅限北大信箱驗證的學生留言，每一則都是真實住過的心得。</p></div>
+        <div class="card"><div class="icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9z"/><path d="M9 11h6"/><path d="M9 15h6"/></svg></div><h3>房東紅黑榜</h3><p>押金退還率、修繕速度、溝通態度，一目瞭然。</p></div>
+        <div class="card"><div class="icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.3c1.8.8 3 2.9 3 5.7"/></svg></div><h3>找室友媒合</h3><p>依作息、預算、生活習慣配對，找到合得來的室友。</p></div>
       </div>
     </div>
   </section>
@@ -153,18 +165,18 @@
   <!-- ⑤ 價格方案 -->
   <section id="pricing" style="background:#fff">
     <div class="container">
-      <h2 class="section-title">選擇適合你的方案 💳</h2>
+      <h2 class="section-title">選擇適合你的方案</h2>
       <p class="section-sub">基本功能永久免費</p>
       <div class="grid">
         <div class="card price-card">
           <h3>免費版</h3>
           <div class="price">$0 <small>/ 月</small></div>
-          <ul><li>✅ 瀏覽所有評價</li><li>✅ 每月發表 3 則評價</li><li>❌ 房東紅黑榜詳細數據</li><li>❌ 室友媒合</li></ul>
+          <ul><li class="yes">瀏覽所有評價</li><li class="yes">每月發表 3 則評價</li><li class="no"><span class="sr-only">不含：</span>房東紅黑榜詳細數據</li><li class="no"><span class="sr-only">不含：</span>室友媒合</li></ul>
         </div>
         <div class="card price-card featured">
           <h3>雷達會員</h3>
           <div class="price">$49 <small>/ 月</small></div>
-          <ul><li>✅ 免費版所有功能</li><li>✅ 房東紅黑榜詳細數據</li><li>✅ 無限次室友媒合</li><li>✅ 新房源即時通知</li></ul>
+          <ul><li class="yes">免費版所有功能</li><li class="yes">房東紅黑榜詳細數據</li><li class="yes">無限次室友媒合</li><li class="yes">新房源即時通知</li></ul>
         </div>
       </div>
     </div>
@@ -173,7 +185,7 @@
   <!-- ⑥ FAQ -->
   <section id="faq">
     <div class="container" style="max-width:760px">
-      <h2 class="section-title">常見問題 🙋</h2>
+      <h2 class="section-title">常見問題</h2>
       <p class="section-sub">還有其他問題？歡迎來信詢問</p>
       <details><summary>評價是真的嗎？怎麼避免假評論？</summary><p>所有評價者都需要通過北大學校信箱驗證，並上傳租約照片（會遮蔽個資）作為住過的證明。</p></details>
       <details><summary>房東可以刪除負評嗎？</summary><p>不行。房東可以公開回覆評價，但無法刪除，確保資訊透明。</p></details>

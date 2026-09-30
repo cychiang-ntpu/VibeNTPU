@@ -22,6 +22,9 @@ jobs:
       - name: 檢查 Markdown 內部連結與錨點
         run: python3 tools/ci/check_links.py
 
+      - name: 檢查教材不含 emoji
+        run: python3 tools/ci/check_emoji.py
+
       - name: 示範作品健檢（LOW / MEDIUM 應通過 Level 1，HIGH 應通過 Level 3）
         run: |
           set -e
@@ -40,5 +43,5 @@ jobs:
             if grep -Eq '<(script|link)[^>]+(src|href)="https?://' "$f"; then
               echo "::error file=$f::互動教材不應引用外部資源"; exit 1
             fi
-            echo "✅ $f"
+            echo "OK $f"
           done

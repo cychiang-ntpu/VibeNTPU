@@ -46,19 +46,25 @@ code{background:var(--soft);padding:0 .3em;border-radius:6px;font-size:.9em;word
 .screen label{display:block;font-size:.9rem;margin-top:8px}
 .screen input{width:100%;font:inherit;padding:.4em .6em;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
 .screen .go{width:100%;margin-top:14px}
-.welcome{text-align:center;padding-top:40px;font-size:1.25rem;font-weight:700}
+.welcome{text-align:center;padding-top:40px;font-size:1.15rem;font-weight:700}
 .panels{display:grid;gap:14px}
 .panel h3{display:flex;align-items:center;gap:6px}
 .list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 .list li{background:var(--soft);border-radius:10px;padding:.35em .6em;font-size:.9rem;display:flex;flex-wrap:wrap;gap:4px 12px}
 .list li.new{animation:pop .4s}
 .empty{color:var(--muted);font-size:.9rem;font-style:italic}
-.stamp{background:var(--accsoft);border:2px dashed var(--acc);border-radius:14px;padding:.6em .8em;font-size:.95rem;animation:pop .4s}
+.stamp{background:var(--accsoft);border:1px solid var(--acc);border-radius:14px;padding:.6em .8em;font-size:.95rem;animation:pop .4s}
 .void{border:2px dashed var(--bad);border-radius:14px;padding:.8em;text-align:center;font-size:1.05rem;background:var(--badsoft)}
 .msg{margin-top:12px;border-radius:14px;padding:.7em 1em;border-left:6px solid var(--acc);background:var(--accsoft)}
 .msg.key{border-left-color:var(--pri2);background:var(--soft)}
 .msg:empty{display:none}
-.flyer{position:fixed;z-index:50;font-size:2rem;pointer-events:none;left:0;top:0;transition:transform .9s ease-in-out,opacity .9s}
+.flyer{position:fixed;z-index:50;font:700 .72rem/1 ui-monospace,Consolas,monospace;letter-spacing:.03em;background:var(--pri);color:#fff;border-radius:6px;padding:5px 8px;box-shadow:0 2px 8px rgba(0,0,0,.25);white-space:nowrap;pointer-events:none;left:0;top:0;transition:transform .9s ease-in-out,opacity .9s}
+.tech{margin-top:14px}
+.tech table{width:100%;border-collapse:collapse;font-size:.9rem}
+.tech th,.tech td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+.tech thead th{background:var(--soft)}
+.tscroll{overflow-x:auto}
+.req{font:.8rem/1.5 ui-monospace,Consolas,monospace;background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:8px 10px;white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0 0}
 @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
 .cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .cmp ul{padding-left:1.2em;margin:.3em 0}
@@ -71,7 +77,7 @@ code{background:var(--soft);padding:0 .3em;border-radius:6px;font-size:.9em;word
 .score{font-size:1.2rem;font-weight:700;color:var(--pri)}
 .pipe{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:12px 0;list-style:none;padding:0}
 .step{border:2px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;background:var(--card);font-size:.88rem;transition:all .3s}
-.step .ic{font-size:1.8rem;display:block}
+.step .ic{display:inline-grid;place-items:center;width:28px;height:28px;margin:0 auto 4px;border-radius:50%;border:1.5px solid var(--pri2);color:var(--pri);font-weight:700;font-size:.85rem;flex:none}
 .step.on{border-color:var(--acc);background:var(--accsoft);transform:translateY(-4px)}
 .step.done{border-color:var(--pri2);background:var(--soft)}
 .step .lbl{flex:1}.prog{display:block;width:80%;margin-left:auto;margin-right:auto;height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:6px}
@@ -90,6 +96,7 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
   .grid1,.grid3,.cmp{grid-template-columns:minmax(0,1fr)}
   .pipe{grid-template-columns:minmax(0,1fr)}
   .step{display:flex;gap:10px;align-items:center;text-align:left}
+  .step .ic{margin:0}
   .step.on{transform:translateX(4px)}
   .q{grid-template-columns:minmax(0,1fr)}
   h1{font-size:1.35rem}
@@ -103,22 +110,22 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
 <body>
 <div class="wrap">
 <header>
-  <h1>🍜 資料怎麼流動？</h1>
-  <p class="sub">第 2 週：表單資料去哪了 → BaaS 訂單代收中心 → 集點卡 vs 登記簿 → CI/CD 自動傳真機</p>
+  <h1>資料如何流動：BaaS、LocalStorage 與 CI/CD</h1>
+  <p class="sub">第 2 週：表單資料如何以 HTTP POST 送到後端即服務（Backend as a Service, BaaS）、伺服器端資料與瀏覽器 LocalStorage 的差異，以及程式碼變更如何經由持續整合／持續部署（CI/CD）自動上線。</p>
 </header>
 <div class="tabs" role="tablist" aria-label="教材分頁">
-  <button role="tab" id="t1" aria-controls="p1" aria-selected="true">📮 資料去哪了？</button>
-  <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">🎫 集點卡 vs 登記簿</button>
-  <button role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">📠 CI/CD 自動傳真機</button>
+  <button role="tab" id="t1" aria-controls="p1" aria-selected="true">1. 表單資料的去向</button>
+  <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">2. 雲端資料庫與 LocalStorage</button>
+  <button role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">3. 持續部署 CI/CD</button>
 </div>
 
 <!-- TAB 1 -->
 <section id="p1" role="tabpanel" aria-labelledby="t1">
   <div class="row">
-    <span>餐廳模式：</span>
+    <span>後端設定：</span>
     <div class="seg" role="group" aria-label="後端模式">
-      <button id="mNone" aria-pressed="true">🚫 沒有後端</button>
-      <button id="mBaas" aria-pressed="false">✅ 有 BaaS<span class="mcode">（<code>data-netlify="true"</code>）</span></button>
+      <button id="mNone" aria-pressed="true">沒有後端</button>
+      <button id="mBaas" aria-pressed="false">使用 BaaS<span class="mcode">（<code>data-netlify="true"</code>）</span></button>
     </div>
   </div>
   <div class="grid1">
@@ -126,35 +133,35 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
       <div class="phone" aria-label="模擬手機">
         <div class="notch"></div>
         <div class="screen" id="screen">
-          <div class="bar"><span id="devLabel">📱 手機 #1</span><span>早鳥名單.netlify.app</span></div>
+          <div class="bar"><span id="devLabel">裝置 #1</span><span>早鳥名單.netlify.app</span></div>
           <form id="form" autocomplete="off">
-            <h3>🚀 加入早鳥名單</h3>
+            <h3>加入早鳥名單</h3>
             <label for="fName">姓名</label>
             <input id="fName" required maxlength="20" placeholder="例如：小明">
             <label for="fMail">Email</label>
             <input id="fMail" type="email" required maxlength="40" placeholder="ming@example.com">
-            <button class="btn-pri go" id="fGo" type="submit">📨 送出</button>
+            <button class="btn-pri go" id="fGo" type="submit">送出</button>
           </form>
           <div id="welcome" class="welcome" hidden></div>
         </div>
       </div>
       <div class="row" style="justify-content:center;margin-top:12px">
-        <button id="bRefresh">🔄 重新整理網頁</button>
-        <button id="bDevice">📱 換一台手機</button>
-        <button id="bLogout">🚪 登出</button>
+        <button id="bRefresh">重新整理網頁</button>
+        <button id="bDevice">換一台裝置</button>
+        <button id="bLogout">登出</button>
       </div>
     </div>
     <div class="panels">
-      <div class="void" id="void">❓ 沒有後端＝沒有廚房<br><span class="sub" style="font-size:.9rem">表單送出後，資料無處可去</span></div>
+      <div class="void" id="void"><b>沒有後端</b><br><span class="sub" style="font-size:.9rem">瀏覽器送出的 POST 請求沒有伺服器程式接收，資料不會被保存</span></div>
       <div class="card panel" id="pNet">
-        <h3>☁️ Netlify 後台（老闆看得到）</h3>
-        <p class="sub" style="font-size:.85rem">雲端資料庫＝櫃檯的會員登記簿：存在伺服器上，換哪台裝置都在。</p>
+        <h3>Netlify 後台 Forms（伺服器端）</h3>
+        <p class="sub" style="font-size:.85rem">資料保存在 Netlify 的伺服器上，網站擁有者可在後台檢視與匯出；與使用者使用哪一台裝置無關。</p>
         <ul class="list" id="netList"></ul>
         <p class="empty" id="netEmpty">（目前還沒有任何報名）</p>
       </div>
       <div class="card panel" id="pLocal">
-        <h3>💻 這台裝置的 LocalStorage（集點卡）</h3>
-        <p class="sub" style="font-size:.85rem">集點卡＝帶回家的卡片：只存在「這支手機的瀏覽器」裡。</p>
+        <h3>此裝置瀏覽器的 LocalStorage（用戶端）</h3>
+        <p class="sub" style="font-size:.85rem">以鍵值對（key–value）保存在這台裝置、這個瀏覽器中，並依網站來源（origin）隔離，不會傳送到伺服器。</p>
         <div id="localBox"></div>
       </div>
     </div>
@@ -166,31 +173,53 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
 <section id="p2" role="tabpanel" aria-labelledby="t2" hidden>
   <div class="cmp">
     <div class="card">
-      <h2>☁️ 雲端資料庫＝櫃檯的會員登記簿</h2>
+      <h2>2.1 伺服器端資料（雲端資料庫、Netlify Forms）</h2>
       <ul>
-        <li>存在<b>伺服器</b>（例如 Netlify 後台）</li>
-        <li><b>老闆看得到</b>所有人的資料</li>
-        <li><b>換手機、換電腦</b>都還在</li>
-        <li>適合：名單、訂單、會員資料</li>
+        <li>資料保存在<b>伺服器</b>，由服務提供者負責備份與存取控制</li>
+        <li>網站擁有者可檢視<b>所有使用者</b>的資料</li>
+        <li>與裝置無關：<b>換手機、換電腦</b>仍可取得（前提是能辨識使用者身分，通常需要登入系統）</li>
+        <li>適用：名單、訂單、會員資料等需要集中管理的資料</li>
       </ul>
     </div>
     <div class="card">
-      <h2>💻 LocalStorage＝帶回家的集點卡</h2>
+      <h2>2.2 用戶端資料（LocalStorage）</h2>
       <ul>
-        <li>存在<b>使用者自己的瀏覽器</b></li>
-        <li><b>老闆看不到</b>，只有這台裝置知道</li>
-        <li><b>換一台裝置就不見</b>，清除瀏覽資料也會不見</li>
-        <li>適合：偏好設定、「記得你來過」</li>
+        <li>資料保存在<b>使用者自己的瀏覽器</b>，不會隨請求傳到伺服器</li>
+        <li>網站擁有者<b>無法</b>從後台看到</li>
+        <li><b>換一台裝置或換一個瀏覽器</b>就讀不到；使用者清除網站資料時也會消失</li>
+        <li>適用：介面偏好、「此瀏覽器已填過表單」等只與這台裝置有關的狀態</li>
       </ul>
     </div>
   </div>
   <div class="card" style="margin-top:14px">
-    <h2>🧩 分類小遊戲：該放哪裡？</h2>
-    <p class="sub">每個情境點一下 ☁️ 登記簿 或 💻 集點卡，馬上知道答案！</p>
+  <div class="card tech">
+    <h2>2.3 技術細節：資料是怎麼送出與保存的</h2>
+    <p><b>表單送出（HTTP POST）。</b>使用者按下送出時，瀏覽器將每個具有 <code>name</code> 屬性的欄位編碼為 <code>application/x-www-form-urlencoded</code> 格式，以 HTTP POST 請求傳給伺服器。Netlify 在部署時已辨識帶有 <code>data-netlify="true"</code> 的表單，因此能接收並保存這筆資料；若沒有任何後端，請求無處可去，資料即遺失。</p>
+    <pre class="req">POST / HTTP/1.1
+Host: your-site.netlify.app
+Content-Type: application/x-www-form-urlencoded
+
+form-name=waitlist&amp;name=%E5%B0%8F%E6%98%8E&amp;email=ming%40example.com</pre>
+    <p><b>LocalStorage 的範圍：同源政策。</b>LocalStorage 依<b>來源（origin）</b>隔離，來源由「通訊協定＋主機名稱＋連接埠」組成，例如 <code>https://your-site.netlify.app</code>。不同來源的網站無法讀取彼此的資料；同一網站在另一台裝置、另一個瀏覽器，或以 <code>file://</code> 開啟時，也都是各自獨立的儲存空間。</p>
+    <div class="tscroll"><table>
+      <thead><tr><th scope="col">面向</th><th scope="col">Netlify Forms（伺服器端）</th><th scope="col">LocalStorage（用戶端）</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">存放位置</th><td>Netlify 伺服器</td><td>使用者的瀏覽器</td></tr>
+        <tr><th scope="row">寫入方式</th><td>HTTP POST 請求</td><td><code>localStorage.setItem(key, value)</code>（同步執行）</td></tr>
+        <tr><th scope="row">可見範圍</th><td>網站擁有者可見全部資料</td><td>僅同一來源的頁面腳本可讀寫</td></tr>
+        <tr><th scope="row">容量與型別</th><td>依方案有每月送出數量上限</td><td>各瀏覽器約數 MB；只能存字串，物件須以 <code>JSON.stringify</code> 轉換</td></tr>
+        <tr><th scope="row">安全性</th><td>傳輸經 HTTPS 加密；存取受帳號權限控管</td><td>使用者可在開發者工具中直接修改；若網站存在跨站腳本（XSS）漏洞，攻擊程式也能讀取。不可存放密碼、權杖等敏感資料</td></tr>
+      </tbody>
+    </table></div>
+    <p class="sub" style="font-size:.88rem">因此，本課程以 LocalStorage「模擬」會員狀態僅作為示範：它能記住「此瀏覽器的使用者曾填過表單」，但不能證明身分。正式的會員系統需由伺服器驗證身分（例如密碼搭配工作階段 session 或權杖 token）。</p>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2>2.4 分類練習：資料應存放在哪裡？</h2>
+    <p class="sub">依情境選擇「伺服器端」或「LocalStorage」，作答後顯示解析。</p>
     <div class="game" id="game"></div>
     <div class="row" style="margin-top:12px;justify-content:space-between">
       <span class="score" id="score" role="status" aria-live="polite">得分：0 / 6</span>
-      <button id="gReset">🔁 再玩一次</button>
+      <button id="gReset">重新作答</button>
     </div>
     <p id="cheer"></p>
   </div>
@@ -198,46 +227,47 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
 
 <!-- TAB 3 -->
 <section id="p3" role="tabpanel" aria-labelledby="t3" hidden>
-  <p>📐 <b>GitHub＝總部設計圖</b>、<b>Netlify＝分店</b>。總部設計圖一改，<b>自動傳真機</b>就傳給分店，分店<b>不用關店</b>就換上新裝潢。</p>
+  <p><b>持續整合（Continuous Integration, CI）</b>指每次變更都合併到共用的程式碼庫並自動檢查；<b>持續部署（Continuous Deployment, CD）</b>指通過檢查的版本自動發布上線。本課程中，GitHub 保存程式碼，Netlify 與 repo 連結；每次 push 後，GitHub 以 webhook 通知 Netlify 建置並部署新版本，全程不需手動上傳。</p>
   <ol class="pipe" id="pipe">
-    <li class="step"><span class="ic">🤖</span><span>Copilot 改程式</span></li>
-    <li class="step"><span class="ic">✅</span><span>Commit（存檔點）</span></li>
-    <li class="step"><span class="ic">☁️</span><span>Sync／Push 到 GitHub</span></li>
-    <li class="step"><span class="ic">📠</span><span>GitHub 通知 Netlify</span></li>
-    <li class="step"><span class="ic">🏗️</span><span class="lbl">Netlify 部署<span class="prog"><i id="progBar"></i></span></span></li>
-    <li class="step"><span class="ic">📱</span><span>重新整理看到新版</span></li>
+    <li class="step"><span class="ic">1</span><span>Copilot 修改程式</span></li>
+    <li class="step"><span class="ic">2</span><span>Commit（本機提交）</span></li>
+    <li class="step"><span class="ic">3</span><span>Sync／Push 到 GitHub</span></li>
+    <li class="step"><span class="ic">4</span><span>Webhook 通知 Netlify</span></li>
+    <li class="step"><span class="ic">5</span><span class="lbl">Netlify 建置與部署<span class="prog"><i id="progBar"></i></span></span></li>
+    <li class="step"><span class="ic">6</span><span>使用者取得新版</span></li>
   </ol>
   <div class="grid3">
     <div>
       <div class="phone" aria-label="線上網站預覽">
         <div class="notch"></div>
         <div class="screen" style="min-height:260px">
-          <div class="bar"><span>🌐 線上版</span><span id="verLabel">v1</span></div>
-          <h3>🚀 加入早鳥名單</h3>
-          <p class="sub" style="font-size:.9rem">搶先體驗我們的新服務！</p>
-          <button id="liveBtn" class="go" style="width:100%;color:#fff;font-weight:700;border:0;margin-top:20px" tabindex="-1" aria-hidden="true">📨 立即報名</button>
+          <div class="bar"><span>線上版</span><span id="verLabel">v1</span></div>
+          <h3>加入早鳥名單</h3>
+          <p class="sub" style="font-size:.9rem">搶先體驗我們的新服務。</p>
+          <button id="liveBtn" class="go" style="width:100%;color:#fff;font-weight:700;border:0;margin-top:20px" tabindex="-1" aria-hidden="true">立即報名</button>
         </div>
       </div>
     </div>
     <div class="card">
-      <h3>🎨 請 Copilot 改按鈕顏色</h3>
+      <h3>模擬變更：修改按鈕顏色</h3>
       <div class="chips" id="chips" role="group" aria-label="選擇按鈕顏色"></div>
       <div class="row" style="margin-top:12px">
-        <button class="btn-pri" id="bPush">✅ Commit ＋ ☁️ Sync</button>
-        <button id="bRoll">⏪ 回到上一版</button>
+        <button class="btn-pri" id="bPush">Commit＋Sync</button>
+        <button id="bRoll">回復上一版</button>
       </div>
-      <p class="sub" id="status3" role="status" aria-live="polite">選一個顏色，按「✅ Commit ＋ ☁️ Sync」。</p>
-      <h3 style="margin-top:10px">📋 Netlify Deploys</h3>
+      <p class="sub" id="status3" role="status" aria-live="polite">選擇顏色後，點選「Commit＋Sync」。</p>
+      <h3 style="margin-top:10px">Netlify Deploys（部署紀錄）</h3>
       <ul class="list log" id="log"></ul>
     </div>
   </div>
   <div class="msg key" style="margin-top:16px">
-    <b>🤔 為什麼 IG、Netflix 每天更新，卻不用掛「維修中」？</b><br>
-    因為新版是在<b>旁邊先蓋好</b>，蓋好才「一秒切換」過去；舊版一直照常營業。萬一新版出錯，按一下就能<b>回到上一版</b>。這就是 CI/CD：持續整合（改完就合併）＋持續部署（自動上線）。
+    <b>為什麼大型網站頻繁更新，卻不需要停機維護？</b><br>
+    Netlify 採用<b>原子部署（atomic deploy）</b>：新版本在獨立環境中完整建置，全部成功後才一次切換流量；建置期間舊版照常服務，使用者不會看到「一半新、一半舊」的網站。每次部署都保留為不可變的快照（immutable deploy），因此<b>回復（rollback）</b>只需將先前的部署重新發布，不必重新建置。大型平台亦以類似概念搭配藍綠部署、灰度發布（canary release）等策略降低風險。<br>
+    <b>取捨：</b>自動部署讓錯誤也會被自動發布，因此實務上會在部署前加入自動化測試（CI）；本課程的 GitHub Actions 自我檢核即為一例。
   </div>
 </section>
 </div>
-<footer>VibeNTPU 第 2 週互動教材｜瀏覽器直接開，不需要網路</footer>
+<footer>VibeNTPU 第 2 週互動教材｜可直接以瀏覽器開啟，不需網路連線</footer>
 
 <script>
 (function(){
@@ -258,11 +288,11 @@ tabs.forEach(function(b,i){
 });
 
 /* Fly animation */
-function fly(from,to,emoji,vanish){
+function fly(from,to,label,vanish){
   return new Promise(function(res){
     if(RM){res();return}
     var a=from.getBoundingClientRect(),b=to.getBoundingClientRect();
-    var f=el('span',emoji,'flyer');f.setAttribute('aria-hidden','true');
+    var f=el('span',label,'flyer');f.setAttribute('aria-hidden','true');
     var x0=a.left+a.width/2-16,y0=a.top+a.height/2-16;
     f.style.transform='translate('+x0+'px,'+y0+'px)';document.body.appendChild(f);
     f.getBoundingClientRect();
@@ -279,18 +309,18 @@ var msg1=$('msg1');
 function say(html,key){msg1.className='msg'+(key?' key':'');msg1.innerHTML=html}
 function renderNet(fresh){
   var ul=$('netList');ul.innerHTML='';
-  S.net.forEach(function(r,i){var li=el('li',null,fresh&&i===S.net.length-1?'new':'');li.appendChild(el('b','👤 '+r.name));li.appendChild(el('span','✉️ '+r.email));li.appendChild(el('span','🕒 '+r.time+'（手機 #'+r.dev+'）','sub'));ul.appendChild(li)});
+  S.net.forEach(function(r,i){var li=el('li',null,fresh&&i===S.net.length-1?'new':'');li.appendChild(el('b',r.name));li.appendChild(el('span',r.email));li.appendChild(el('span',r.time+'（裝置 #'+r.dev+'）','sub'));ul.appendChild(li)});
   $('netEmpty').hidden=S.net.length>0;
 }
 function renderLocal(){
   var box=$('localBox');box.innerHTML='';
-  if(S.local){var c=el('div',null,'stamp');c.appendChild(el('div','🎫 集點卡'));c.appendChild(el('code','joinedName = "'+S.local.name+'"'));box.appendChild(c)}
-  else box.appendChild(el('p','（空的：這台裝置沒有存任何東西）','empty'));
+  if(S.local){var c=el('div',null,'stamp');c.appendChild(el('div','key：joinedName'));c.appendChild(el('code','value："'+S.local.name+'"'));box.appendChild(c)}
+  else box.appendChild(el('p','（空：此裝置的瀏覽器中沒有保存資料）','empty'));
 }
 function renderPhone(){
-  $('devLabel').textContent='📱 手機 #'+S.device;
+  $('devLabel').textContent='裝置 #'+S.device;
   var w=$('welcome');
-  if(S.local){$('form').hidden=true;w.hidden=false;w.textContent='🎉 歡迎回來，'+S.local.name+'！'}
+  if(S.local){$('form').hidden=true;w.hidden=false;w.textContent='歡迎回來，'+S.local.name}
   else{$('form').hidden=false;w.hidden=true}
 }
 function renderMode(){
@@ -298,26 +328,26 @@ function renderMode(){
   $('void').hidden=S.mode!=='none';
 }
 function render(){renderNet();renderLocal();renderPhone();renderMode()}
-$('mNone').onclick=function(){S.mode='none';renderMode();say('🚫 現在是「只有裝潢、沒有廚房」的餐廳。試著送出表單看看？')};
-$('mBaas').onclick=function(){S.mode='baas';renderMode();say('✅ 加上 <code>data-netlify="true"</code>，Netlify 就變成你的<b>訂單代收中心</b>，不用自己寫後端！')};
+$('mNone').onclick=function(){S.mode='none';renderMode();say('目前頁面只有前端，沒有任何後端接收資料。請試著送出表單，觀察資料的去向。')};
+$('mBaas').onclick=function(){S.mode='baas';renderMode();say('加上 <code>data-netlify="true"</code> 後，Netlify 在部署時會註冊此表單，並接收之後送出的 POST 請求。這就是 BaaS：不需自行撰寫與維護伺服器程式。')};
 $('form').addEventListener('submit',function(e){
   e.preventDefault();if(S.busy)return;
   var name=$('fName').value.trim(),email=$('fMail').value.trim();
   if(!name||!email)return;
   S.busy=true;$('fGo').disabled=true;
   if(S.mode==='none'){
-    fly($('fGo'),$('void'),'📄',true).then(function(){
+    fly($('fGo'),$('void'),'POST /',true).then(function(){
       $('form').reset();
-      say('❓ <b>資料哪裡都沒去！餐廳只有裝潢，沒有廚房。</b><br>網頁（前端）只負責好看，要「收」資料得有後端。切換到「有 BaaS」再試一次！');
+      say('<b>資料沒有被保存。</b>前端只負責呈現與收集輸入；瀏覽器雖然送出了 HTTP POST 請求，但沒有伺服器程式接收，資料隨即遺失。請切換到「使用 BaaS」再試一次。');
       S.busy=false;$('fGo').disabled=false;
     });
   }else{
-    fly($('fGo'),$('pNet'),'✉️').then(function(){
+    fly($('fGo'),$('pNet'),'HTTP POST').then(function(){
       S.net.push({name:name,email:email,time:now(),dev:S.device});renderNet(true);
-      return fly($('fGo'),$('pLocal'),'🎫');
+      return fly($('fGo'),$('pLocal'),'setItem()');
     }).then(function(){
       S.local={name:name};$('form').reset();renderLocal();renderPhone();
-      say('📬 資料寄到了 <b>Netlify 後台</b>（老闆看得到），同時在這台手機放了一張<b>集點卡</b>（LocalStorage）記住你的名字。<br>試試「🔄 重新整理網頁」或「📱 換一台手機」！');
+      say('瀏覽器以 <b>HTTP POST</b> 將資料送到 <b>Netlify Forms</b>，網站擁有者可在後台看到；同時頁面腳本呼叫 <code>localStorage.setItem()</code>，在<b>此裝置的瀏覽器</b>記下名稱。<br>接著請試試「重新整理網頁」與「換一台裝置」，比較兩處資料的差異。類比：Netlify 後台如同櫃檯的會員登記簿，LocalStorage 如同顧客自己帶回家的集點卡。');
       S.busy=false;$('fGo').disabled=false;
       if(innerWidth<=760&&!RM)$('pNet').scrollIntoView({behavior:'smooth',block:'start'});
     });
@@ -327,31 +357,31 @@ $('bRefresh').onclick=function(){
   if(S.busy)return;
   var s=$('screen');s.style.opacity='.2';
   wait(300).then(function(){s.style.opacity='';renderPhone();
-    if(S.local)say('🔄 重新整理後還是「歡迎回來，'+S.local.name+'」——因為瀏覽器口袋裡的<b>集點卡（LocalStorage）</b>還記得你！');
-    else say('🔄 重新整理完成。這台裝置沒有集點卡，所以顯示表單。');
+    if(S.local)say('重新整理後仍顯示「歡迎回來，'+S.local.name+'」：頁面載入時以 <code>localStorage.getItem()</code> 讀到先前的資料。LocalStorage 沒有到期時間，關閉瀏覽器後依然保留（sessionStorage 則會在分頁關閉時清除）。');
+    else say('重新整理完成。此裝置的 LocalStorage 沒有資料，因此顯示表單。');
   });
 };
 $('bDevice').onclick=function(){
   if(S.busy)return;
   S.device++;S.local=null;render();$('form').reset();
-  say('📱 <b>換到手機 #'+S.device+'：集點卡不見了，但 Netlify 後台的名單還在！</b><br>💡 LocalStorage 只存在「那一台裝置的瀏覽器」；雲端資料庫存在伺服器，所以老闆的登記簿不受影響。想要「換手機也認得你」，就得查雲端的會員登記簿（需要登入系統）。',true);
+  say('<b>切換到裝置 #'+S.device+'：LocalStorage 是空的，但 Netlify 後台的名單仍在。</b><br>LocalStorage 依來源（origin）存在於各別裝置、各別瀏覽器中，彼此不共用；伺服器端資料則集中保存，不受使用者裝置影響。若要「換裝置仍能辨識使用者」，必須由伺服器驗證身分，也就是實作登入系統。',true);
 };
 $('bLogout').onclick=function(){
   if(S.busy)return;
   S.local=null;renderLocal();renderPhone();
-  say('🚪 已登出：把這台手機的集點卡撕掉了（刪除 LocalStorage）。雲端名單不受影響。');
+  say('已登出：以 <code>localStorage.removeItem()</code> 刪除此裝置的資料。伺服器端的名單不受影響。');
 };
 render();
-say('👋 先在「沒有後端」模式填表送出，看看資料會去哪裡。');
+say('請先在「沒有後端」模式下填寫並送出表單，觀察資料的去向。');
 
 /* Tab 2 game */
 var Q=[
- ['收集早鳥名單','cloud','老闆要看到所有人的名單，一定要放在雲端登記簿。'],
- ['記住深色模式偏好','local','只跟這台裝置有關的小設定，放集點卡就好。'],
- ['會員訂單紀錄','cloud','訂單很重要，要能跨裝置查、老闆也要看得到。'],
- ['記住訪客已填過表單','local','只是讓這台瀏覽器別再跳出表單，用集點卡記一下即可（名單本身仍在雲端）。'],
- ['跨裝置同步','cloud','手機、電腦都要一樣？只有伺服器上的登記簿做得到。'],
- ['購物車暫存（還沒結帳）','local','還沒結帳的暫時清單，先放在這台瀏覽器；結帳時才送到雲端成為訂單。']
+ ['收集早鳥名單','cloud','網站擁有者必須看到所有人的資料，因此須保存在伺服器端。'],
+ ['記住深色模式偏好','local','只影響這台裝置顯示方式的設定，存在 LocalStorage 即可，也不必傳到伺服器。'],
+ ['會員訂單紀錄','cloud','訂單涉及交易與權益，必須可跨裝置查詢、可由商家管理，並有備份與存取控制。'],
+ ['記住此瀏覽器已填過表單','local','只是避免同一瀏覽器重複顯示表單；名單本身仍保存在伺服器端。'],
+ ['跨裝置同步','cloud','LocalStorage 無法跨裝置共用，跨裝置同步必須依賴伺服器端資料與身分驗證。'],
+ ['購物車暫存（尚未結帳）','local','尚未結帳的暫存清單可先放在瀏覽器；結帳時再送到伺服器成為正式訂單。若需跨裝置保留購物車，則改存伺服器端。']
 ];
 var ans={};
 function drawGame(){
@@ -359,18 +389,18 @@ function drawGame(){
   Q.forEach(function(q,i){
     var d=el('div',null,'q');d.appendChild(el('span',(i+1)+'. '+q[0]));
     var r=el('div',null,'row');
-    [['cloud','☁️ 登記簿'],['local','💻 集點卡']].forEach(function(o){
+    [['cloud','伺服器端'],['local','LocalStorage']].forEach(function(o){
       var b=el('button',o[1]);b.setAttribute('aria-label',q[0]+'：'+o[1]);
       b.disabled=i in ans;if(ans[i]===o[0])b.className='pick';
       b.onclick=function(){ans[i]=o[0];drawGame();var nb=$('game').children[i];if(nb)nb.querySelector('.fb').focus()};
       r.appendChild(b)});
     d.appendChild(r);
-    if(i in ans){var ok=ans[i]===q[1];var fb=el('div',(ok?'✅ 答對！':'❌ 應該是 '+(q[1]==='cloud'?'☁️ 登記簿':'💻 集點卡')+'。')+q[2],'fb '+(ok?'ok':'no'));fb.tabIndex=-1;d.appendChild(fb)}
+    if(i in ans){var ok=ans[i]===q[1];var fb=el('div',(ok?'正確。':'不正確。正確答案是「'+(q[1]==='cloud'?'伺服器端':'LocalStorage')+'」。')+q[2],'fb '+(ok?'ok':'no'));fb.tabIndex=-1;d.appendChild(fb)}
     else d.appendChild(el('div','','fb'));
     g.appendChild(d)});
   var n=Object.keys(ans).length,s=Object.keys(ans).filter(function(k){return ans[k]===Q[k][1]}).length;
   $('score').textContent='得分：'+s+' / '+Q.length;
-  $('cheer').textContent=n<Q.length?'':(s===Q.length?'🏆 全對！你已經能幫 SaaS 設計資料架構了！':s>=4?'👍 很棒！看一下解說就全懂了。':'🌱 沒關係，記住口訣：老闆要看、跨裝置 → 登記簿；只跟這台有關 → 集點卡。');
+  $('cheer').textContent=n<Q.length?'':'判斷原則：需要由網站擁有者檢視、跨裝置取得或具交易意義的資料 → 伺服器端；只與單一裝置的使用體驗有關、遺失也無妨的狀態 → LocalStorage。';
 }
 $('gReset').onclick=function(){ans={};drawGame()};
 drawGame();
@@ -381,27 +411,27 @@ var pick=1,deploys=[{color:'#0f766e',name:'藍綠',msg:'第一版上線',time:no
 function drawChips(){var c=$('chips');c.innerHTML='';COLORS.forEach(function(k,i){var b=el('button',null,'chip');b.style.background=k[1];b.setAttribute('aria-label',k[0]+'色');b.setAttribute('aria-pressed',i===pick);b.onclick=function(){pick=i;drawChips();c.children[i].focus()};c.appendChild(b)})}
 function drawLive(){var d=deploys[cur];$('liveBtn').style.background=d.color;$('verLabel').textContent='v'+(cur+1)}
 function drawLog(){var ul=$('log');ul.innerHTML='';
-  for(var i=deploys.length-1;i>=0;i--){var d=deploys[i],li=el('li');li.appendChild(el('span','🕒 '+d.time+'　'+d.msg));li.appendChild(el('span',i===cur?'Published':'Old','badge'+(i===cur?' pub':'')));ul.appendChild(li)}
+  for(var i=deploys.length-1;i>=0;i--){var d=deploys[i],li=el('li');li.appendChild(el('span',d.time+'　'+d.msg));li.appendChild(el('span',i===cur?'Published':'Old','badge'+(i===cur?' pub':'')));ul.appendChild(li)}
   $('bRoll').disabled=running||cur===0;$('bPush').disabled=running;}
 var steps=[].slice.call(document.querySelectorAll('.step'));
 function setStep(n){steps.forEach(function(s,i){s.classList.toggle('on',i===n);s.classList.toggle('done',i<n)})}
 $('bPush').onclick=function(){
   if(running)return;running=true;drawLog();
   var k=COLORS[pick],msg='把按鈕改成'+k[0]+'色',st=$('status3'),bar=$('progBar');bar.style.width='0';
-  setStep(0);st.textContent='🤖 VS Code 裡的 Copilot 正在修改 index.html…';
-  wait(900).then(function(){setStep(1);st.textContent='✅ Commit：在「原始檔控制」寫下「'+msg+'」，存一個存檔點（還在你的電腦裡）';return wait(1000)})
-  .then(function(){setStep(2);st.textContent='☁️ Sync Changes（Push）：把存檔點推送到 GitHub（總部設計圖更新）';return wait(1000)})
-  .then(function(){setStep(3);st.textContent='📠 自動傳真機啟動：GitHub 通知 Netlify「設計圖改了！」';return wait(1000)})
-  .then(function(){setStep(4);st.textContent='🏗️ Netlify 在旁邊蓋新版中…舊版照常營業，沒有「維修中」';
+  setStep(0);st.textContent='1. VS Code 中的 Copilot 正在修改 index.html（工作區）。';
+  wait(900).then(function(){setStep(1);st.textContent='2. Commit：於「原始檔控制」輸入「'+msg+'」，建立本機提交（尚未離開你的電腦）。';return wait(1000)})
+  .then(function(){setStep(2);st.textContent='3. Sync Changes：將提交 push 至 GitHub，遠端 main 分支更新。';return wait(1000)})
+  .then(function(){setStep(3);st.textContent='4. GitHub 以 webhook（HTTP 回呼）通知 Netlify：main 分支有新提交。';return wait(1000)})
+  .then(function(){setStep(4);st.textContent='5. Netlify 取得最新程式碼並在獨立環境建置新版本；此期間舊版照常服務。';
     var p=0;return new Promise(function(r){var t=setInterval(function(){p+=RM?100:5;bar.style.width=Math.min(p,100)+'%';if(p>=100){clearInterval(t);r()}},120)})})
   .then(function(){deploys.push({color:k[1],name:k[0],msg:msg,time:now()});cur=deploys.length-1;
-    setStep(5);drawLive();st.textContent='📱 Published！全世界重新整理就看到新版按鈕了 🎉';return wait(1200)})
+    setStep(5);drawLive();st.textContent='6. 部署完成（Published）：流量一次切換到新版本，使用者重新整理即取得新版。';return wait(1200)})
   .then(function(){setStep(6);running=false;drawLog()});
 };
 $('bRoll').onclick=function(){
   if(running||cur===0)return;cur--;var d=deploys[cur];
   drawLive();drawLog();setStep(-1);
-  $('status3').textContent='⏪ 一秒回到 v'+(cur+1)+'（'+d.msg+'）——新版有問題時的救命按鈕，不用重新部署！';
+  $('status3').textContent='已回復至 v'+(cur+1)+'（'+d.msg+'）：直接重新發布先前保存的部署快照，不需重新建置。注意：這只回復網站，GitHub 上的程式碼仍須另以 revert 修正。';
 };
 drawChips();drawLive();drawLog();
 })();

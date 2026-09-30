@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-VibeNTPU 健檢站（命令列 / GitHub Actions 版）
+VibeNTPU 網站自我檢核工具（命令列／GitHub Actions 版）
 
-只用 Python 標準函式庫，檢查你的 index.html 有沒有達成每週的任務。
-檢查項目與網頁版 tools/vibe_check.html 完全相同（check ID 一致）。
+僅使用 Python 標準函式庫，對 index.html 進行靜態檢查（不執行其中的程式碼），
+確認是否符合各檢核點的技術要求。檢查項目與網頁版 tools/vibe_check.html 相同（check ID 一致）。
+
+檢核等級：
+    Level 1 部署基本要求（檢核點 3）：HTML 結構、編碼、viewport、標題、CTA、樣式
+    Level 2 表單串接（檢核點 4）：Netlify Forms 所需的屬性與欄位
+    Level 3 狀態保存（檢核點 5）：LocalStorage 讀寫、AJAX（fetch）送出
 
 用法：
-    python3 vibe_check.py index.html              # 檢查第 1 關（預設）
-    python3 vibe_check.py index.html --level 3    # 檢查到第 3 關
+    python3 vibe_check.py index.html              # 檢查 Level 1（預設）
+    python3 vibe_check.py index.html --level 3    # 檢查 Level 1 至 Level 3
     python3 vibe_check.py index.html --json       # 輸出 JSON
     python3 vibe_check.py index.html --markdown   # 輸出 Markdown（給 $GITHUB_STEP_SUMMARY）
 
-結束代碼：到 --level 為止的「必要」項目全部通過 → 0；否則 → 1；讀檔失敗 → 2。
+結束代碼：--level 以內的必要項目全部通過 → 0；否則 → 1；讀檔失敗 → 2。
+注意：靜態檢查只能確認程式碼「具備」某些寫法，無法保證實際部署後功能正確，仍須在瀏覽器實測。
 """
 import argparse
 import json
@@ -21,58 +27,59 @@ import sys
 from html.parser import HTMLParser
 
 REQ, WARN, BONUS = "required", "warn", "bonus"
-XP = {REQ: 10, WARN: 5, BONUS: 5}
+# 各類項目的配分（僅保留於 --json 的 xp / max_xp 欄位以維持輸出結構相容，文字報告不顯示）
+WEIGHT = {REQ: 10, WARN: 5, BONUS: 5}
 
 LEVELS = {
-    1: {"icon": "🏪", "name": "開店徽章", "desc": "第 1 週：把店面（形象首頁）開起來"},
-    2: {"icon": "📦", "name": "收單徽章", "desc": "第 2 週：用 Netlify Forms 收早鳥名單"},
-    3: {"icon": "💾", "name": "記憶徽章", "desc": "第 2 週：LocalStorage 記住會員＋AJAX 送出"},
+    1: {"icon": "L1", "name": "部署基本要求", "desc": "檢核點 3：可正確顯示於桌機與手機的形象首頁"},
+    2: {"icon": "L2", "name": "表單串接", "desc": "檢核點 4：以 Netlify Forms（BaaS）收集早鳥名單"},
+    3: {"icon": "L3", "name": "狀態保存", "desc": "檢核點 5：以 LocalStorage 保存會員狀態，並以 fetch 非同步送出表單"},
 }
 
-# (id, level, kind, 標題, 失敗時的提示) —— 與 vibe_check.html 的 CHECKS 保持一致
+# (id, level, kind, 項目名稱, 未通過時的說明與「請向 AI 說明」提示) —— 與 vibe_check.html 的 CHECKS 保持一致
 CHECKS = [
-    ("l1_html", 1, REQ, "檔案是 HTML 格式",
-     "檔案裡找不到 <html> 或 <!DOCTYPE html>。請確認你選的是 index.html；或請跟 AI 說：「請給我完整的 HTML 檔案，從 <!DOCTYPE html> 開始」"),
-    ("l1_charset", 1, REQ, "設定 UTF-8 編碼（中文不亂碼）",
-     "請跟 AI 說：「請在 <head> 加上 <meta charset=\"UTF-8\">」"),
-    ("l1_viewport", 1, REQ, "設定 viewport（手機版 RWD）",
-     "請跟 AI 說：「請在 <head> 加上 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">」"),
-    ("l1_title", 1, REQ, "有網頁標題 <title>",
-     "請跟 AI 說：「請在 <head> 加上 <title>，內容是我的產品名稱＋一句話介紹」"),
-    ("l1_h1", 1, REQ, "有大標題 <h1>",
-     "請跟 AI 說：「請在主視覺區加上一個 <h1> 大標題，寫出產品最吸引人的一句話」"),
-    ("l1_cta", 1, REQ, "有行動按鈕（CTA）",
-     "請跟 AI 說：「請在主視覺區加上一個醒目的行動按鈕（例如『立即加入』），用 <a> 或 <button>」"),
-    ("l1_style", 1, REQ, "有 CSS 樣式（不是陽春白底黑字）",
-     "請跟 AI 說：「請用 <style> 幫整個頁面加上配色、字體與排版，全部寫在同一個 index.html 裡」"),
-    ("l1_media", 1, WARN, "有 @media 手機版樣式",
-     "請跟 AI 說：「請加上 @media (max-width: 640px) 的手機版樣式，讓手機上也好看」"),
-    ("l1_img", 1, WARN, "沒有引用不存在的圖片檔",
-     "你用了相對路徑的圖片（例如 photo.jpg），但 repo 裡可能沒有這個檔案，上線後會破圖。請跟 AI 說：「請把圖片改成 emoji 或 inline SVG，不要引用外部圖片檔」"),
-    ("l2_form", 2, REQ, "有 Netlify 表單（data-netlify=\"true\"）",
-     "請跟 AI 說：「請加一個早鳥名單表單，<form> 要有 data-netlify=\"true\" 和 method=\"POST\"」"),
-    ("l2_form_name", 2, REQ, "表單有 name 名稱",
-     "請跟 AI 說：「請幫 <form> 加上 name=\"waitlist\"，這是 Netlify 後台收件箱的名字」"),
-    ("l2_hidden_form_name", 2, REQ, "有隱藏欄位 form-name 且值與表單名稱相同",
-     "請跟 AI 說：「請在 <form> 裡加上 <input type=\"hidden\" name=\"form-name\" value=\"（跟表單 name 一樣）\">」"),
-    ("l2_field_names", 2, REQ, "每個輸入欄位都有 name",
-     "沒有 name 的欄位，Netlify 收不到資料。請跟 AI 說：「請確認表單裡每個 input、select、textarea 都有 name 屬性」"),
-    ("l2_email", 2, WARN, "有 Email 欄位（type=\"email\"）",
-     "請跟 AI 說：「請在表單加上 <input type=\"email\" name=\"email\" required>，讓瀏覽器幫忙檢查格式」"),
-    ("l2_honeypot", 2, BONUS, "有防機器人陷阱（honeypot）",
-     "加分題！請跟 AI 說：「請在 <form> 加上 netlify-honeypot=\"bot-field\"，並加一個隱藏的 <input name=\"bot-field\">」"),
-    ("l3_set", 3, REQ, "用 localStorage.setItem 存資料",
-     "請跟 AI 說：「送出表單成功後，請用 localStorage.setItem 把使用者名字存起來」"),
-    ("l3_get", 3, REQ, "用 localStorage.getItem 讀資料",
-     "請跟 AI 說：「打開網頁時，請用 localStorage.getItem 檢查有沒有存過名字，有的話顯示『歡迎回來』儀表板」"),
-    ("l3_prevent", 3, REQ, "用 preventDefault 阻止頁面跳轉",
-     "請跟 AI 說：「表單送出時，請先呼叫 event.preventDefault()，不要跳到別的頁面」"),
-    ("l3_fetch", 3, REQ, "用 fetch() 以 AJAX 送出表單",
-     "請跟 AI 說：「請用 fetch('/', { method: 'POST', ... }) 在背景把表單送給 Netlify」"),
-    ("l3_urlencoded", 3, REQ, "送出格式是 application/x-www-form-urlencoded",
-     "請跟 AI 說：「fetch 的 headers 請設定 'Content-Type': 'application/x-www-form-urlencoded'，body 用 new URLSearchParams(formData).toString()」"),
-    ("l3_logout", 3, BONUS, "有登出功能（removeItem 或 clear）",
-     "加分題！請跟 AI 說：「請在儀表板加一個登出按鈕，按下去用 localStorage.removeItem 清掉資料」"),
+    ("l1_html", 1, REQ, "檔案為 HTML 文件",
+     "檔案中找不到 <html> 或 <!DOCTYPE html>，請確認選取的是 index.html。請向 AI 說明：「請提供完整的 HTML 檔案，從 <!DOCTYPE html> 開始，不要省略任何段落」"),
+    ("l1_charset", 1, REQ, "宣告 UTF-8 字元編碼",
+     "未宣告編碼時，瀏覽器可能以錯誤編碼解讀中文而出現亂碼。請向 AI 說明：「請在 <head> 最前面加上 <meta charset=\"UTF-8\">」"),
+    ("l1_viewport", 1, REQ, "設定 viewport（響應式設計的前提）",
+     "缺少 viewport 時，手機瀏覽器會以約 980px 的虛擬寬度縮小顯示整頁。請向 AI 說明：「請在 <head> 加上 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">」"),
+    ("l1_title", 1, REQ, "設定網頁標題 <title>",
+     "<title> 會顯示於瀏覽器分頁與搜尋結果，也是分享連結時的預設標題。請向 AI 說明：「請在 <head> 加上 <title>，內容為產品名稱與一句價值主張」"),
+    ("l1_h1", 1, REQ, "設定主標題 <h1>",
+     "<h1> 是頁面最重要的標題，影響可讀性、無障礙與搜尋引擎理解。請向 AI 說明：「請在主視覺區加上一個 <h1>，以一句話說明產品為誰解決什麼問題」"),
+    ("l1_cta", 1, REQ, "具備行動呼籲按鈕（Call to Action, CTA）",
+     "形象首頁的目的是引導訪客採取下一步行動。請向 AI 說明：「請在主視覺區加上一個明顯的行動按鈕（例如『加入早鳥名單』），使用 <a href> 或 <button>」"),
+    ("l1_style", 1, REQ, "具備 CSS 樣式",
+     "未套用樣式的頁面僅有瀏覽器預設排版，難以傳達產品定位。請向 AI 說明：「請以 <style> 為整個頁面設定配色、字體與版面，全部寫在同一個 index.html 中」"),
+    ("l1_media", 1, WARN, "具備 @media 行動版樣式",
+     "媒體查詢（media query）可依螢幕寬度調整版面。請向 AI 說明：「請加入 @media (max-width: 640px) 的行動版樣式，讓多欄版面在手機上改為單欄」"),
+    ("l1_img", 1, WARN, "未引用可能不存在的本地圖片",
+     "偵測到相對路徑的圖片（例如 photo.jpg）；若 repo 中沒有該檔案，部署後會顯示為破圖。請向 AI 說明：「請將圖片改為內嵌 SVG 或純 CSS 圖形，不要引用 repo 中不存在的圖片檔」"),
+    ("l2_form", 2, REQ, "具備 Netlify 表單（data-netlify=\"true\"）",
+     "Netlify 在部署時會掃描 HTML，只有帶此屬性的表單才會被註冊並接收資料。請向 AI 說明：「請加入早鳥名單表單，<form> 需包含 data-netlify=\"true\" 與 method=\"POST\"」"),
+    ("l2_form_name", 2, REQ, "表單具有 name 屬性",
+     "表單的 name 即 Netlify 後台 Forms 頁面中的表單名稱。請向 AI 說明：「請為 <form> 加上 name=\"waitlist\"」"),
+    ("l2_hidden_form_name", 2, REQ, "具有隱藏欄位 form-name，且值與表單名稱相同",
+     "Netlify 依據送出資料中的 form-name 判斷資料屬於哪一個表單；以 JavaScript 送出時尤其必要。請向 AI 說明：「請在 <form> 內加上 <input type=\"hidden\" name=\"form-name\" value=\"（與表單 name 相同）\">」"),
+    ("l2_field_names", 2, REQ, "每個輸入欄位皆具有 name 屬性",
+     "瀏覽器送出表單時只會包含具有 name 的欄位，缺少 name 的欄位資料不會傳到 Netlify。請向 AI 說明：「請確認表單中每個 input、select、textarea 都有 name 屬性」"),
+    ("l2_email", 2, WARN, "具備 Email 欄位（type=\"email\"）",
+     "type=\"email\" 可讓瀏覽器在送出前檢查格式，並在手機上顯示適合的鍵盤。請向 AI 說明：「請在表單加上 <input type=\"email\" name=\"email\" required>」"),
+    ("l2_honeypot", 2, BONUS, "具備防垃圾訊息誘捕欄位（honeypot）",
+     "誘捕欄位對一般使用者隱藏，自動程式若填寫即被判定為垃圾訊息。請向 AI 說明：「請在 <form> 加上 netlify-honeypot=\"bot-field\"，並加入一個隱藏的 <input name=\"bot-field\">」"),
+    ("l3_set", 3, REQ, "使用 localStorage.setItem 寫入資料",
+     "請向 AI 說明：「表單送出成功後，請以 localStorage.setItem 將使用者名稱儲存於瀏覽器」"),
+    ("l3_get", 3, REQ, "使用 localStorage.getItem 讀取資料",
+     "請向 AI 說明：「頁面載入時，請以 localStorage.getItem 檢查是否已有儲存的名稱；若有，顯示會員歡迎畫面並隱藏表單」"),
+    ("l3_prevent", 3, REQ, "使用 preventDefault 取消預設送出行為",
+     "表單預設送出會讓瀏覽器導向新頁面，導致無法在同一頁更新畫面。請向 AI 說明：「表單送出時，請先呼叫 event.preventDefault()，改由 JavaScript 處理」"),
+    ("l3_fetch", 3, REQ, "使用 fetch() 以非同步方式（AJAX）送出表單",
+     "請向 AI 說明：「請以 fetch('/', { method: 'POST', ... }) 在背景將表單資料送至 Netlify，成功後再更新畫面」"),
+    ("l3_urlencoded", 3, REQ, "送出格式為 application/x-www-form-urlencoded",
+     "Netlify Forms 接收的是一般表單編碼格式，而非 JSON。請向 AI 說明：「fetch 的 headers 請設定 'Content-Type': 'application/x-www-form-urlencoded'，body 使用 new URLSearchParams(new FormData(form)).toString()」"),
+    ("l3_logout", 3, BONUS, "具備登出功能（removeItem 或 clear）",
+     "請向 AI 說明：「請在會員畫面加入登出按鈕，按下後以 localStorage.removeItem 刪除已儲存的資料並重新顯示表單」"),
 ]
 
 EXTERNAL_SRC = re.compile(r"^(?:[a-z][a-z0-9+.-]*:|//)", re.I)
@@ -175,7 +182,7 @@ def analyze(html_text):
         i.get("src", "").strip() and not EXTERNAL_SRC.match(i.get("src", "").strip())
         for i in p.imgs)
 
-    # 第 2 關：優先找 Netlify 表單，沒有的話看第一個 form
+    # Level 2：優先找 Netlify 表單，沒有的話看第一個 form
     form = next((f for f in p.forms if _is_netlify(f["attrs"])), p.forms[0] if p.forms else None)
     fa = form["attrs"] if form else {}
     fields = form["fields"] if form else []
@@ -210,8 +217,8 @@ def build_report(html_text, level):
     checks, xp, max_xp = [], 0, 0
     for cid, lv, kind, title, hint in CHECKS:
         ok = res[cid]
-        max_xp += XP[kind]
-        xp += XP[kind] if ok else 0
+        max_xp += WEIGHT[kind]
+        xp += WEIGHT[kind] if ok else 0
         checks.append({"id": cid, "level": lv, "kind": kind, "pass": ok,
                        "title": title, "hint": None if ok else hint})
     levels = {}
@@ -226,54 +233,67 @@ def build_report(html_text, level):
 
 def _mark(c):
     if c["pass"]:
-        return "✅"
-    return "❌" if c["kind"] == REQ else ("⚠️" if c["kind"] == WARN else "⬜")
+        return "[通過]"
+    return {REQ: "[未通過]", WARN: "[建議]", BONUS: "[加分]"}[c["kind"]]
 
 
-KIND_LABEL = {REQ: "", WARN: "（建議）", BONUS: "（加分）"}
+KIND_LABEL = {REQ: "", WARN: "（建議項目）", BONUS: "（加分項目）"}
+
+
+def _req_summary(rep):
+    req = [c for c in rep["checks"] if c["kind"] == REQ and c["level"] <= rep["level"]]
+    return sum(c["pass"] for c in req), len(req)
 
 
 def format_text(rep, path):
-    out = ["", "🩺 VibeNTPU 健檢報告", f"📄 檔案：{path}", f"🎯 檢查到第 {rep['level']} 關", ""]
+    passed, total = _req_summary(rep)
+    out = ["", "VibeNTPU 網站自我檢核報告", f"檔案：{path}",
+           f"檢核範圍：Level 1 至 Level {rep['level']}", ""]
     for lv in range(1, 4):
         info = rep["levels"][str(lv)]
-        tag = "（本次檢查）" if lv <= rep["level"] else "（預習，不影響結果）"
-        badge = "🏅 已點亮" if info["badge"] else f"{info['required_passed']}/{info['required_total']}"
-        out.append(f"── Level {lv} {info['icon']} {info['name']} {tag}  [{badge}]")
+        tag = "" if lv <= rep["level"] else "（預覽，不影響結果）"
+        status = "全部通過" if info["badge"] else "尚未完成"
+        out.append(f"== Level {lv} {info['name']}{tag}  必要項目 {info['required_passed']}/{info['required_total']} 通過，{status}")
         for c in rep["checks"]:
             if c["level"] != lv:
                 continue
-            out.append(f"  {_mark(c)} {c['id']:<20} {c['title']}{KIND_LABEL[c['kind']]}")
+            m = _mark(c)
+            pad = " " * (9 - len(m) - sum(1 for ch in m if ord(ch) > 0x2E80))  # 以顯示寬度對齊
+            out.append(f"  {m}{pad}{c['id']:<20} {c['title']}{KIND_LABEL[c['kind']]}")
             if not c["pass"] and lv <= rep["level"]:
-                out.append(f"       💡 {c['hint']}")
+                out.append(f"           提示：{c['hint']}")
         out.append("")
-    out.append(f"⭐ 經驗值 XP：{rep['xp']} / {rep['max_xp']}")
+    out.append(f"必要項目 {passed}/{total} 通過（Level 1 至 Level {rep['level']}）")
     if rep["ok"]:
-        out.append(f"🎉 恭喜！第 {rep['level']} 關以內的必要項目全部通過！")
+        out.append(f"結果：Level {rep['level']} 以內的必要項目全部通過。")
     else:
-        out.append("💪 還差一步！沒過的項目都是升級的經驗值，照著 💡 提示跟 AI 說，再推一次就好。")
+        out.append("結果：尚有必要項目未通過。請依各項「提示」修改 index.html，Commit 並 Sync 後重新檢核。")
     return "\n".join(out)
 
 
+def _md_escape(s):
+    return (s or "").replace("|", "\\|").replace("<", "&lt;").replace(">", "&gt;")
+
+
 def format_markdown(rep, path):
-    out = ["## 🩺 VibeNTPU 健檢報告", "",
-           f"- 📄 檔案：`{path}`", f"- 🎯 檢查到第 **{rep['level']}** 關",
-           f"- ⭐ 經驗值：**{rep['xp']} / {rep['max_xp']} XP**", ""]
-    out.append(("### 🎉 恭喜！必要項目全部通過！" if rep["ok"]
-                else "### 💪 還差一步！沒過的項目都是升級的經驗值"))
+    passed, total = _req_summary(rep)
+    out = ["## VibeNTPU 網站自我檢核報告", "",
+           f"- 檔案：`{path}`", f"- 檢核範圍：Level 1 至 Level **{rep['level']}**",
+           f"- 必要項目：**{passed}/{total}** 通過", ""]
+    out.append(("**結果：必要項目全部通過。**" if rep["ok"]
+                else "**結果：尚有必要項目未通過。** 請依下表說明修改後重新 Commit 並 Sync。"))
     out.append("")
     for lv in range(1, 4):
         info = rep["levels"][str(lv)]
-        tag = "" if lv <= rep["level"] else "（預習，不影響結果）"
-        badge = "🏅 已點亮" if info["badge"] else f"{info['required_passed']}/{info['required_total']}"
-        out += [f"#### Level {lv} {info['icon']} {info['name']} — {badge} {tag}", "",
-                "| 結果 | 項目 | 提示 |", "| :-: | --- | --- |"]
+        tag = "" if lv <= rep["level"] else "（預覽，不影響結果）"
+        status = "全部通過" if info["badge"] else f" {info['required_passed']}/{info['required_total']} 通過"
+        out += [f"### Level {lv} {info['name']}：必要項目{status} {tag}".rstrip(), "",
+                "| 狀態 | 項目 | 說明 |", "| :-: | --- | --- |"]
         for c in rep["checks"]:
             if c["level"] != lv:
                 continue
-            hint = "" if c["pass"] else (c["hint"] or "").replace("|", "\\|").replace("<", "&lt;").replace(">", "&gt;")
-            title = c["title"].replace("<", "&lt;").replace(">", "&gt;")
-            out.append(f"| {_mark(c)} | {title}{KIND_LABEL[c['kind']]} `{c['id']}` | {hint} |")
+            hint = "" if c["pass"] else _md_escape(c["hint"])
+            out.append(f"| {_mark(c)} | {_md_escape(c['title'])}{KIND_LABEL[c['kind']]} `{c['id']}` | {hint} |")
         out.append("")
     return "\n".join(out)
 
@@ -284,9 +304,9 @@ def main(argv=None):
             s.reconfigure(encoding="utf-8")
         except Exception:
             pass
-    ap = argparse.ArgumentParser(description="VibeNTPU 健檢站：檢查你的 index.html")
+    ap = argparse.ArgumentParser(description="VibeNTPU 網站自我檢核工具：靜態檢查 index.html")
     ap.add_argument("file", help="要檢查的 HTML 檔，例如 index.html")
-    ap.add_argument("--level", type=int, choices=[1, 2, 3], default=1, help="檢查到第幾關（預設 1）")
+    ap.add_argument("--level", type=int, choices=[1, 2, 3], default=1, help="檢核至第幾個 Level（預設 1）")
     g = ap.add_mutually_exclusive_group()
     g.add_argument("--json", action="store_true", help="輸出 JSON")
     g.add_argument("--markdown", action="store_true", help="輸出 Markdown（給 GitHub Step Summary）")
@@ -295,7 +315,7 @@ def main(argv=None):
         with open(args.file, "r", encoding="utf-8-sig", errors="replace") as f:
             text = f.read()
     except OSError as e:
-        print(f"❌ 讀不到檔案：{args.file}（{e.strerror}）。請確認 index.html 放在 repo 最外層。", file=sys.stderr)
+        print(f"[錯誤] 無法讀取檔案：{args.file}（{e.strerror}）。請確認 index.html 位於 repo 根目錄。", file=sys.stderr)
         return 2
     rep = build_report(text, args.level)
     if args.json:

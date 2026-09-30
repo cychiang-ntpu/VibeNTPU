@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>咒語產生器</title>
+<title>提示詞產生器</title>
 <style>
 :root{
   --primary:#0f766e; --primary-2:#14b8a6; --accent:#f59e0b;
@@ -57,7 +57,7 @@ input[type=text]:focus,textarea:focus{border-color:var(--primary-2)}
 .btn-big{width:100%;padding:14px;font-size:1.15rem;background:var(--primary);color:#fff;border-radius:12px;margin-top:10px}
 @media (prefers-color-scheme: dark){.btn-big{color:#042f2e}}
 .btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
-.remind{background:#fef3c7;color:#78350f;border:2px dashed var(--accent);border-radius:12px;padding:12px 14px;font-weight:700;font-size:1.05rem}
+.remind{background:#fef3c7;color:#78350f;border:1px solid #f0d49c;border-left:4px solid var(--accent);border-radius:8px;padding:12px 14px;font-size:1rem}
 .meter{margin-bottom:10px}
 .bar{height:12px;background:var(--chip);border-radius:999px;overflow:hidden;border:1px solid var(--border)}
 .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary-2),var(--accent));transition:width .35s}
@@ -73,8 +73,8 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
 </head>
 <body>
 <header>
-  <h1>🪄 咒語產生器</h1>
-  <p class="sub">填好表單，AI 咒語自動生成，一鍵複製貼到 VS Code 的 Copilot Chat 就能做出網站！</p>
+  <h1>提示詞產生器</h1>
+  <p class="sub">依表單內容組合結構化的提示詞（prompt），複製後貼到 VS Code 的 Copilot Chat。提示詞越具體——角色、產品資訊、版面結構、技術限制——AI 產生的結果越貼近需求，也越容易驗證。</p>
   <div class="modes" role="group" aria-label="選擇模式">
     <button type="button" data-mode="w1" aria-pressed="true">第 1 週：產生首頁</button>
     <button type="button" data-mode="w2" aria-pressed="false">第 2 週：加入早鳥名單表單</button>
@@ -84,19 +84,19 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
 <main>
 <section class="card" aria-labelledby="formTitle">
   <div class="row">
-    <h2 id="formTitle">✍️ 填寫你的點子</h2>
+    <h2 id="formTitle">1. 產品資訊</h2>
     <div class="chips">
-      <button type="button" class="btn btn-accent" id="randBtn">🎲 給我一個範例</button>
-      <button type="button" class="btn btn-ghost" id="resetBtn">🧹 清空重來</button>
+      <button type="button" class="btn btn-accent" id="randBtn">填入範例</button>
+      <button type="button" class="btn btn-ghost" id="resetBtn">清空</button>
     </div>
   </div>
 
   <fieldset>
-    <legend>🤖 使用的 AI</legend>
+    <legend>使用的 AI 助理</legend>
     <div class="chips">
       <label class="chip"><input type="radio" name="ai" value="Copilot">GitHub Copilot（VS Code）</label>
     </div>
-    <p class="hint" style="margin:8px 0 6px">沒有 Copilot 時的備案：</p>
+    <p class="hint" style="margin:8px 0 6px">無法使用 Copilot 時的替代方案：</p>
     <div class="chips">
       <label class="chip"><input type="radio" name="ai" value="Claude">Claude</label>
       <label class="chip"><input type="radio" name="ai" value="ChatGPT">ChatGPT</label>
@@ -104,8 +104,8 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     </div>
   </fieldset>
 
-  <div class="remind" id="w2remind" hidden>📌 記得先把你的 index.html 完整貼給 AI！<br><span class="hint" style="color:inherit">（咒語複製後，在下面貼上整份 index.html 程式碼，再送出）</span></div>
-  <div class="remind" id="w2remindCp" hidden>📌 Copilot 看得到你的檔案：請確認 VS Code 已打開你的 repo 資料夾，並在 Chat 中用 #index.html 或把 index.html 分頁打開<br><span class="hint" style="color:inherit">（不用再手動貼上程式碼，Copilot 會直接修改檔案）</span></div>
+  <div class="remind" id="w2remind" hidden><b>注意：</b>聊天型 AI 看不到你的檔案，必須將 index.html 完整貼上。<br><span class="hint" style="color:inherit">（複製提示詞後，在其下方貼上整份 index.html 程式碼，再送出）</span></div>
+  <div class="remind" id="w2remindCp" hidden><b>注意：</b>Copilot 可讀取工作區檔案。請確認 VS Code 已開啟你的 repo 資料夾，並在 Chat 中以 #index.html 引用或開啟 index.html 分頁。<br><span class="hint" style="color:inherit">（不需手動貼上程式碼，Copilot Agent 模式會直接修改檔案）</span></div>
 
   <div class="field">
     <label for="name">產品名稱 <span class="hint">例：三峽租屋雷達</span></label>
@@ -134,31 +134,31 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
       <input type="text" id="pricing" data-k="pricing" placeholder="例：免費版 + 進階版每月 NT$49">
     </div>
     <fieldset>
-      <legend>🎨 風格</legend>
+      <legend>視覺風格</legend>
       <div class="chips" data-group="style">
-        <button type="button" class="chip" data-v="清新活潑">🌿 清新活潑</button>
-        <button type="button" class="chip" data-v="沉穩專業">💼 沉穩專業</button>
-        <button type="button" class="chip" data-v="可愛療癒">🧸 可愛療癒</button>
-        <button type="button" class="chip" data-v="科技未來感">🚀 科技未來感</button>
-        <button type="button" class="chip" data-v="文青手感">📖 文青手感</button>
-        <button type="button" class="chip" data-v="自訂">✏️ 自訂</button>
+        <button type="button" class="chip" data-v="清新活潑">清新活潑</button>
+        <button type="button" class="chip" data-v="沉穩專業">沉穩專業</button>
+        <button type="button" class="chip" data-v="可愛療癒">可愛療癒</button>
+        <button type="button" class="chip" data-v="科技未來感">科技未來感</button>
+        <button type="button" class="chip" data-v="文青手感">文青手感</button>
+        <button type="button" class="chip" data-v="自訂">自訂</button>
       </div>
       <input type="text" class="custom" data-k="styleCustom" aria-label="自訂風格" placeholder="描述你想要的風格，例：復古 90 年代像素風" hidden>
     </fieldset>
     <fieldset>
-      <legend>🖌️ 主色調</legend>
+      <legend>主色調</legend>
       <div class="chips" data-group="color">
         <button type="button" class="chip" data-v="青綠色"><span class="dot" style="background:#14b8a6"></span>青綠</button>
         <button type="button" class="chip" data-v="莫蘭迪藍"><span class="dot" style="background:#7d93a8"></span>莫蘭迪藍</button>
         <button type="button" class="chip" data-v="珊瑚橘"><span class="dot" style="background:#ff7f50"></span>珊瑚橘</button>
         <button type="button" class="chip" data-v="薰衣草紫"><span class="dot" style="background:#a78bfa"></span>薰衣草紫</button>
         <button type="button" class="chip" data-v="墨黑配金色"><span class="dot" style="background:linear-gradient(135deg,#111 50%,#d4a017 50%)"></span>墨黑金</button>
-        <button type="button" class="chip" data-v="自訂">✏️ 自訂文字</button>
+        <button type="button" class="chip" data-v="自訂">自訂</button>
       </div>
       <input type="text" class="custom" data-k="colorCustom" aria-label="自訂主色調" placeholder="例：抹茶綠配奶油白" hidden>
     </fieldset>
     <fieldset>
-      <legend>🧱 要包含的區塊</legend>
+      <legend>頁面區塊</legend>
       <div class="chips" id="secs"></div>
     </fieldset>
   </div>
@@ -176,20 +176,20 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
 </section>
 
 <section class="card out" aria-labelledby="outTitle">
-  <h2 id="outTitle">✨ 你的專屬咒語</h2>
+  <h2 id="outTitle">2. 產生的提示詞</h2>
   <div class="meter">
-    <div class="row" style="margin:0"><strong>💪 咒語健康度</strong><strong id="pct">0%</strong></div>
-    <div class="bar" role="progressbar" aria-label="咒語健康度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+    <div class="row" style="margin:0"><strong>提示詞完整度</strong><strong id="pct">0%</strong></div>
+    <div class="bar" role="progressbar" aria-label="提示詞完整度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
     <p id="meterMsg"></p>
   </div>
-  <pre id="out" tabindex="0" aria-label="產生的咒語"></pre>
-  <button type="button" class="btn btn-big" id="copyBtn">📋 複製咒語</button>
+  <pre id="out" tabindex="0" aria-label="產生的提示詞"></pre>
+  <button type="button" class="btn btn-big" id="copyBtn">複製提示詞</button>
   <div class="tip" id="tip"></div>
 </section>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<footer>VibeNTPU 互動教材｜瀏覽器直接開，不需要網路</footer>
+<footer>VibeNTPU 互動教材｜可直接以瀏覽器開啟，不需網路連線</footer>
 
 <script>
 (function(){
@@ -200,30 +200,30 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     '導覽列':'導覽列（Logo + 選單，手機版變漢堡選單）',
     '主視覺+CTA':'主視覺 Hero 區（大標題、副標題、醒目的行動按鈕 CTA）',
     '痛點':'痛點區（列出目標客群遇到的 3 個困擾）',
-    '功能介紹':'功能介紹（三個核心功能，用卡片 + emoji 圖示呈現）',
-    '使用者推薦':'使用者推薦（3 則虛構但真實感的使用者心得）',
-    '團隊介紹':'團隊介紹（2–3 位成員，用 emoji 當頭像）',
+    '功能介紹':'功能介紹（三個核心功能，以卡片搭配內嵌 SVG 線條圖示呈現）',
+    '使用者推薦':'使用者推薦（3 則使用者心得，並以小字標示為示意內容）',
+    '團隊介紹':'團隊介紹（2–3 位成員，以姓名縮寫的圓形文字頭像呈現）',
     '價格方案':'價格方案（2–3 個方案卡片，推薦方案要特別標示）',
     'FAQ':'常見問題 FAQ（4–5 題，可點擊展開收合）',
     '倒數計時':'倒數計時（距離正式上線還有幾天幾時幾分幾秒，用 JavaScript 即時更新）',
     '頁尾':'頁尾（版權宣告與聯絡方式）'
   };
   var PRESETS = [
-    {name:'三峽租屋雷達',pitch:'幫北大學生 3 分鐘找到安心又不踩雷的好房',audience:'第一次在三峽外宿的大學生',f1:'地圖一覽周邊房源與租金',f2:'學長姐真實租屋評價',f3:'新房源即時推播通知',pricing:'基本免費，進階版每月 NT$49',style:'清新活潑',color:'青綠色',u1:'一鍵預約看房',u2:'室友配對',u3:'租約健檢小幫手'},
+    {name:'三峽租屋雷達',pitch:'幫北大學生 3 分鐘找到安心又不踩雷的好房',audience:'第一次在三峽外宿的大學生',f1:'地圖一覽周邊房源與租金',f2:'學長姐真實租屋評價',f3:'新房源即時推播通知',pricing:'基本免費，進階版每月 NT$49',style:'清新活潑',color:'青綠色',u1:'一鍵預約看房',u2:'室友配對',u3:'租約條款檢查'},
     {name:'AI 塔羅牌訂閱',pitch:'每天早上一張 AI 解讀的塔羅牌，陪你溫柔開始一天',audience:'喜歡占卜、想要心靈小語的年輕人',f1:'每日一抽 + AI 白話解讀',f2:'感情／課業／工作主題牌陣',f3:'抽牌日記與心情統計',pricing:'月訂閱 NT$99，年訂閱 NT$990',style:'可愛療癒',color:'薰衣草紫',u1:'好友合盤',u2:'月亮週期提醒',u3:'專屬塔羅語音'},
     {name:'三峽學餐地圖',pitch:'不知道吃什麼？打開就知道北大附近哪家好吃又便宜',audience:'每天煩惱午餐的北大師生',f1:'依預算與距離篩選餐廳',f2:'今日隨機推薦轉盤',f3:'同學即時評分與排隊狀況',pricing:'完全免費，店家廣告收益',style:'清新活潑',color:'珊瑚橘',u1:'揪團訂便當',u2:'集點優惠券',u3:'素食專區'},
-    {name:'二手課本交換站',pitch:'學期末課本不再積灰塵，找到下一位主人還能省錢',audience:'想買便宜課本或清書櫃的大學生',f1:'輸入課號秒找課本',f2:'校內面交安全配對',f3:'筆記劃線程度標示',pricing:'免費刊登，成交抽 5% 手續費',style:'文青手感',color:'莫蘭迪藍',u1:'課本預購通知',u2:'筆記電子檔交換',u3:'信用評價徽章'},
+    {name:'二手課本交換站',pitch:'學期末課本不再積灰塵，找到下一位主人還能省錢',audience:'想買便宜課本或清書櫃的大學生',f1:'輸入課號秒找課本',f2:'校內面交安全配對',f3:'筆記劃線程度標示',pricing:'免費刊登，成交抽 5% 手續費',style:'文青手感',color:'莫蘭迪藍',u1:'課本預購通知',u2:'筆記電子檔交換',u3:'交易信用評價'},
     {name:'毛孩保母媒合',pitch:'出遠門也安心，找到附近認證過的寵物保母',audience:'在外租屋、偶爾需要出遠門的毛孩家長',f1:'附近保母地圖與評價',f2:'照顧過程即時照片回報',f3:'線上預約與安心付款',pricing:'每次媒合收取 10% 服務費',style:'可愛療癒',color:'珊瑚橘',u1:'毛孩健康日誌',u2:'緊急獸醫轉介',u3:'保母培訓課程'},
-    {name:'揪運動 GoSport',pitch:'一個人也能運動！快速找到同校球友一起流汗',audience:'想運動但找不到伴的大學生',f1:'依運動項目與時段揪團',f2:'場地空位即時查詢',f3:'運動紀錄與成就徽章',pricing:'免費使用，進階版每月 NT$39',style:'科技未來感',color:'墨黑配金色',u1:'校際友誼賽',u2:'私人教練媒合',u3:'運動穿戴裝置同步'}
+    {name:'揪運動 GoSport',pitch:'一個人也能運動，快速找到同校球友一起流汗',audience:'想運動但找不到伴的大學生',f1:'依運動項目與時段揪團',f2:'場地空位即時查詢',f3:'運動紀錄與統計',pricing:'免費使用，進階版每月 NT$39',style:'科技未來感',color:'墨黑配金色',u1:'校際友誼賽',u2:'私人教練媒合',u3:'運動穿戴裝置同步'}
   ];
   var TIPS = {
-    Copilot:'💡 <b>Copilot 小撇步</b>：點 VS Code 上方的 <b>Copilot 圖示</b>打開 Copilot Chat（快捷鍵：Ctrl+Alt+I，Mac：⌃⌘I）→ Chat 上方選 <b>Agent</b> 模式 → 貼上咒語送出 → 看完變更按 <b>Keep（保留）</b> → 在左側 index.html 上按右鍵「Reveal in File Explorer（在檔案總管中顯示）」，再雙擊用瀏覽器打開（有裝 Live Preview 擴充套件也可以按右鍵「Show Preview」）。滿意後到「原始檔控制」<b>Commit</b>，再按 <b>Sync Changes</b> 推送到 GitHub。',
-    Claude:'💡 <b>Claude 小撇步</b>：貼上咒語送出後，程式碼會出現在右側的 <b>Artifacts</b> 視窗，可以直接預覽網頁；點右上角的「下載」按鈕，把 index.html 存到你的 repo 資料夾（覆蓋舊檔），再用 VS Code 的原始檔控制 Commit ＋ Sync。',
-    ChatGPT:'💡 <b>ChatGPT 小撇步</b>：可以先開啟 <b>Canvas</b>（畫布）功能再送出咒語，就能在右側預覽網頁；也可以把程式碼複製到 VS Code，貼進 repo 資料夾裡的 index.html 存檔，再 Commit ＋ Sync。',
-    Gemini:'💡 <b>Gemini 小撇步</b>：在輸入框選擇 <b>Canvas</b> 再送出咒語，就能在右側預覽網頁；完成後複製程式碼，貼進 VS Code 裡 repo 資料夾的 index.html 存檔，再 Commit ＋ Sync。'
+    Copilot:'<b>Copilot 操作步驟</b>：點 VS Code 上方的 <b>Copilot 圖示</b>打開 Copilot Chat（快捷鍵：Ctrl+Alt+I，Mac：⌃⌘I）→ Chat 上方選 <b>Agent</b> 模式 → 貼上提示詞送出 → 看完變更按 <b>Keep（保留）</b> → 在左側 index.html 上按右鍵「Reveal in File Explorer（在檔案總管中顯示）」，再雙擊用瀏覽器打開（有裝 Live Preview 擴充套件也可以按右鍵「Show Preview」）。滿意後到「原始檔控制」<b>Commit</b>，再按 <b>Sync Changes</b> 推送到 GitHub。',
+    Claude:'<b>Claude 操作步驟</b>：貼上提示詞送出後，程式碼會出現在右側的 <b>Artifacts</b> 視窗，可以直接預覽網頁；點右上角的「下載」按鈕，把 index.html 存到你的 repo 資料夾（覆蓋舊檔），再用 VS Code 的原始檔控制 Commit ＋ Sync。',
+    ChatGPT:'<b>ChatGPT 操作步驟</b>：可以先開啟 <b>Canvas</b>（畫布）功能再送出提示詞，就能在右側預覽網頁；也可以把程式碼複製到 VS Code，貼進 repo 資料夾裡的 index.html 存檔，再 Commit ＋ Sync。',
+    Gemini:'<b>Gemini 操作步驟</b>：在輸入框選擇 <b>Canvas</b> 再送出提示詞，就能在右側預覽網頁；完成後複製程式碼，貼進 VS Code 裡 repo 資料夾的 index.html 存檔，再 Commit ＋ Sync。'
   };
-  var W2TIP = '💡 <b>第 2 週小撇步</b>：送出前，把你第 1 週的 index.html <b>整份</b>貼在咒語下面。AI 回傳新版後，在 VS Code 覆蓋 repo 資料夾裡的 index.html，再到「原始檔控制」Commit ＋ Sync 推送到 GitHub，Netlify 會自動重新部署，表單才會在 Netlify 後台「Forms」出現喔！';
-  var W2TIP_CP = '💡 <b>第 2 週小撇步</b>：在 Copilot Chat（<b>Agent</b> 模式）貼上咒語送出，看完變更按 <b>Keep（保留）</b>。接著到左側「原始檔控制」寫一句說明按 <b>Commit</b>，再按 <b>Sync Changes</b> 推送到 GitHub，Netlify 會自動重新部署，表單才會在 Netlify 後台「Forms」出現喔！';
+  var W2TIP = '<b>第 2 週操作步驟</b>：送出前，把你第 1 週的 index.html <b>整份</b>貼在提示詞下面。AI 回傳新版後，在 VS Code 覆蓋 repo 資料夾裡的 index.html，再到「原始檔控制」Commit ＋ Sync 推送到 GitHub，Netlify 自動重新部署後，Netlify 會在建置時偵測表單，表單才會出現在後台「Forms」頁面。';
+  var W2TIP_CP = '<b>第 2 週操作步驟</b>：在 Copilot Chat（<b>Agent</b> 模式）貼上提示詞送出，看完變更按 <b>Keep（保留）</b>。接著到左側「原始檔控制」寫一句說明按 <b>Commit</b>，再按 <b>Sync Changes</b> 推送到 GitHub，Netlify 自動重新部署後，Netlify 會在建置時偵測表單，表單才會出現在後台「Forms」頁面。若後台未出現表單，請確認已在 Forms 頁面啟用表單偵測（Form detection）。';
   var NO_GIT = '改完後請不要幫我執行 git 指令，我會自己用 VS Code 的原始檔控制存檔。';
 
   function blank(){
@@ -307,7 +307,7 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     L.push('【技術要求（很重要，請務必遵守）】');
     L.push('1. 所有 HTML、CSS、JavaScript 都寫在同一個 index.html 檔案裡。');
     L.push('2. 不要使用任何框架或外部函式庫（不要 React、Vue、Tailwind、Bootstrap、jQuery）。');
-    L.push('3. 不要使用任何外部圖片或圖片網址，圖示與插圖請用 emoji 或 inline SVG。');
+    L.push('3. 不要使用任何外部圖片或圖片網址；不要使用 emoji，圖示請用內嵌 SVG（inline SVG，線條風格一致、stroke 使用 currentColor）。');
     L.push('4. 要有 RWD 響應式設計，手機上也要好看好用（不能出現左右捲動）。');
     L.push('5. 網頁上所有文字都使用繁體中文（台灣用語）。');
     L.push('6. <head> 裡一定要有 <meta charset="UTF-8"> 和 <meta name="viewport" content="width=device-width, initial-scale=1.0">。');
@@ -344,18 +344,18 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     L.push('   - headers：{ "Content-Type": "application/x-www-form-urlencoded" }');
     L.push('   - body：new URLSearchParams(new FormData(form)).toString()');
     L.push('2. 送出成功後：把使用者的姓名存進 localStorage，然後「在原本表單的位置」把表單替換成會員儀表板，顯示：');
-    L.push('   「🎉 歡迎回來，[名字]！這是您的會員儀表板，建置中…」');
+    L.push('   「歡迎回來，[名字]。這是您的會員儀表板，建置中…」');
     L.push('   下面放 3 張「即將推出（Coming soon）」卡片，內容分別是：');
     L.push('   1. ' + v(S.u1, TBD));
     L.push('   2. ' + v(S.u2, TBD));
     L.push('   3. ' + v(S.u3, TBD));
     L.push('3. 重新整理頁面時，如果 localStorage 裡已經有姓名，就直接顯示儀表板，不用再填表單。');
     L.push('4. 儀表板要有一個「登出」按鈕，按下後清除 localStorage，並重新顯示表單。');
-    L.push('5. 如果送出失敗，要顯示友善的中文錯誤訊息（例如：「哎呀，送出失敗了，請稍後再試一次 🙏」），不要讓畫面壞掉。');
+    L.push('5. 如果送出失敗，要顯示清楚的中文錯誤訊息（例如：「送出失敗，請確認網路連線後再試一次。」），不要讓畫面壞掉。');
     L.push('');
     L.push('【其他要求】');
     L.push('1. 程式碼請加上繁體中文註解，讓初學者看得懂。');
-    L.push('2. 表單與儀表板的樣式要和原本網站的風格一致，手機上也要好看。');
+    L.push('2. 表單與儀表板的樣式要和原本網站的風格一致，手機上也要好看；不要使用 emoji，圖示請用內嵌 SVG。');
     L.push('3. 網站其他部分請保持不變，不要刪改原本的內容。');
     if(isCp()){
       L.push('4. 請直接修改 index.html 檔案，不要只在聊天視窗貼程式碼。');
@@ -373,27 +373,26 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
   function health(){
     var items;
     if(S.mode==='w2'){
-      items = [[S.name,'先幫產品取個名字吧！✨'],[S.u1,'寫下第一個即將推出的功能 🚀'],[S.u2,'再想一個即將推出的功能 💡'],[S.u3,'再補一個功能就滿分囉！']];
+      items = [[S.name,'填寫產品名稱。'],[S.u1,'填寫第 1 個即將推出的功能。'],[S.u2,'填寫第 2 個即將推出的功能。'],[S.u3,'填寫第 3 個即將推出的功能。']];
     }else{
       items = [
-        [S.name,'先幫產品取個響亮的名字吧！✨'],
-        [S.pitch,'用一句話介紹你的產品，AI 會更懂你 💬'],
-        [S.audience,'寫下目標客群，文案會更打中人心 🎯'],
-        [S.f1,'寫下第一個核心功能 🧩'],[S.f2,'再寫一個核心功能 🧩'],[S.f3,'再補一個功能就滿分囉！'],
-        [S.pricing,'想想看怎麼收費？免費也是一種選擇 💰'],
-        [S.style==='自訂'?S.styleCustom:S.style,'描述一下你想要的風格 🎨'],
-        [S.color==='自訂'?S.colorCustom:S.color,'寫下你想要的顏色 🖌️'],
-        [S.sections.length>=3?'ok':'','至少勾選 3 個區塊，頁面才豐富喔 🧱']
+        [S.name,'填寫產品名稱。'],
+        [S.pitch,'以一句話說明產品為誰解決什麼問題，這是文案的核心。'],
+        [S.audience,'描述目標客群，AI 會據此調整用語與訴求。'],
+        [S.f1,'填寫第 1 個核心功能。'],[S.f2,'填寫第 2 個核心功能。'],[S.f3,'填寫第 3 個核心功能。'],
+        [S.pricing,'說明收費方式（免費亦可），價格區塊才有具體內容。'],
+        [S.style==='自訂'?S.styleCustom:S.style,'描述想要的視覺風格。'],
+        [S.color==='自訂'?S.colorCustom:S.color,'描述想要的主色調。'],
+        [S.sections.length>=3?'ok':'','至少勾選 3 個頁面區塊。']
       ];
     }
     var done = items.filter(function(x){ return (x[0]||'').trim(); }).length;
     var pct = Math.round(done/items.length*100);
     var miss = items.filter(function(x){ return !(x[0]||'').trim(); });
     var msg;
-    if(pct===100) msg='🏆 滿分咒語！快複製貼給 AI 吧！';
-    else if(miss.length===1) msg=miss[0][1];
-    else if(pct===0) msg='🌱 從產品名稱開始吧，或按「🎲 給我一個範例」先玩玩看！';
-    else msg=(pct>=60?'👍 很棒，快完成了！':'🙌 好的開始！')+'下一步：'+miss[0][1];
+    if(pct===100) msg='所有欄位皆已填寫，可以複製提示詞。';
+    else if(pct===0) msg='請從產品名稱開始填寫，或點選「填入範例」參考完整內容。';
+    else msg='尚有 '+miss.length+' 項未填。下一步：'+miss[0][1];
     return {pct:pct,msg:msg};
   }
 
@@ -431,11 +430,11 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     var i; do{ i=Math.floor(Math.random()*PRESETS.length); }while(i===lastPreset && PRESETS.length>1);
     lastPreset=i; var p=PRESETS[i];
     for(var k in p) S[k]=p[k];
-    syncUI(); toast('🎲 已填入範例：'+p.name+'（可以自由修改喔）');
+    syncUI(); toast('已填入範例：'+p.name+'（可自由修改）');
   });
   $('#resetBtn').addEventListener('click', function(){
     if(!confirm('確定要清空所有欄位嗎？')) return;
-    var m=S.mode, a=S.ai; S=blank(); S.mode=m; S.ai=a; syncUI(); toast('🧹 已清空，重新開始吧！');
+    var m=S.mode, a=S.ai; S=blank(); S.mode=m; S.ai=a; syncUI(); toast('已清空所有欄位。');
   });
 
   var tt;
@@ -451,8 +450,8 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
   }
   $('#copyBtn').addEventListener('click', function(){
     var text=$('#out').textContent;
-    var done=function(){ toast(isCp()?'✅ 咒語已複製！到 VS Code 的 Copilot Chat（Agent 模式）貼上送出吧 🚀':(S.mode==='w2'?'✅ 已複製！記得在後面貼上你的 index.html 喔':'✅ 咒語已複製！快去貼給 '+S.ai+' 吧 🚀')); };
-    var fail=function(){ if(fallbackCopy(text)) done(); else toast('⚠️ 複製失敗，請手動選取文字複製'); };
+    var done=function(){ toast(isCp()?'已複製。請貼到 VS Code 的 Copilot Chat（Agent 模式）後送出。':(S.mode==='w2'?'已複製。請在提示詞後方貼上完整的 index.html 再送出。':'已複製。請貼到 '+S.ai+' 後送出。')); };
+    var fail=function(){ if(fallbackCopy(text)) done(); else toast('複製失敗，請手動選取文字後複製。'); };
     if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(text).then(done, fail); }
     else fail();
   });

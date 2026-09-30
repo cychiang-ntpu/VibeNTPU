@@ -3,112 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vibe 健檢站</title>
-<meta name="description" content="VibeNTPU 健檢站：檢查你的 index.html 完成了哪些任務，收集徽章、領取完課證書。">
+<title>網站自我檢核工具</title>
+<meta name="description" content="VibeNTPU 網站自我檢核工具：在瀏覽器中靜態檢查 index.html 是否符合 Level 1 至 Level 3 的技術要求，並可產生完課證明。">
 <style>
 :root{
-  --teal:#0f766e;--teal-2:#14b8a6;--amber:#f59e0b;--amber-soft:#fef3c7;
-  --bg:#f0fdfa;--card:#ffffff;--text:#0f172a;--muted:#475569;--line:#cbd5e1;
-  --ok:#15803d;--ok-soft:#dcfce7;--warn:#b45309;--warn-soft:#fef3c7;--todo-soft:#f1f5f9;
-  --shadow:0 6px 24px rgba(15,118,110,.12);--radius:16px;
+  --accent:#0f766e;--accent-2:#115e59;--accent-soft:#e6f4f2;
+  --bg:#f6f7f9;--card:#ffffff;--text:#0f172a;--muted:#526071;--line:#d7dde4;--line-2:#e7ebef;
+  --ok:#166534;--ok-soft:#e7f5ec;--ok-line:#b7dfc4;
+  --fail:#b42318;--fail-soft:#fdecea;--fail-line:#f4c1bb;
+  --warn:#92400e;--warn-soft:#fdf3e1;--warn-line:#f0d49c;
+  --bonus:#3730a3;--bonus-soft:#eef0fd;--bonus-line:#c9cdf5;
+  --shadow:0 1px 2px rgba(15,23,42,.05),0 4px 16px rgba(15,23,42,.05);--radius:10px;
 }
 @media (prefers-color-scheme:dark){
   :root{
-    --teal:#2dd4bf;--teal-2:#14b8a6;--amber:#fbbf24;--amber-soft:#3b2a07;
-    --bg:#0b1716;--card:#12211f;--text:#e2e8f0;--muted:#94a3b8;--line:#2a3b39;
-    --ok:#4ade80;--ok-soft:#10301d;--warn:#fbbf24;--warn-soft:#33260a;--todo-soft:#1a2a28;
-    --shadow:0 6px 24px rgba(0,0,0,.4);
+    --accent:#5eead4;--accent-2:#2dd4bf;--accent-soft:#0f2a28;
+    --bg:#0d1117;--card:#151b23;--text:#e6edf3;--muted:#9aa7b4;--line:#2c3540;--line-2:#222a33;
+    --ok:#6ee7a0;--ok-soft:#10261a;--ok-line:#1f4d33;
+    --fail:#fda4a0;--fail-soft:#2d1414;--fail-line:#5c2521;
+    --warn:#fcd34d;--warn-soft:#2b2110;--warn-line:#5a4417;
+    --bonus:#b4b9fb;--bonus-soft:#1b1d38;--bonus-line:#363a75;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
   }
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,"Segoe UI","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;overflow-x:hidden}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em}
 .wrap{max-width:920px;margin:0 auto;padding:0 16px}
-header.hero{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;padding:36px 0 28px}
-.hero h1{margin:0;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.25}
-.hero p{margin:.5rem 0 0;opacity:.95}
-.privacy{display:inline-block;margin-top:14px;background:rgba(255,255,255,.18);border-radius:999px;padding:6px 14px;font-size:.9rem}
+header.top{background:var(--card);border-bottom:1px solid var(--line);padding:28px 0 22px}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+.top h1{margin:4px 0 0;font-size:clamp(1.6rem,4.6vw,2.1rem);line-height:1.3}
+.top p{margin:.5rem 0 0;color:var(--muted);max-width:44em}
+.privacy{display:inline-flex;align-items:center;gap:8px;margin-top:14px;border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:.85rem;color:var(--muted);background:var(--bg)}
+.privacy svg{flex:none;color:var(--accent)}
 main{padding:24px 0 48px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:20px}
-h2{font-size:1.25rem;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:20px}
+h2{font-size:1.15rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+h2 .no{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--card);font-size:.85rem;flex:none}
 .muted{color:var(--muted)}
-.drop{display:block;border:2px dashed var(--teal-2);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;transition:background .2s,border-color .2s}
-.drop:hover,.drop.over{background:color-mix(in srgb,var(--teal-2) 12%,transparent)}
-.drop:focus-within{outline:3px solid var(--amber);outline-offset:3px}
-.drop .big{font-size:2.2rem;display:block}
+.drop{display:block;border:1.5px dashed var(--line);border-radius:8px;padding:24px 16px;text-align:center;cursor:pointer;transition:background .2s,border-color .2s;background:var(--bg)}
+.drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop:focus-within{outline:3px solid var(--accent);outline-offset:3px}
+.drop svg{display:block;margin:0 auto 8px;color:var(--accent)}
 .drop input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
-.or{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:.9rem}
+.or{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:.85rem}
 .or::before,.or::after{content:"";flex:1;border-top:1px solid var(--line)}
-label.lbl{display:block;font-weight:600;margin-bottom:6px}
-textarea,input[type=text],input[type=url]{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+label.lbl{display:block;font-weight:600;margin-bottom:6px;font-size:.95rem}
+textarea,input[type=text],input[type=url]{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 12px}
 textarea{min-height:140px;font-family:ui-monospace,Consolas,monospace;font-size:.85rem;resize:vertical}
-textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:2px}
 .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center}
-.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;background:var(--teal);color:#fff}
-@media (prefers-color-scheme:dark){.btn{color:#062522}}
-.btn.alt{background:transparent;color:var(--teal);border:2px solid var(--teal)}
-.btn.amber{background:var(--amber);color:#1f1300}
-.btn.sm{padding:4px 12px;font-size:.8rem}
-.fname{font-size:.9rem;color:var(--muted);word-break:break-all}
-.xpbox{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-.xpnum{font-size:1.6rem;font-weight:800;color:var(--teal)}
-.bar{height:16px;background:var(--todo-soft);border-radius:999px;overflow:hidden;margin-top:8px;border:1px solid var(--line)}
-.bar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal-2),var(--amber));transition:width .8s ease}
-.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-.badge{border:2px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center;filter:grayscale(1);opacity:.6;transition:all .4s}
-.badge .ic{font-size:2.2rem;display:block}
-.badge b{display:block}
-.badge small{color:var(--muted)}
-.badge.on{filter:none;opacity:1;border-color:var(--amber);background:var(--amber-soft);transform:translateY(-2px)}
-.badge.on small{color:var(--text)}
-.lvl{margin-top:18px}
-.lvl h3{margin:0 0 8px;font-size:1.05rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.pill{font-size:.75rem;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--todo-soft);color:var(--muted)}
-.pill.on{background:var(--ok-soft);color:var(--ok)}
-ul.quests{list-style:none;margin:0;padding:0}
-.q{display:flex;gap:10px;padding:10px 12px;border-radius:12px;margin-bottom:6px;background:var(--todo-soft)}
-.q.pass{background:var(--ok-soft)}
-.q.warn{background:var(--warn-soft)}
-.q .m{font-size:1.2rem;line-height:1.4;flex:none}
-.q .body{min-width:0;flex:1}
-.q .t{font-weight:600}
-.q .tag{font-size:.72rem;font-weight:700;border-radius:6px;padding:1px 6px;margin-left:6px;background:var(--card);color:var(--muted);border:1px solid var(--line)}
-.q .id{font-family:ui-monospace,Consolas,monospace;font-size:.72rem;color:var(--muted);margin-left:6px}
-.q .hint{margin:4px 0 0;font-size:.9rem;overflow-wrap:anywhere}
-.q .enc{margin:2px 0 0;font-size:.8rem;color:var(--warn)}
-.celebrate{text-align:center;background:linear-gradient(135deg,var(--amber-soft),color-mix(in srgb,var(--teal-2) 18%,var(--card)))}
-.celebrate .big{font-size:3rem}
-.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
-.confetti span{position:absolute;top:-40px;font-size:1.6rem;animation:fall linear forwards}
-@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
-@media (prefers-reduced-motion:reduce){.confetti{display:none}.bar>span,.badge{transition:none}}
+.btn{font:inherit;font-weight:600;font-size:.95rem;border:1px solid var(--accent);border-radius:6px;padding:8px 18px;cursor:pointer;background:var(--accent);color:#fff}
+@media (prefers-color-scheme:dark){.btn{color:#04201d}}
+.btn:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn.alt{background:transparent;color:var(--accent)}
+.btn.alt:hover{background:var(--accent-soft)}
+.btn.sm{padding:3px 10px;font-size:.8rem}
+.fname{display:block;font-size:.85rem;color:var(--muted);word-break:break-all;margin-top:6px}
+/* 摘要 */
+.sum{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.sum .big{font-size:1.05rem;font-weight:700}
+.sum .big b{font-size:1.5rem;color:var(--accent);font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--line-2);border-radius:4px;overflow:hidden;margin-top:10px}
+.bar>span{display:block;height:100%;width:0;background:var(--accent);transition:width .6s ease}
+.overview{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.lv-card{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--bg)}
+.lv-card .k{font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--muted)}
+.lv-card b{display:block;margin:2px 0 6px}
+.lv-card.done{border-color:var(--ok-line);background:var(--ok-soft)}
+/* 狀態標記 */
+.st{display:inline-block;min-width:4.2em;text-align:center;font-size:.75rem;font-weight:700;line-height:1.5;border-radius:4px;padding:2px 8px;border:1px solid;white-space:nowrap}
+.st.pass{color:var(--ok);background:var(--ok-soft);border-color:var(--ok-line)}
+.st.fail{color:var(--fail);background:var(--fail-soft);border-color:var(--fail-line)}
+.st.warn{color:var(--warn);background:var(--warn-soft);border-color:var(--warn-line)}
+.st.bonus{color:var(--bonus);background:var(--bonus-soft);border-color:var(--bonus-line)}
+.st.todo{color:var(--muted);background:var(--card);border-color:var(--line)}
+.lvl{margin-top:24px}
+.lvl h3{margin:0;font-size:1rem;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.lvl .desc{margin:2px 0 10px;font-size:.88rem}
+ul.checks{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.ck{display:flex;gap:12px;padding:10px 14px;border-top:1px solid var(--line-2);background:var(--card)}
+.ck:first-child{border-top:0}
+.ck.fail{box-shadow:inset 3px 0 0 var(--fail)}
+.ck.warn{box-shadow:inset 3px 0 0 var(--warn)}
+.ck.bonus{box-shadow:inset 3px 0 0 var(--bonus)}
+.ck .m{flex:none;padding-top:1px}
+.ck .body{min-width:0;flex:1}
+.ck .t{font-weight:600;font-size:.95rem}
+.ck .kind{font-size:.72rem;font-weight:600;color:var(--muted);margin-left:6px}
+.ck .id{font-family:ui-monospace,Consolas,monospace;font-size:.72rem;color:var(--muted);margin-left:6px}
+.ck .hint{margin:4px 0 0;font-size:.88rem;color:var(--muted);overflow-wrap:anywhere}
+.ck .ask{margin:8px 0 0;padding:8px 10px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 6px 6px 0;font-size:.88rem;overflow-wrap:anywhere}
+.ck .ask .lab{display:block;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:2px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:.82rem;margin-top:18px}
+.done-note{border-color:var(--ok-line);background:var(--ok-soft)}
+.done-note h2{color:var(--ok)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid2 .full{grid-column:1/-1}
-/* 證書 */
-#cert{margin-top:18px;background:#fffdf5;color:#1f2937;border:10px double #0f766e;border-radius:10px;padding:32px 24px;text-align:center;position:relative}
-#cert .seal{font-size:3rem}
-#cert h4{margin:4px 0 0;font-size:clamp(1.4rem,5vw,2rem);color:#0f766e;letter-spacing:.1em}
-#cert .sub{color:#92400e;font-weight:700;letter-spacing:.2em;font-size:.85rem}
-#cert .who{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;margin:18px 0 4px;border-bottom:2px solid #f59e0b;display:inline-block;padding:0 16px;min-width:50%}
-#cert p{margin:10px 0}
-#cert .prod{font-weight:800;color:#0f766e}
-#cert .url{font-family:ui-monospace,Consolas,monospace;font-size:.9rem;overflow-wrap:anywhere}
-#cert .bdg{font-size:1.05rem;margin:14px 0}
-#cert .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.8rem;color:#475569;margin-top:22px;border-top:1px dashed #94a3b8;padding-top:10px}
-footer{text-align:center;color:var(--muted);font-size:.85rem;padding:0 16px 32px}
+/* 完課證明 */
+#cert{margin-top:20px;background:#fdfcf8;color:#1f2937;border:1px solid #9ca3af;padding:10px;font-family:"Noto Serif TC","Source Han Serif TC","PMingLiU",serif}
+#cert .in{border:2px solid #134e4a;outline:1px solid #134e4a;outline-offset:-7px;padding:36px 28px 26px;text-align:center}
+#cert .org{font-size:.85rem;letter-spacing:.25em;color:#374151}
+#cert h4{margin:10px 0 2px;font-size:clamp(1.6rem,5.4vw,2.3rem);letter-spacing:.5em;text-indent:.5em;color:#134e4a;font-weight:700}
+#cert .en{font-family:Georgia,"Times New Roman",serif;font-size:.8rem;letter-spacing:.3em;color:#6b7280}
+#cert .rule{width:120px;height:1px;background:#134e4a;margin:16px auto}
+#cert .lead{margin:12px 0 0;font-size:1rem}
+#cert .who{font-size:clamp(1.5rem,5.6vw,2.1rem);font-weight:700;margin:6px auto 4px;border-bottom:1px solid #374151;display:inline-block;padding:0 24px;min-width:50%}
+#cert p{margin:10px 0;line-height:1.9}
+#cert .prod{font-weight:700;color:#134e4a}
+#cert .url{font-family:ui-monospace,Consolas,monospace;font-size:.85rem;overflow-wrap:anywhere;color:#374151}
+#cert table{margin:14px auto 0;border-collapse:collapse;font-size:.88rem;font-family:system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+#cert td{border:1px solid #cbd5e1;padding:4px 12px;text-align:left}
+#cert td:last-child{color:#166534;font-weight:600;text-align:center}
+#cert .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.78rem;color:#4b5563;margin-top:26px;border-top:1px solid #d1d5db;padding-top:10px;font-family:system-ui,sans-serif}
+#cert .note{font-size:.72rem;color:#6b7280;margin:8px 0 0;font-family:system-ui,sans-serif}
+footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 32px}
 [hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.bar>span{transition:none}}
 @media (max-width:560px){
-  .badges{grid-template-columns:1fr}
-  .badge{display:flex;align-items:center;gap:12px;text-align:left}
-  .badge .ic{font-size:1.8rem}
+  .overview{grid-template-columns:1fr}
   .grid2{grid-template-columns:1fr}
-  #cert{padding:24px 12px;border-width:7px}
+  .card{padding:18px 14px}
+  .ck{padding:10px 12px;gap:10px}
+  #cert .in{padding:26px 12px 18px}
+  #cert h4{letter-spacing:.3em;text-indent:.3em}
 }
 @media print{
   @page{size:A4 landscape;margin:12mm}
   body{background:#fff}
-  header,footer,.confetti,main>section:not(#certbox),#certbox>:not(#cert){display:none!important}
+  header,footer,main>section:not(#certbox),#certbox>:not(#cert){display:none!important}
   main,.wrap{padding:0;max-width:none}
   #certbox{border:0;box-shadow:none;padding:0;margin:0;background:none}
   #cert{margin:0;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -116,108 +141,120 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:0 16px 32px
 </style>
 </head>
 <body>
-<header class="hero">
+<header class="top">
   <div class="wrap">
-    <h1>🩺 Vibe 健檢站</h1>
-    <p>把你用 AI 做的 <code>index.html</code> 丟進來，看看完成了哪些任務、收集幾枚徽章！</p>
-    <span class="privacy">🔒 本工具只在你的瀏覽器裡檢查，檔案不會上傳到任何地方</span>
+    <div class="eyebrow">VibeNTPU · Self-Check</div>
+    <h1>網站自我檢核工具</h1>
+    <p>對 <code>index.html</code> 進行靜態檢查，逐項確認是否符合 Level 1 部署基本要求、Level 2 表單串接與 Level 3 狀態保存的技術條件。未通過的項目會附上原因說明與可直接交給 AI 助理的修改指示。</p>
+    <span class="privacy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>檢查完全在瀏覽器內進行，檔案不會上傳；程式只解析 HTML，不會執行其中的 JavaScript。</span>
   </div>
 </header>
 
 <main class="wrap">
   <section class="card" aria-labelledby="in-h">
-    <h2 id="in-h">① 選擇你的 index.html</h2>
+    <h2 id="in-h"><span class="no">1</span>選擇 index.html</h2>
     <label class="drop" id="drop">
-      <span class="big" aria-hidden="true">📂</span>
-      <strong>點這裡選擇檔案</strong>，或把 index.html 拖曳到這裡
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6"/><path d="m9 15 3-3 3 3"/></svg>
+      <strong>點選以選擇檔案</strong>，或將 index.html 拖曳至此
       <input type="file" id="file" accept=".html,.htm,text/html">
       <span class="fname" id="fname" aria-live="polite"></span>
     </label>
-    <div class="or">或是</div>
-    <label class="lbl" for="code">直接貼上程式碼（在 GitHub 打開 index.html → 全選複製）</label>
+    <div class="or">或</div>
+    <label class="lbl" for="code">直接貼上程式碼（於 VS Code 或 GitHub 開啟 index.html，全選後複製）</label>
     <textarea id="code" spellcheck="false" placeholder="<!DOCTYPE html>&#10;<html lang=&quot;zh-Hant&quot;>&#10;…"></textarea>
     <div class="row">
-      <button class="btn" id="run" type="button">🔍 開始健檢</button>
+      <button class="btn" id="run" type="button">開始檢核</button>
       <button class="btn alt" id="clear" type="button">清除</button>
     </div>
   </section>
 
   <section class="card" id="result" hidden aria-labelledby="res-h" aria-live="polite">
-    <div class="xpbox">
-      <h2 id="res-h">② 任務日誌</h2>
-      <div><span class="xpnum" id="xp">0</span> <span class="muted">/ <span id="xpmax">0</span> XP</span></div>
+    <h2 id="res-h"><span class="no">2</span>檢核結果</h2>
+    <div class="sum">
+      <div class="big" id="sumText">必要項目 <b id="reqPass">0</b> / <span id="reqTotal">0</span> 通過</div>
+      <div class="muted" id="sumNote" style="font-size:.9rem"></div>
     </div>
-    <div class="bar" role="progressbar" aria-label="經驗值" aria-valuemin="0" id="barwrap"><span id="bar"></span></div>
-    <p class="muted" id="rank" style="margin:.5rem 0 0"></p>
-    <div class="badges" id="badges"></div>
+    <div class="bar" role="progressbar" aria-label="必要項目通過比例" aria-valuemin="0" id="barwrap"><span id="bar"></span></div>
+    <div class="overview" id="overview"></div>
     <div id="levels"></div>
-    <p class="muted" style="font-size:.85rem;margin-top:14px">圖例：✅ 完成　⬜ 未完成（必要）　⚠️ 建議改善（不影響徽章）　⭐ 加分題　｜必要 +10 XP、建議/加分 +5 XP</p>
+    <div class="legend muted">
+      <span><span class="st pass">通過</span> 已符合</span>
+      <span><span class="st fail">未通過</span> 必要項目，影響該 Level 是否完成</span>
+      <span><span class="st warn">建議</span> 建議改善，不影響結果</span>
+      <span><span class="st bonus">加分</span> 進階項目，不影響結果</span>
+    </div>
   </section>
 
-  <section class="card celebrate" id="party" hidden>
-    <div class="big" aria-hidden="true">🎓🎉</div>
-    <h2>三枚徽章全部點亮！你已經是會做 SaaS 的人了！</h2>
-    <p>從一張白紙到上線網站＋會員系統，這一路的每個錯誤都變成了你的經驗值。填下面的資料，領取你的完課證書吧！</p>
+  <section class="card done-note" id="party" hidden>
+    <h2>Level 1 至 Level 3 必要項目全部通過</h2>
+    <p style="margin:0">此結果代表程式碼已具備部署、表單串接與狀態保存所需的寫法。靜態檢查無法確認實際運作，請再於已部署的 Netlify 網址上實際送出表單、確認後台收到資料，並重新整理頁面確認會員狀態仍保留。確認無誤後，可於下方產生完課證明。</p>
   </section>
 
   <section class="card" id="certbox" hidden aria-labelledby="cert-h">
-    <h2 id="cert-h">③ 🎓 VibeNTPU 完課證書</h2>
+    <h2 id="cert-h"><span class="no">3</span>完課證明</h2>
     <div class="grid2">
-      <div><label class="lbl" for="cName">你的名字</label><input type="text" id="cName" autocomplete="name" placeholder="王小明"></div>
+      <div><label class="lbl" for="cName">姓名</label><input type="text" id="cName" autocomplete="name" placeholder="王小明"></div>
       <div><label class="lbl" for="cProd">產品名稱</label><input type="text" id="cProd" placeholder="三峽租屋雷達"></div>
       <div class="full"><label class="lbl" for="cUrl">Netlify 網址</label><input type="url" id="cUrl" inputmode="url" placeholder="https://your-site.netlify.app"></div>
     </div>
-    <div class="row"><button class="btn amber" id="print" type="button">🖨️ 列印 / 存成 PDF</button><span class="muted" style="font-size:.85rem">列印時只會印出證書；選「另存為 PDF」就能存檔分享。</span></div>
-    <div id="cert">
-      <div class="seal" aria-hidden="true">🎓</div>
-      <div class="sub">VIBE CODING · NTPU</div>
-      <h4>VibeNTPU 完課證書</h4>
-      <div class="who" id="oName">你的名字</div>
-      <p>完成國立臺北大學通識課程「Vibe Coding」全部任務，<br>親手打造並上線 SaaS 產品</p>
+    <div class="row"><button class="btn" id="print" type="button">列印／另存為 PDF</button><span class="muted" style="font-size:.85rem">列印時只會輸出完課證明；於列印對話框選擇「另存為 PDF」即可存檔。</span></div>
+    <div id="cert"><div class="in">
+      <div class="org">國立臺北大學　通識課程單元</div>
+      <h4>完課證明</h4>
+      <div class="en">CERTIFICATE OF COMPLETION</div>
+      <div class="rule"></div>
+      <p class="lead">茲證明</p>
+      <div class="who" id="oName">姓名</div>
+      <p>已完成「Vibe Coding × SaaS 創業實戰」課程單元之實作要求，<br>獨立建置並部署下列網站產品：</p>
       <p class="prod" id="oProd">產品名稱</p>
       <p class="url" id="oUrl">https://your-site.netlify.app</p>
-      <div class="bdg">🏪 開店徽章　📦 收單徽章　💾 記憶徽章</div>
-      <div class="foot"><span id="oXp"></span><span id="oDate"></span><span id="oNo"></span></div>
-    </div>
+      <table aria-label="檢核結果">
+        <tr><td>Level 1 部署基本要求</td><td id="oL1">通過</td></tr>
+        <tr><td>Level 2 表單串接</td><td id="oL2">通過</td></tr>
+        <tr><td>Level 3 狀態保存</td><td id="oL3">通過</td></tr>
+      </table>
+      <div class="foot"><span id="oReq"></span><span id="oDate"></span><span id="oNo"></span></div>
+      <p class="note">本證明依網站自我檢核工具之靜態檢查結果產生，作為學習歷程紀錄；課程評量以實際網站為準。</p>
+    </div></div>
   </section>
 </main>
-<footer>VibeNTPU · Vibe 健檢站 · 檢查結果僅供學習參考，老師的評分以實際網站為準</footer>
+<footer>VibeNTPU · 網站自我檢核工具 · 檢核結果僅供學習參考，評量以實際部署之網站為準</footer>
 
 <script>
 (function(){
 'use strict';
 var REQ='required',WARN='warn',BONUS='bonus';
-var XP={required:10,warn:5,bonus:5};
+/* 配分僅用於與 Python 版 --json 的 xp / max_xp 欄位對應，畫面不顯示 */
+var WEIGHT={required:10,warn:5,bonus:5};
 var LEVELS={
-  1:{icon:'🏪',name:'開店徽章',desc:'第 1 週：把店面（形象首頁）開起來'},
-  2:{icon:'📦',name:'收單徽章',desc:'第 2 週：用 Netlify Forms 收早鳥名單'},
-  3:{icon:'💾',name:'記憶徽章',desc:'第 2 週：LocalStorage 記住會員＋AJAX 送出'}
+  1:{name:'部署基本要求',desc:'檢核點 3：可正確顯示於桌機與手機的形象首頁'},
+  2:{name:'表單串接',desc:'檢核點 4：以 Netlify Forms（BaaS）收集早鳥名單'},
+  3:{name:'狀態保存',desc:'檢核點 5：以 LocalStorage 保存會員狀態，並以 fetch 非同步送出表單'}
 };
-/* [id, level, kind, 標題, 失敗提示] —— 與 tools/ci/vibe_check.py 的 CHECKS 保持一致 */
+/* [id, level, kind, 項目名稱, 未通過時的說明] —— 與 tools/ci/vibe_check.py 的 CHECKS 保持一致 */
 var CHECKS=[
-['l1_html',1,REQ,'檔案是 HTML 格式','檔案裡找不到 <html> 或 <!DOCTYPE html>。請確認你選的是 index.html；或請跟 AI 說：「請給我完整的 HTML 檔案，從 <!DOCTYPE html> 開始」'],
-['l1_charset',1,REQ,'設定 UTF-8 編碼（中文不亂碼）','請跟 AI 說：「請在 <head> 加上 <meta charset="UTF-8">」'],
-['l1_viewport',1,REQ,'設定 viewport（手機版 RWD）','請跟 AI 說：「請在 <head> 加上 <meta name="viewport" content="width=device-width, initial-scale=1.0">」'],
-['l1_title',1,REQ,'有網頁標題 <title>','請跟 AI 說：「請在 <head> 加上 <title>，內容是我的產品名稱＋一句話介紹」'],
-['l1_h1',1,REQ,'有大標題 <h1>','請跟 AI 說：「請在主視覺區加上一個 <h1> 大標題，寫出產品最吸引人的一句話」'],
-['l1_cta',1,REQ,'有行動按鈕（CTA）','請跟 AI 說：「請在主視覺區加上一個醒目的行動按鈕（例如『立即加入』），用 <a> 或 <button>」'],
-['l1_style',1,REQ,'有 CSS 樣式（不是陽春白底黑字）','請跟 AI 說：「請用 <style> 幫整個頁面加上配色、字體與排版，全部寫在同一個 index.html 裡」'],
-['l1_media',1,WARN,'有 @media 手機版樣式','請跟 AI 說：「請加上 @media (max-width: 640px) 的手機版樣式，讓手機上也好看」'],
-['l1_img',1,WARN,'沒有引用不存在的圖片檔','你用了相對路徑的圖片（例如 photo.jpg），但 repo 裡可能沒有這個檔案，上線後會破圖。請跟 AI 說：「請把圖片改成 emoji 或 inline SVG，不要引用外部圖片檔」'],
-['l2_form',2,REQ,'有 Netlify 表單（data-netlify="true"）','請跟 AI 說：「請加一個早鳥名單表單，<form> 要有 data-netlify="true" 和 method="POST"」'],
-['l2_form_name',2,REQ,'表單有 name 名稱','請跟 AI 說：「請幫 <form> 加上 name="waitlist"，這是 Netlify 後台收件箱的名字」'],
-['l2_hidden_form_name',2,REQ,'有隱藏欄位 form-name 且值與表單名稱相同','請跟 AI 說：「請在 <form> 裡加上 <input type="hidden" name="form-name" value="（跟表單 name 一樣）">」'],
-['l2_field_names',2,REQ,'每個輸入欄位都有 name','沒有 name 的欄位，Netlify 收不到資料。請跟 AI 說：「請確認表單裡每個 input、select、textarea 都有 name 屬性」'],
-['l2_email',2,WARN,'有 Email 欄位（type="email"）','請跟 AI 說：「請在表單加上 <input type="email" name="email" required>，讓瀏覽器幫忙檢查格式」'],
-['l2_honeypot',2,BONUS,'有防機器人陷阱（honeypot）','加分題！請跟 AI 說：「請在 <form> 加上 netlify-honeypot="bot-field"，並加一個隱藏的 <input name="bot-field">」'],
-['l3_set',3,REQ,'用 localStorage.setItem 存資料','請跟 AI 說：「送出表單成功後，請用 localStorage.setItem 把使用者名字存起來」'],
-['l3_get',3,REQ,'用 localStorage.getItem 讀資料','請跟 AI 說：「打開網頁時，請用 localStorage.getItem 檢查有沒有存過名字，有的話顯示『歡迎回來』儀表板」'],
-['l3_prevent',3,REQ,'用 preventDefault 阻止頁面跳轉','請跟 AI 說：「表單送出時，請先呼叫 event.preventDefault()，不要跳到別的頁面」'],
-['l3_fetch',3,REQ,'用 fetch() 以 AJAX 送出表單','請跟 AI 說：「請用 fetch(\'/\', { method: \'POST\', ... }) 在背景把表單送給 Netlify」'],
-['l3_urlencoded',3,REQ,'送出格式是 application/x-www-form-urlencoded','請跟 AI 說：「fetch 的 headers 請設定 \'Content-Type\': \'application/x-www-form-urlencoded\'，body 用 new URLSearchParams(formData).toString()」'],
-['l3_logout',3,BONUS,'有登出功能（removeItem 或 clear）','加分題！請跟 AI 說：「請在儀表板加一個登出按鈕，按下去用 localStorage.removeItem 清掉資料」']
+["l1_html",1,REQ,"檔案為 HTML 文件","檔案中找不到 <html> 或 <!DOCTYPE html>，請確認選取的是 index.html。請向 AI 說明：「請提供完整的 HTML 檔案，從 <!DOCTYPE html> 開始，不要省略任何段落」"],
+["l1_charset",1,REQ,"宣告 UTF-8 字元編碼","未宣告編碼時，瀏覽器可能以錯誤編碼解讀中文而出現亂碼。請向 AI 說明：「請在 <head> 最前面加上 <meta charset=\"UTF-8\">」"],
+["l1_viewport",1,REQ,"設定 viewport（響應式設計的前提）","缺少 viewport 時，手機瀏覽器會以約 980px 的虛擬寬度縮小顯示整頁。請向 AI 說明：「請在 <head> 加上 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">」"],
+["l1_title",1,REQ,"設定網頁標題 <title>","<title> 會顯示於瀏覽器分頁與搜尋結果，也是分享連結時的預設標題。請向 AI 說明：「請在 <head> 加上 <title>，內容為產品名稱與一句價值主張」"],
+["l1_h1",1,REQ,"設定主標題 <h1>","<h1> 是頁面最重要的標題，影響可讀性、無障礙與搜尋引擎理解。請向 AI 說明：「請在主視覺區加上一個 <h1>，以一句話說明產品為誰解決什麼問題」"],
+["l1_cta",1,REQ,"具備行動呼籲按鈕（Call to Action, CTA）","形象首頁的目的是引導訪客採取下一步行動。請向 AI 說明：「請在主視覺區加上一個明顯的行動按鈕（例如『加入早鳥名單』），使用 <a href> 或 <button>」"],
+["l1_style",1,REQ,"具備 CSS 樣式","未套用樣式的頁面僅有瀏覽器預設排版，難以傳達產品定位。請向 AI 說明：「請以 <style> 為整個頁面設定配色、字體與版面，全部寫在同一個 index.html 中」"],
+["l1_media",1,WARN,"具備 @media 行動版樣式","媒體查詢（media query）可依螢幕寬度調整版面。請向 AI 說明：「請加入 @media (max-width: 640px) 的行動版樣式，讓多欄版面在手機上改為單欄」"],
+["l1_img",1,WARN,"未引用可能不存在的本地圖片","偵測到相對路徑的圖片（例如 photo.jpg）；若 repo 中沒有該檔案，部署後會顯示為破圖。請向 AI 說明：「請將圖片改為內嵌 SVG 或純 CSS 圖形，不要引用 repo 中不存在的圖片檔」"],
+["l2_form",2,REQ,"具備 Netlify 表單（data-netlify=\"true\"）","Netlify 在部署時會掃描 HTML，只有帶此屬性的表單才會被註冊並接收資料。請向 AI 說明：「請加入早鳥名單表單，<form> 需包含 data-netlify=\"true\" 與 method=\"POST\"」"],
+["l2_form_name",2,REQ,"表單具有 name 屬性","表單的 name 即 Netlify 後台 Forms 頁面中的表單名稱。請向 AI 說明：「請為 <form> 加上 name=\"waitlist\"」"],
+["l2_hidden_form_name",2,REQ,"具有隱藏欄位 form-name，且值與表單名稱相同","Netlify 依據送出資料中的 form-name 判斷資料屬於哪一個表單；以 JavaScript 送出時尤其必要。請向 AI 說明：「請在 <form> 內加上 <input type=\"hidden\" name=\"form-name\" value=\"（與表單 name 相同）\">」"],
+["l2_field_names",2,REQ,"每個輸入欄位皆具有 name 屬性","瀏覽器送出表單時只會包含具有 name 的欄位，缺少 name 的欄位資料不會傳到 Netlify。請向 AI 說明：「請確認表單中每個 input、select、textarea 都有 name 屬性」"],
+["l2_email",2,WARN,"具備 Email 欄位（type=\"email\"）","type=\"email\" 可讓瀏覽器在送出前檢查格式，並在手機上顯示適合的鍵盤。請向 AI 說明：「請在表單加上 <input type=\"email\" name=\"email\" required>」"],
+["l2_honeypot",2,BONUS,"具備防垃圾訊息誘捕欄位（honeypot）","誘捕欄位對一般使用者隱藏，自動程式若填寫即被判定為垃圾訊息。請向 AI 說明：「請在 <form> 加上 netlify-honeypot=\"bot-field\"，並加入一個隱藏的 <input name=\"bot-field\">」"],
+["l3_set",3,REQ,"使用 localStorage.setItem 寫入資料","請向 AI 說明：「表單送出成功後，請以 localStorage.setItem 將使用者名稱儲存於瀏覽器」"],
+["l3_get",3,REQ,"使用 localStorage.getItem 讀取資料","請向 AI 說明：「頁面載入時，請以 localStorage.getItem 檢查是否已有儲存的名稱；若有，顯示會員歡迎畫面並隱藏表單」"],
+["l3_prevent",3,REQ,"使用 preventDefault 取消預設送出行為","表單預設送出會讓瀏覽器導向新頁面，導致無法在同一頁更新畫面。請向 AI 說明：「表單送出時，請先呼叫 event.preventDefault()，改由 JavaScript 處理」"],
+["l3_fetch",3,REQ,"使用 fetch() 以非同步方式（AJAX）送出表單","請向 AI 說明：「請以 fetch('/', { method: 'POST', ... }) 在背景將表單資料送至 Netlify，成功後再更新畫面」"],
+["l3_urlencoded",3,REQ,"送出格式為 application/x-www-form-urlencoded","Netlify Forms 接收的是一般表單編碼格式，而非 JSON。請向 AI 說明：「fetch 的 headers 請設定 'Content-Type': 'application/x-www-form-urlencoded'，body 使用 new URLSearchParams(new FormData(form)).toString()」"],
+["l3_logout",3,BONUS,"具備登出功能（removeItem 或 clear）","請向 AI 說明：「請在會員畫面加入登出按鈕，按下後以 localStorage.removeItem 刪除已儲存的資料並重新顯示表單」"]
 ];
-var ENCOURAGE=['還差一步！這是升級的經驗值 💪','卡關是正常的，改完再來一次就好 🌱','每個工程師都修過這個，你也可以 🔧','把提示複製給 AI，下一輪就會變 ✅ 🚀'];
 var SKIP_TYPES={submit:1,button:1,reset:1,image:1};
 var RE={
   html:/<!doctype\s+html|<html[\s>]/i, ext:/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i, media:/@media\b/i,
@@ -229,7 +266,7 @@ function attr(el,n){var v=el.getAttribute(n);return v==null?'':v;}
 function lc(s){return String(s).trim().toLowerCase();}
 function isNetlify(f){return lc(attr(f,'data-netlify'))==='true'||f.hasAttribute('netlify');}
 
-/* 只用 DOMParser 解析，不會執行學生的程式碼 */
+/* 只用 DOMParser 解析，不會執行受檢檔案中的程式碼 */
 function analyze(text){
   var doc=new DOMParser().parseFromString(text,'text/html');
   var $$=function(s,root){return Array.prototype.slice.call((root||doc).querySelectorAll(s));};
@@ -268,7 +305,7 @@ function analyze(text){
 }
 function buildReport(text){
   var res=analyze(text),xp=0,max=0,checks=CHECKS.map(function(c){
-    var ok=!!res[c[0]];max+=XP[c[2]];if(ok)xp+=XP[c[2]];
+    var ok=!!res[c[0]];max+=WEIGHT[c[2]];if(ok)xp+=WEIGHT[c[2]];
     return {id:c[0],level:c[1],kind:c[2],pass:ok,title:c[3],hint:ok?null:c[4]};
   });
   var levels={};
@@ -286,56 +323,64 @@ var $=function(id){return document.getElementById(id);};
 var lastReport=null;
 
 function copyText(s,btn){
-  function done(){var o=btn.textContent;btn.textContent='已複製 ✓';setTimeout(function(){btn.textContent=o;},1500);}
+  function done(){var o=btn.textContent;btn.textContent='已複製';setTimeout(function(){btn.textContent=o;},1500);}
   function fallback(){var ta=el('textarea');ta.value=s;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}ta.remove();}
   if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(s).then(done,fallback);}else fallback();
+}
+function status(c){
+  if(c.pass)return ['pass','通過'];
+  return c.kind===REQ?['fail','未通過']:(c.kind===WARN?['warn','建議']:['bonus','加分']);
 }
 
 function render(rep){
   lastReport=rep;
   $('result').hidden=false;
-  $('xp').textContent=rep.xp;$('xpmax').textContent=rep.max_xp;
-  var pct=Math.round(rep.xp/rep.max_xp*100);
-  $('barwrap').setAttribute('aria-valuemax',rep.max_xp);$('barwrap').setAttribute('aria-valuenow',rep.xp);
+  var req=rep.checks.filter(function(c){return c.kind===REQ;});
+  var rp=req.filter(function(c){return c.pass;}).length;
+  $('reqPass').textContent=rp;$('reqTotal').textContent=req.length;
+  var pct=Math.round(rp/req.length*100);
+  $('barwrap').setAttribute('aria-valuemax',req.length);$('barwrap').setAttribute('aria-valuenow',rp);
   requestAnimationFrame(function(){$('bar').style.width=pct+'%';});
   var nb=[1,2,3].filter(function(l){return rep.levels[l].badge;}).length;
-  $('rank').textContent=['🥚 新手村：先把第一關的任務完成吧！','🐣 開店成功！下一步：讓顧客能留下資料。','🐥 會收單了！再讓網站「記得」會員就完成了。','🦅 全破！你是 Vibe Coding 大師！'][nb]+'（完成度 '+pct+'%）';
+  var reached=0;while(reached<3&&rep.levels[reached+1].badge)reached++;
+  $('sumNote').textContent=reached?('已完成至 Level '+reached+' '+LEVELS[reached].name):'Level 1 尚未完成';
 
-  var bw=$('badges');bw.textContent='';
+  var ov=$('overview');ov.textContent='';
   [1,2,3].forEach(function(lv){
-    var L=LEVELS[lv],s=rep.levels[lv],b=el('div','badge'+(s.badge?' on':''));
-    b.appendChild(el('span','ic',L.icon));
-    var tx=el('div');tx.appendChild(el('b',null,'Level '+lv+' '+L.name));
-    tx.appendChild(el('small',null,s.badge?'🏅 已點亮！':'必要任務 '+s.passed+' / '+s.total));
-    b.appendChild(tx);b.setAttribute('aria-label',L.name+(s.badge?' 已點亮':' 未點亮，'+s.passed+'/'+s.total));
-    bw.appendChild(b);
+    var L=LEVELS[lv],s=rep.levels[lv],b=el('div','lv-card'+(s.badge?' done':''));
+    b.appendChild(el('div','k','LEVEL '+lv));
+    b.appendChild(el('b',null,L.name));
+    b.appendChild(el('span','st '+(s.badge?'pass':'todo'),s.badge?'通過':'必要項目 '+s.passed+'/'+s.total));
+    ov.appendChild(b);
   });
 
-  var lw=$('levels');lw.textContent='';var n=0;
+  var lw=$('levels');lw.textContent='';
   [1,2,3].forEach(function(lv){
     var L=LEVELS[lv],s=rep.levels[lv],sec=el('div','lvl'),h=el('h3');
-    h.appendChild(el('span',null,L.icon+' Level '+lv+'・'+L.name));
-    h.appendChild(el('span','pill'+(s.badge?' on':''),s.badge?'徽章 GET':s.passed+'/'+s.total));
-    sec.appendChild(h);sec.appendChild(el('p','muted',L.desc)).style.margin='-4px 0 8px';
-    var ul=el('ul','quests');
+    h.appendChild(el('span',null,'Level '+lv+' '+L.name));
+    h.appendChild(el('span','st '+(s.badge?'pass':'todo'),s.badge?'通過':'必要項目 '+s.passed+'/'+s.total+' 通過'));
+    sec.appendChild(h);sec.appendChild(el('p','desc muted',L.desc));
+    var ul=el('ul','checks');
     rep.checks.filter(function(c){return c.level===lv;}).forEach(function(c){
-      var cls=c.pass?'pass':(c.kind===WARN?'warn':'');
-      var li=el('li','q '+cls);
-      var mark=c.pass?'✅':(c.kind===WARN?'⚠️':(c.kind===BONUS?'⭐':'⬜'));
-      var m=el('span','m',mark);m.setAttribute('aria-hidden','true');li.appendChild(m);
+      var st=status(c),li=el('li','ck'+(c.pass?'':' '+st[0]));
+      var m=el('span','m');m.appendChild(el('span','st '+st[0],st[1]));li.appendChild(m);
       var body=el('div','body'),t=el('div','t');
-      t.appendChild(el('span','sr',c.pass?'已完成：':(c.kind===REQ?'未完成：':'可改善：')));
       t.appendChild(document.createTextNode(c.title));
-      if(c.kind!==REQ)t.appendChild(el('span','tag',c.kind===WARN?'建議':'加分'));
+      if(c.kind!==REQ)t.appendChild(el('span','kind',c.kind===WARN?'建議項目':'加分項目'));
       t.appendChild(el('span','id',c.id));
       body.appendChild(t);
       if(!c.pass){
-        body.appendChild(el('p','hint','💡 '+c.hint));
-        var mm=c.hint.match(/請跟 AI 說：「([\s\S]+)」/);
-        var row=el('div','row');row.style.marginTop='6px';
-        if(c.kind===REQ)row.appendChild(el('span','enc',ENCOURAGE[n++%ENCOURAGE.length]));
-        if(mm){var cb=el('button','btn alt sm','📋 複製給 AI 的話');cb.type='button';cb.addEventListener('click',function(){copyText(mm[1],cb);});row.appendChild(cb);}
-        body.appendChild(row);
+        var mm=c.hint.match(/請向 AI 說明：「([\s\S]+)」\s*$/);
+        var why=mm?c.hint.slice(0,mm.index).trim():c.hint;
+        if(why)body.appendChild(el('p','hint',why));
+        if(mm){
+          var ask=el('div','ask');ask.appendChild(el('span','lab','請向 AI 說明'));
+          ask.appendChild(document.createTextNode('「'+mm[1]+'」'));
+          var row=el('div','row');row.style.marginTop='6px';
+          var cb=el('button','btn alt sm','複製指示');cb.type='button';cb.setAttribute('aria-label','複製給 AI 的指示：'+c.title);
+          cb.addEventListener('click',function(){copyText(mm[1],cb);});row.appendChild(cb);
+          ask.appendChild(row);body.appendChild(ask);
+        }
       }
       li.appendChild(body);ul.appendChild(li);
     });
@@ -346,44 +391,41 @@ function render(rep){
   $('party').hidden=!all;$('certbox').hidden=!all;
   if(all){
     if(!$('cProd').value&&rep.title)$('cProd').value=rep.title.split(/[｜|—\-:：]/)[0].trim();
-    updateCert();confetti();
+    updateCert();
   }
   $('result').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
-}
-
-function confetti(){
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  var box=el('div','confetti'),E=['🎉','🎊','⭐','🏅','✨','🎓','💚','🧡'];
-  for(var i=0;i<40;i++){var s=el('span',null,E[i%E.length]);s.style.left=Math.random()*100+'%';s.style.animationDuration=(2.2+Math.random()*2)+'s';s.style.animationDelay=Math.random()*.8+'s';box.appendChild(s);}
-  document.body.appendChild(box);setTimeout(function(){box.remove();},5200);
 }
 
 function hash(s){var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36).toUpperCase().slice(-5);}
 function updateCert(){
   var n=$('cName').value.trim(),p=$('cProd').value.trim(),u=$('cUrl').value.trim();
-  $('oName').textContent=n||'你的名字';$('oProd').textContent=p?'《'+p+'》':'產品名稱';
+  $('oName').textContent=n||'姓名';$('oProd').textContent=p?'《'+p+'》':'產品名稱';
   $('oUrl').textContent=u||'https://your-site.netlify.app';
   var d=new Date();
-  $('oDate').textContent='頒發日期：'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日';
-  $('oXp').textContent='⭐ '+(lastReport?lastReport.xp+' / '+lastReport.max_xp:'')+' XP';
-  $('oNo').textContent='證書編號 VIBE-'+d.getFullYear()+'-'+hash(n+'|'+u+'|'+p);
+  $('oDate').textContent='核發日期：'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日';
+  if(lastReport){
+    var req=lastReport.checks.filter(function(c){return c.kind===REQ;});
+    var opt=lastReport.checks.filter(function(c){return c.kind!==REQ;});
+    $('oReq').textContent='必要項目 '+req.filter(function(c){return c.pass;}).length+'/'+req.length+'　建議與加分項目 '+opt.filter(function(c){return c.pass;}).length+'/'+opt.length;
+  }
+  $('oNo').textContent='證明編號 VIBE-'+d.getFullYear()+'-'+hash(n+'|'+u+'|'+p);
 }
 ['cName','cProd','cUrl'].forEach(function(id){$(id).addEventListener('input',updateCert);});
 $('print').addEventListener('click',function(){
-  if(!$('cName').value.trim()){$('cName').focus();$('cName').placeholder='先填上你的名字喔 ✍️';return;}
+  if(!$('cName').value.trim()){$('cName').focus();$('cName').placeholder='請先填寫姓名';return;}
   updateCert();window.print();
 });
 
 function runText(text,name){
-  $('fname').textContent=name?'📄 '+name:'';
-  if(!text.trim()){$('code').focus();$('code').placeholder='這裡還是空的喔！請選檔案或貼上程式碼 🙂';return;}
+  $('fname').textContent=name?'已選擇：'+name:'';
+  if(!text.trim()){$('code').focus();$('code').placeholder='尚未提供內容。請選擇檔案或貼上程式碼。';return;}
   render(buildReport(text));
 }
 function readFile(f){
   if(!f)return;
   var rd=new FileReader();
   rd.onload=function(){var s=String(rd.result).replace(/^﻿/,'');$('code').value=s;runText(s,f.name);};
-  rd.onerror=function(){$('fname').textContent='😢 讀取失敗，請改用貼上程式碼的方式';};
+  rd.onerror=function(){$('fname').textContent='讀取失敗，請改用貼上程式碼的方式。';};
   rd.readAsText(f,'UTF-8');
 }
 $('file').addEventListener('change',function(e){readFile(e.target.files[0]);});
@@ -391,14 +433,14 @@ var drop=$('drop');
 ['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over');});});
 ['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over');});});
 drop.addEventListener('drop',function(e){if(e.dataTransfer&&e.dataTransfer.files.length)readFile(e.dataTransfer.files[0]);});
-/* 防止檔案拖到頁面其他地方時，瀏覽器直接打開它 */
+/* 防止檔案拖到頁面其他位置時，瀏覽器直接開啟該檔案 */
 ['dragover','drop'].forEach(function(ev){window.addEventListener(ev,function(e){e.preventDefault();});});
 $('run').addEventListener('click',function(){runText($('code').value,'');});
 $('clear').addEventListener('click',function(){
   $('code').value='';$('file').value='';$('fname').textContent='';
   $('result').hidden=true;$('party').hidden=true;$('certbox').hidden=true;$('bar').style.width='0';$('code').focus();
 });
-/* 給測試或進階使用者：window.vibeCheck(htmlText) 回傳與 Python 版相同 ID 的結果 */
+/* 供測試或進階使用者：window.vibeCheck(htmlText) 回傳與 Python 版相同 ID 的結果 */
 window.vibeCheck=buildReport;
 })();
 </script>
