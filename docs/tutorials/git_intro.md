@@ -1,320 +1,229 @@
 # Git 與 GitHub 入門
 
-> **對應檢核點**：檢核點 2（建立 repo 並 clone）、檢核點 3（Commit＋Sync）
-> **操作方式**：本篇的操作全部使用 VS Code 的「原始檔控制」面板完成，不需要輸入指令；文末附指令對照表供參考。
-> **先備條件**：已依 [VS Code 與 GitHub Copilot 入門](vscode_copilot_starter.md) 安裝 VS Code 與 Git，並設定使用者資訊。
+> **對應檢核點**：檢核點 2（建立 repo 並複製到電腦）、檢核點 3（提交並同步到 GitHub）
+> **預估時間**：約 30 分鐘
+> **操作方式**：全部在 VS Code 與 GitHub 網頁上按按鈕完成，不需要輸入指令。
+> **先備條件**：已完成 [課前準備清單](before_class.md)（VS Code、Git、GitHub 登入都已設定）。
 
 [← 回教學目錄](README.md)　｜　互動版：[Git 流程模擬器](../../lectures/wk01_1007_saas-storefront/slides/git_flow.html)
 
 ---
 
-## 1. 學習目標
+## 先懂三件事
 
-1. 說明版本控制要解決的問題，以及 Git 與 GitHub 的分工。
-2. 以「工作目錄、暫存區、本機儲存庫、遠端儲存庫」四個區域描述 Git 的資料流。
-3. 說明 commit 的組成（快照、雜湊值、作者、時間、訊息、父節點），以及分支（branch）作為指標的意義。
-4. 區分 push、pull、fetch 與 VS Code「同步變更」的語意，並理解合併衝突的成因。
-5. 以 VS Code 完成 clone、stage、commit、sync，並能查看歷史、還原修改。
-6. 撰寫品質良好的 commit 訊息，並了解公開 repo 的資安責任。
+1. **repo（儲存庫）** 是放在 GitHub 上的專案資料夾，會記住每一次修改。你的網站就是一個 repo。
+2. **提交（Commit）** 就像遊戲的存檔點：把目前的檔案狀態存成一個版本，改壞了可以回來。
+3. **同步變更（Sync Changes）** 是把電腦上的存檔點上傳到 GitHub。**只按提交，GitHub 和網站都不會更新**，一定要再按同步變更。
 
-## 2. 為什麼需要版本控制
-
-沒有版本控制時，常見的做法是複製檔案並改名：`index_v2.html`、`index_最終版.html`、`index_最終版_真的final.html`。這種做法有幾個根本問題：無法得知兩個版本之間究竟改了什麼、多人同時修改時難以合併、檔案一多就無法管理，也無法可靠地回到某個「確定可以運作」的狀態。
-
-**版本控制系統（Version Control System, VCS）** 以系統化的方式記錄檔案的每一次變更：誰、在什麼時間、改了什麼、為什麼改。**Git** 是目前最廣泛使用的分散式版本控制系統；**GitHub** 則是以 Git 為基礎的雲端代管平台。
-
-| | Git | GitHub |
-| --- | --- | --- |
-| 性質 | 安裝在本機的版本控制軟體 | 雲端代管平台（網站與服務） |
-| 儲存位置 | 你電腦中專案資料夾內的隱藏資料夾 `.git` | GitHub 的伺服器 |
-| 是否需要網路 | 否，可離線 commit | 是，同步時需要 |
-| 誰看得到 | 只有能存取你電腦的人 | Public repo：所有人；Private repo：你授權的人 |
-| 在本課程中的用途 | 記錄每一版網頁 | 保存程式碼，並在收到新 commit 時通知 Netlify 部署 |
-
-**儲存庫（repository，簡稱 repo）**：一個專案的所有檔案，加上它完整的版本歷史。在本機，repo 就是一個含有 `.git` 子資料夾的普通資料夾；你的網站就是一個 repo。
-
-課堂上常以「遊戲存檔點」比喻 commit：每完成一小步就存檔，改壞了可以讀檔回到先前狀態。這個比喻有助於入門，但 Git 的實際機制比存檔點更豐富，以下說明其概念模型。
-
-## 3. 核心概念
-
-### 3.1 四個區域：工作目錄、暫存區、本機儲存庫、遠端儲存庫
-
-Git 將檔案的狀態分為四個區域，每個操作都是在區域之間搬移變更：
-
-| 區域 | 英文 | 位置 | 內容 |
-| --- | --- | --- | --- |
-| 工作目錄 | working tree／working directory | 你在檔案總管看到的專案資料夾 | 你目前正在編輯的檔案 |
-| 暫存區 | staging area／index | `.git` 內部 | 你選定「要放進下一個 commit」的變更 |
-| 本機儲存庫 | local repository | `.git` 內部 | 所有已 commit 的歷史 |
-| 遠端儲存庫 | remote repository | GitHub 上 | 與他人共享、供 Netlify 讀取的歷史副本 |
+整個流程只有一條路：
 
 ```mermaid
 flowchart LR
-    WT["工作目錄<br/>working tree"] -- "Stage（git add）" --> IX["暫存區<br/>staging area／index"]
-    IX -- "Commit（git commit）" --> LR["本機儲存庫<br/>local repository"]
-    LR -- "Push（git push）" --> RR["遠端儲存庫<br/>GitHub（origin）"]
-    RR -- "Fetch（git fetch）" --> LR
-    LR -- "Checkout／Merge" --> WT
-    RR -- "Clone（git clone，第一次）" --> WT
-    RR -. "觸發 webhook" .-> NF["Netlify 自動部署"]
+    A["在 VS Code 修改檔案"] --> B["提交 Commit<br/>存檔點"]
+    B --> C["同步變更 Sync<br/>上傳"]
+    C --> D["GitHub"]
+    D --> E["Netlify<br/>網站自動更新"]
 ```
 
-**為什麼需要暫存區**：暫存區讓你可以從一堆修改中，挑選「屬於同一件事」的部分組成一個 commit。例如你同時改了標題文字與表單功能，可以分兩次 stage、兩次 commit，讓歷史紀錄更清楚。初學階段若一次全部暫存也無妨，VS Code 在未暫存時按 Commit 會詢問是否全部暫存。
+想了解原理（暫存區、commit 雜湊值、分支、合併衝突）：見 [Git、Copilot 與部署機制（選讀）](../deep_dive/git_and_copilot.md)。
 
-### 3.2 Commit：專案的快照
+---
 
-**commit** 是某個時間點整個專案的**快照（snapshot）**，而不只是「差異」的紀錄。每個 commit 包含：
+## 步驟 1：在 GitHub 建立 repo（約 3 分鐘）
 
-| 組成 | 說明 |
+這一步在 GitHub 上建立一個新的專案資料夾，之後你的網站檔案都放在這裡。
+
+1. 打開瀏覽器，前往 <https://github.com/new>（需先登入 GitHub）。
+2. 在 **Repository name** 欄位輸入 `rent-radar`（換成你的題目；只能用英文小寫、數字和 `-`）。
+3. 在 **Description** 欄位輸入一句話介紹你的產品（可不填）。
+4. 選擇 **Public**。
+5. 找到 **Add README** 或 **Add a README file** 選項，把它打開（勾選）。
+6. 按頁面最下方綠色的 **Create repository** 按鈕。
+
+**完成後你應該看到：** 網址變成 `github.com/你的帳號/rent-radar`，頁面中間有一個 `README.md` 檔案。
+
+**如果不一樣：** 顯示「name already exists」→ 換一個名字，例如加上學號末三碼。
+
+---
+
+## 步驟 2：把 repo 複製到電腦（Clone）（約 5 分鐘）
+
+複製（Clone）＝把 GitHub 上的 repo 下載到電腦，並保持連線，之後才能上傳修改。
+
+1. 打開 VS Code。若已開啟其他資料夾，先點選上方選單 **檔案 > 關閉資料夾（File > Close Folder）**。
+2. 在 VS Code 最左邊那一排圖示中，點選形狀像樹枝分岔的圖示（**原始檔控制，Source Control**），或按 `Ctrl+Shift+G`（Mac：`⌃⇧G`）。
+3. 按藍色的 **複製存放庫（Clone Repository）** 按鈕。
+4. 畫面上方會出現輸入框，點選 **從 GitHub 複製（Clone from GitHub）**。
+5. 若瀏覽器跳出授權頁面，按 **Authorize**，再按 **開啟** 回到 VS Code。
+6. 在清單中點選 `你的帳號/rent-radar`。
+7. 在跳出的視窗中選擇存放位置，例如「文件」資料夾，按 **選取為存放庫目的地（Select as Repository Destination）**。
+8. 右下角詢問「是否要開啟複製的存放庫？」時，按 **開啟（Open）**。
+9. 若詢問是否信任作者，按 **是，我信任作者**。
+
+**完成後你應該看到：** VS Code 左側檔案總管出現 `README.md`，最上方顯示 `RENT-RADAR`。
+
+**如果不一樣：** 清單中找不到你的 repo → 確認步驟 1 已完成，並確認 VS Code 左下角登入的是同一個 GitHub 帳號。
+
+---
+
+## 步驟 3：修改檔案，看懂變更標記（約 5 分鐘）
+
+這一步讓 Copilot 建立網頁，並學會看 VS Code 如何標示「有哪些檔案改過」。
+
+1. 按 `Ctrl+Alt+I`（Mac：`⌃⌘I`）打開 Copilot 聊天面板，模式選 **Agent**。
+2. 依 [第 1 週提示詞集](../../lectures/wk01_1007_saas-storefront/prompts.md) 請 Copilot 建立 `index.html`。
+3. 看過預覽後，按 **保留（Keep）**。
+4. 點選左側的 **原始檔控制** 圖示（樹枝分岔的圖示）。
+
+**完成後你應該看到：** 原始檔控制圖示上出現一個數字（例如 `1`），面板的「變更（Changes）」底下列出 `index.html`，檔名右邊有一個字母：
+
+| 字母 | 意思 |
 | --- | --- |
-| 快照 | 該時間點所有被追蹤檔案的內容 |
-| 雜湊值（hash） | 由 commit 內容計算出的唯一識別碼，例如 `3f9a2c1e...`，通常只顯示前 7 碼。內容只要有任何不同，雜湊值就不同，因此可用來偵測竄改 |
-| 作者與時間 | 來自你設定的 `user.name`、`user.email` 與 commit 當下的時間 |
-| 訊息（message） | 你對這次變更的說明 |
-| 父節點（parent） | 前一個 commit 的雜湊值 |
+| **U** | 新檔案，還沒存過檔點（Untracked） |
+| **M** | 已存過檔點的檔案被修改了（Modified） |
+| **D** | 檔案被刪除了（Deleted） |
 
-由於每個 commit 都指向它的父節點，所有 commit 串成一條歷史鏈。當有分支與合併時，一個 commit 可能有兩個父節點，整體結構在資訊科學上稱為**有向無環圖（Directed Acyclic Graph, DAG）**：箭頭只指向過去，不會形成循環。
+點一下檔名，可以看到修改前（左）與修改後（右）的比較，綠色是新增、紅色是刪除。
 
-Git 的設計哲學是**歷史只增不減**：修正錯誤的標準做法是新增一個修正的 commit，而不是抹除舊紀錄。因此你可以放心嘗試，先前的版本都還在。
+**如果不一樣：** 面板顯示「目前開啟的資料夾沒有 Git 存放庫」→ 你開的不是步驟 2 複製下來的資料夾，用 **檔案 > 開啟資料夾** 重新選擇 `rent-radar`。
 
-### 3.3 分支：可移動的指標
+---
 
-**分支（branch）** 不是檔案的複本，而是一個**指向某個 commit 的名稱標籤**。每次在該分支上 commit，標籤就自動往前移到最新的 commit。
+## 步驟 4：提交（Commit）（約 2 分鐘）
 
-- 在 GitHub 建立新 repo 時，預設分支名稱通常是 **`main`**（較舊的專案常用 `master`，本課程的課程 repo 即為 `master`）。
-- `HEAD` 表示「你目前所在的位置」，通常指向目前的分支。
-- 本課程只使用單一分支 `main`。在實務上，團隊會為每項功能開新分支，開發完成後再透過 Pull Request 審查並合併回 `main`。
+這一步把目前的檔案存成一個存檔點。
 
-```mermaid
-gitGraph
-    commit id: "新增 README"
-    commit id: "第一版首頁"
-    branch feature-form
-    checkout feature-form
-    commit id: "新增早鳥表單"
-    checkout main
-    commit id: "修正標題錯字"
-    merge feature-form id: "合併表單功能"
-```
+1. 在 **原始檔控制** 面板最上方的訊息框，輸入這次做了什麼，例如 `新增第一版首頁`。
+2. 按藍色的 **提交（Commit）** 按鈕。
+3. 若跳出「沒有暫存的變更，是否要暫存所有變更並直接提交？」，按 **是（Yes）**。若有「一律（Always）」選項，也可以選它，之後就不會再問。
 
-上圖示意實務上的分支與合併流程：`feature-form` 分支開發表單的同時，`main` 仍可修正錯字，之後再合併。合併產生的 commit 有兩個父節點。
+**完成後你應該看到：** 「變更」清單清空，藍色按鈕變成 **同步變更 ↑1（Sync Changes ↑1）**。`↑1` 表示有 1 個存檔點還沒上傳。
 
-### 3.4 遠端、origin 與遠端追蹤分支
+**如果不一樣：** 跳出「請設定 user.name 和 user.email」→ 回到 [課前準備清單](before_class.md) 步驟 5 設定後，再按一次提交（也可看 [疑難排解手冊](error_guide.md) Q6）。
 
-- **遠端（remote）**：另一個位置的同一個 repo，本課程中就是 GitHub 上的 repo。從 GitHub clone 下來時，Git 自動將它命名為 **`origin`**。
-- **遠端追蹤分支（remote-tracking branch）**：例如 `origin/main`，是本機記錄的「上次與 GitHub 溝通時，GitHub 上 `main` 的位置」。它只在與遠端通訊時更新。
-- VS Code 狀態列與「同步變更」按鈕上的 **↑1 ↓0** 就是比較本機 `main` 與 `origin/main` 的結果：↑ 表示本機有、GitHub 還沒有的 commit 數；↓ 表示 GitHub 有、本機還沒有的 commit 數。
+---
 
-### 3.5 Push、Fetch、Pull 與 Sync
+## 步驟 5：同步變更（Sync）（約 1 分鐘）
 
-| 操作 | 方向 | 語意 |
-| --- | --- | --- |
-| **Clone** | GitHub → 本機（第一次） | 下載完整 repo 與歷史，並自動設定 `origin` |
-| **Push（推送）** | 本機 → GitHub | 將本機新的 commit 上傳。若 GitHub 上有你本機沒有的 commit，push 會被拒絕（rejected），必須先整合對方的變更 |
-| **Fetch（擷取）** | GitHub → 本機儲存庫 | 下載 GitHub 上的新 commit 並更新 `origin/main`，但**不改動**你的工作目錄 |
-| **Pull（提取）** | GitHub → 本機並整合 | 等於 fetch 之後再合併（merge）或重定基底（rebase）到目前分支，工作目錄會隨之更新 |
-| **Sync（同步變更）** | 雙向 | VS Code 的便利按鈕：先 pull，再 push |
+這一步把存檔點上傳到 GitHub。**沒有這一步，GitHub 和網站都不會更新。**
 
-**最常見的誤解**：Commit 只存在你的電腦中，GitHub 與網站都不會更新。必須完成 Push（在 VS Code 中按「同步變更」），GitHub 才會收到新 commit，Netlify 才會重新部署。
+1. 按 **同步變更 ↑1（Sync Changes ↑1）** 按鈕。
+2. 第一次使用時會跳出說明視窗，按 **確定（OK）**（或 **確定，不要再顯示（OK, Don't Show Again）**）。
+3. 等待幾秒鐘。
 
-### 3.6 合併衝突（merge conflict）
+**完成後你應該看到：** 同步變更按鈕消失，原始檔控制圖示上的數字不見了。
 
-**成因**：當本機與 GitHub 上各自有新的 commit，且**兩邊修改了同一個檔案的同一段內容**時，Git 無法自動判斷該保留哪一版，就會產生合併衝突。若兩邊修改的是不同檔案或同一檔案的不同段落，Git 通常能自動合併。
+**如果不一樣：** 出現 `rejected` 或登入失敗 → 見 [疑難排解手冊](error_guide.md) Q8。找不到同步變更按鈕 → 見 Q7。
 
-在本課程中，最常見的情境是：在 GitHub 網頁上直接編輯了 `README.md`，同時在本機也修改了同一檔案，然後按同步變更。
+**這一步在架構中的位置：** 你剛剛把網頁存進了 GitHub，也就是課程架構中的「版本控制」。之後連上 Netlify，每次同步變更網站就會自動更新。
 
-**衝突的樣貌**：Git 會在檔案中插入標記：
+---
 
-```
-<<<<<<< HEAD
-這是你本機的版本
-=======
-這是 GitHub 上的版本
->>>>>>> origin/main
-```
+## 步驟 6：在 GitHub 網頁確認（約 1 分鐘）
 
-**處理步驟**：
+1. 回到瀏覽器中你的 repo 頁面（`github.com/你的帳號/rent-radar`）。
+2. 按 `F5`（Mac：`⌘R`）重新整理。
 
-1. 不要慌張，也不要重複按同步。衝突只是 Git 請你做決定，資料沒有遺失。
-2. 在原始檔控制面板的「合併變更」區找到有衝突的檔案並開啟。VS Code 會在衝突區塊上方提供 **接受目前的變更／接受傳入的變更／接受兩者** 等選項，或提供合併編輯器。
-3. 決定最終內容，刪除所有 `<<<<<<<`、`=======`、`>>>>>>>` 標記並存檔。
-4. 將檔案 stage（按 **＋**），再按 Commit 完成合併，最後按同步變更。
-5. 若不確定如何選擇，請停下來求助助教。
+**完成後你應該看到：** 檔案清單中出現 `index.html`，旁邊顯示你剛才寫的訊息 `新增第一版首頁`。
 
-**預防方法**：開始工作前先按一次同步變更；避免在 GitHub 網頁與本機同時修改同一檔案；一個 repo 盡量只在一台電腦上編輯。
+**如果不一樣：** 看不到 `index.html` → 回 VS Code 確認步驟 5 的同步變更按鈕已經消失；若還在，再按一次。
 
-### 3.7 好的 commit：單一目的、描述清楚
+---
 
-**單一目的（atomic）**：一個 commit 只做一件事。好處是歷史容易閱讀，出問題時也容易找出、還原是哪一次修改造成的。
+## 步驟 7：查看歷史紀錄（約 3 分鐘）
 
-**訊息撰寫原則**：
+每一次提交都會留下紀錄。你可以在 VS Code 或 GitHub 查看。
 
-- 第一行為**摘要行**，簡短（中文約 25 字以內、英文約 50 字元以內）說明「做了什麼」。
-- 使用**祈使句**描述變更，如同下達指令：`新增早鳥名單表單`、`修正手機版導覽列跑版`；英文慣例為 `Add waitlist form`，而非 `Added...` 或 `Adding...`。
-- 需要時，空一行後再補充「為什麼」這樣改。
+### 在 VS Code 看單一檔案的歷史
 
-| 不佳的訊息 | 問題 | 較佳的訊息 |
-| --- | --- | --- |
-| `update` | 沒有資訊量 | `將 CTA 按鈕改為橘色以提高對比` |
-| `aaa` | 無意義 | `新增早鳥名單表單` |
-| `改了一些東西` | 範圍不明 | `修正手機版導覽列跑版` |
-| `修改標題、加表單、換顏色` | 一次做多件事 | 拆成三個 commit |
+1. 點選左側最上面的 **檔案總管（Explorer）** 圖示（兩張紙重疊的圖示）。
+2. 在檔案清單中點選 `index.html`。
+3. 在檔案總管面板最下方，找到並展開 **時間軸（Timeline）**。
 
-### 3.8 .gitignore：不該進入版本控制的檔案
+**完成後你應該看到：** 時間軸列出這個檔案的每一次提交，例如 `新增第一版首頁`。點一下可以看到當時改了什麼。
 
-`.gitignore` 是放在 repo 最外層的純文字檔，列出 Git 應忽略、不追蹤的檔案或資料夾樣式。常見項目包括：
+### 在 GitHub 看整個專案的歷史
 
-```
-# 作業系統自動產生的檔案
-.DS_Store
-Thumbs.db
+1. 在 GitHub repo 頁面，找到檔案清單右上方的 **Commits**（前面有時鐘圖示和數字）。
+2. 點進去。
 
-# 含有機密的環境設定檔
-.env
+**完成後你應該看到：** 所有提交紀錄由新到舊排列。點任一筆可以看到修改內容，綠色是新增，紅色是刪除。
 
-# 套件與建置產物（本課程不會用到，實務上很常見）
-node_modules/
-dist/
-```
+**如果不一樣：** 找不到時間軸 → 在檔案總管面板任一標題上按右鍵，確認 **時間軸（Timeline）** 有打勾。
 
-注意：`.gitignore` 只對**尚未被追蹤**的檔案有效。已經 commit 過的檔案，加入 `.gitignore` 並不會把它從歷史中移除。
+---
 
-### 3.9 公開 repo 的資安責任
+## 步驟 8：還原還沒提交的修改（捨棄變更）（約 2 分鐘）
 
-本課程的 repo 設為 **Public**，因為 Netlify 免費部署與教師檢閱都需要。這代表：
+改壞了、而且還沒按提交時，可以一鍵回到上一個存檔點。
 
-- **任何被 commit 並 push 的內容，全世界都看得到**，包括完整的歷史紀錄。即使之後刪除檔案，舊的 commit 中仍然存在。
-- **絕對不要 commit 機密資訊**：密碼、API 金鑰、存取權杖、含個資的資料檔。自動化程式會持續掃描公開 repo 中外洩的金鑰；GitHub 也提供秘密掃描（secret scanning）與推送保護（push protection）協助攔截，但不能依賴它作為唯一防線。
-- **若不慎外洩**：刪除檔案並不足夠，應立即到該服務撤銷（revoke）並重新產生金鑰，再處理 repo 歷史。
-- commit 中的 Email 也會公開，如有顧慮可使用 GitHub 提供的 noreply 地址（見 [VS Code 與 GitHub Copilot 入門](vscode_copilot_starter.md#33-設定-git-使用者資訊只需一次)）。
+1. 點選左側的 **原始檔控制** 圖示。
+2. 在「變更」清單中，把滑鼠移到改壞的檔案（例如 `index.html`）上。
+3. 檔名右邊會出現幾個小圖示，按彎曲箭頭形狀的 **捨棄變更（Discard Changes）**。
+4. 跳出確認視窗時，按 **捨棄檔案（Discard File）**。
 
-## 4. 操作步驟
+**完成後你應該看到：** 檔案從「變更」清單消失，內容回到最後一次提交時的樣子。
 
-### 4.1 在 GitHub 建立 repo
+**如果不一樣：** 這個動作無法復原，按之前請確定。
 
-1. 登入 <https://github.com/>，點右上角 **＋** → **New repository**（或直接開啟 <https://github.com/new>）。
-2. 填寫：
-   - **Repository name**：英文小寫加連字號，例如 `rent-radar`。名稱會出現在網址中。
-   - **Description**（選填）：一句話說明你的產品。
-   - 選擇 **Public**。
-   - 勾選 **Add a README file**。這會產生第一個 commit，使 repo 不是空的，後續 clone 較順利。
-3. 按 **Create repository**。
+**其他情況：**
 
-官方說明：[建立新的儲存庫](https://docs.github.com/zh/repositories/creating-and-managing-repositories/creating-a-new-repository)
+- Copilot 剛改完、還沒按保留 → 直接在聊天面板按 **復原（Undo）** 即可。
+- 已經提交過 → 請參考 [疑難排解手冊](error_guide.md) Q4，或求助助教。
 
-### 4.2 將 repo 複製到電腦（Clone）
+---
 
-1. 開啟 VS Code，按左側 **原始檔控制** 圖示（分岔的線條圖示；快捷鍵 `Ctrl+Shift+G`，Mac：`⌃⇧G`）。
-   - 或：先關閉目前資料夾（檔案 → 關閉資料夾），歡迎畫面上會有 **複製 Git 存放庫（Clone Git Repository）**。
-2. 按 **複製存放庫（Clone Repository）** → 選擇 **從 GitHub 複製（Clone from GitHub）**。
-3. 首次使用需授權 VS Code 存取 GitHub，依瀏覽器指示按 **Authorize**。
-4. 從清單中選擇 `你的帳號/rent-radar`。
-5. 選擇存放位置（建議建立專用資料夾，例如 `文件/vibentpu`）→ **選取為存放庫目的地**。
-6. VS Code 詢問是否開啟複製的存放庫時，按 **開啟（Open）**。
+## 步驟 9：在 GitHub 網頁改過檔案後，回 VS Code 先按同步變更（約 1 分鐘）
 
-左側檔案總管出現 `README.md` 即表示完成。此時本機資料夾已是一個 Git repo，且 `origin` 已指向 GitHub 上的 repo。
+有時你會直接在 GitHub 網頁上修改檔案（例如編輯 `README.md` 學習歷程）。這時 GitHub 上的版本比你電腦上的新，回到 VS Code 要先把新版本拿回來。
 
-官方說明：[VS Code：在本機複製存放庫](https://code.visualstudio.com/docs/sourcecontrol/intro-to-git#_clone-a-repository-locally)
+1. 回到 VS Code，點選左側的 **原始檔控制** 圖示。
+2. 若看到 **同步變更 ↓1（Sync Changes ↓1）**，按下它。`↓1` 表示 GitHub 上有 1 個新存檔點要下載。
+3. 若沒有看到按鈕，點面板上方的 **...（更多動作）** → **提取（Pull）**。
 
-### 4.3 修改檔案
+**完成後你應該看到：** 你在 GitHub 網頁上做的修改，出現在 VS Code 的檔案中。
 
-依 [第 1 週提示詞集](../../lectures/wk01_1007_saas-storefront/prompts.md) 請 Copilot 在此資料夾建立 `index.html`，檢視差異後按 **Keep**。此時原始檔控制圖示上會出現數字，表示工作目錄中有尚未 commit 的變更。檔案旁的字母代表狀態：
+**如果不一樣：** 跳出「合併衝突（Merge Conflict）」→ 先不要再按任何按鈕，截圖後求助助教。預防方法：**每次開始工作前，先按一次同步變更**；同一個檔案不要同時在網頁和 VS Code 上修改。
 
-| 標記 | 狀態 | 意義 |
-| --- | --- | --- |
-| **U** | Untracked | 新檔案，Git 尚未追蹤 |
-| **M** | Modified | 已追蹤的檔案被修改 |
-| **D** | Deleted | 已追蹤的檔案被刪除 |
-| **A** | Added | 新檔案已加入暫存區 |
+---
 
-點選檔案可開啟差異檢視，左側為上一個 commit 的內容，右側為目前內容。
+## 附錄 A：把課程教材複製到電腦（選做）
 
-### 4.4 暫存與提交（Stage＋Commit）
+課程的互動教材（例如 [Git 流程模擬器](../../lectures/wk01_1007_saas-storefront/slides/git_flow.html)）在 GitHub 網頁上點開只會看到原始碼，要下載到電腦才能操作。
 
-1. 開啟 **原始檔控制** 面板。
-2. 在 `index.html` 旁按 **＋**（暫存變更），檔案會移到「暫存的變更」區。要全部暫存，按「變更」標題列上的 **＋**。
-3. 在上方訊息框輸入 commit 訊息，例如 `新增第一版首頁`。
-4. 按 **提交（Commit）** 按鈕。
+1. 在 VS Code 點選 **檔案 > 關閉資料夾**。
+2. 點選 **原始檔控制** 圖示 → **複製存放庫（Clone Repository）**。
+3. 在上方輸入框貼上 `https://github.com/cychiang-ntpu/VibeNTPU`，按 Enter。
+4. 選擇存放位置，按 **選取為存放庫目的地**，再按 **開啟**。
+5. 到檔案總管（Mac：Finder）找到該資料夾中的 `.html` 檔，雙擊即可用瀏覽器開啟。
 
-若未暫存就直接按提交，VS Code 會詢問是否將所有變更暫存後提交，按 **是（Yes）** 即可。
+**完成後你應該看到：** 瀏覽器中顯示可以操作的互動畫面。教材更新時，回 VS Code 按 **同步變更** 即可取得最新版本。
 
-### 4.5 推送到 GitHub（Sync）
+---
 
-1. Commit 後，面板會出現 **同步變更（Sync Changes）↑1** 按鈕，表示本機有 1 個 commit 尚未推送。
-2. 按下按鈕。首次使用時 VS Code 會說明此動作將 pull 與 push，按 **確定（OK）**。
-3. 在瀏覽器重新整理你的 GitHub repo 頁面，應可看到 `index.html` 與你的 commit 訊息。
+## 附錄 B：按鈕與指令對照表（參考）
 
-當 repo 連接 Netlify 之後，每次推送都會觸發自動部署，這就是持續部署（Continuous Deployment）的基礎，詳見 [CI/CD 教學](cicd.md)。
+本課程不需要輸入指令。這張表只是讓你知道每個按鈕背後在做什麼，看官方文件或錯誤訊息時比較看得懂。
 
-## 5. 查看歷史與還原修改
-
-### 5.1 查看歷史
-
-- **VS Code**：檔案總管下方的 **時間軸（Timeline）** 顯示單一檔案的歷史；原始檔控制面板的 **圖表（Graph）** 區顯示整個 repo 的 commit 歷史。
-- **GitHub 網頁**：repo 首頁點 **Commits**，點任一 commit 可查看差異（綠色為新增，紅色為刪除），每個 commit 旁會顯示其雜湊值前 7 碼。
-
-### 5.2 依情境還原
-
-| 情境 | 做法 | 說明 |
-| --- | --- | --- |
-| Copilot 剛修改、尚未按 Keep | 在 Chat 中按 **Undo（復原）** | 變更尚未寫入工作目錄 |
-| 已 Keep，但尚未 Commit | 原始檔控制 → 檔案旁的 **↶ 捨棄變更（Discard Changes）** | 將工作目錄的檔案還原為最後一個 commit 的內容。此操作無法復原，請確認後再執行 |
-| 已 Commit | 在時間軸或 GitHub 上找到舊版內容，比對後修改回來，再 Commit 一次；或請 Copilot「將 index.html 恢復為上一個 commit 的內容」並審查差異 | 以新增 commit 的方式修正，歷史保持完整。對應的 Git 指令為 `git revert` |
-| 網站已部署錯誤版本 | 在 Netlify 的 **Deploys** 頁面選擇先前的部署並發布 | 網站立即回到舊版，但 repo 內容不變，之後仍應修正程式碼，詳見 [CI/CD 教學](cicd.md) |
-
-## 6. GitHub 網頁的其他功能
-
-| 功能 | 用途 | 本課程中的使用 |
-| --- | --- | --- |
-| 線上編輯檔案 | 點檔案 → 鉛筆圖示，修改後直接 commit | 可用於編輯 README（學習歷程檔案）。編輯後回到 VS Code 須先按同步變更 |
-| Commits | 瀏覽完整歷史 | 教師會檢視你的 commit 紀錄 |
-| Issues | 問題回報與討論 | 課程的 [求助單](https://github.com/cychiang-ntpu/VibeNTPU/issues/new?template=help_request.yml) 與作品牆登記 |
-| Star | 收藏 repo | 選用 |
-| Fork | 將他人的 repo 複製到自己的帳號 | 進階 |
-| Actions | 自動化工作流程 | 延伸任務（選做）：[GitHub Actions 自動檢核](vibe_check_ci.md) |
-
-## 7. 指令對照表（參考）
-
-VS Code 的按鈕背後執行的就是以下 Git 指令。本課程不要求使用指令，但了解對應關係有助於閱讀官方文件與錯誤訊息。
-
-| VS Code 操作 | 對應指令 | 說明 |
-| --- | --- | --- |
-| 複製存放庫 | `git clone <網址>` | 下載 repo 並設定 `origin` |
-| （面板上的檔案清單） | `git status` | 顯示工作目錄與暫存區的狀態 |
-| 檔案旁的 ＋ | `git add <檔案>` | 將變更加入暫存區 |
-| 提交 | `git commit -m "訊息"` | 以暫存區內容建立 commit |
-| 同步變更（上傳部分） | `git push` | 將本機 commit 推送到 `origin` |
-| 同步變更（下載部分） | `git pull` | 擷取並整合遠端的新 commit |
-| 擷取（Fetch） | `git fetch` | 只下載、不整合 |
-| 圖表、時間軸 | `git log --oneline --graph` | 顯示 commit 歷史 |
-| 捨棄變更 | `git restore <檔案>` | 還原工作目錄中的修改 |
-
-## 8. 常見問題
-
-| 狀況 | 原因與處理 |
+| VS Code 操作 | 對應指令 |
 | --- | --- |
-| Commit 時出現「請設定 user.name 和 user.email」 | 尚未設定使用者資訊，見 [VS Code 與 GitHub Copilot 入門](vscode_copilot_starter.md#33-設定-git-使用者資訊只需一次) |
-| 找不到「同步變更」，只看到「發佈分支（Publish Branch）」 | 此資料夾是本機建立的 repo，尚未連接遠端。可按「發佈分支」並選擇 Public 建立新 GitHub repo，或依 4.1、4.2 重新 clone |
-| Sync 時出現 rejected | GitHub 上有本機沒有的 commit（例如曾在網頁上編輯）。再按一次同步變更，讓 VS Code 先 pull 再 push；若出現衝突，依 3.6 處理 |
-| 面板顯示「目前開啟的資料夾沒有 Git 存放庫」 | 開啟的不是 clone 下來的資料夾。以「檔案 → 開啟資料夾」選擇正確資料夾 |
+| 複製存放庫（Clone Repository） | `git clone <網址>` |
+| 原始檔控制面板的檔案清單 | `git status` |
+| 檔案旁的 ＋（暫存變更） | `git add <檔案>` |
+| 提交（Commit） | `git commit -m "訊息"` |
+| 同步變更（上傳的部分） | `git push` |
+| 同步變更（下載的部分）、提取（Pull） | `git pull` |
+| 時間軸、GitHub Commits | `git log` |
+| 捨棄變更（Discard Changes） | `git restore <檔案>` |
 
-更多問題見 [疑難排解手冊](error_guide.md#3-vs-codegitcopilot)。
+---
 
-## 9. 討論與延伸思考
+## 完成檢查
 
-1. Git 的歷史「只增不減」。這項設計對團隊協作與稽核有什麼好處？在什麼情況下，這項特性反而會造成困擾（提示：不慎 commit 的機密）？
-2. 為什麼 Git 需要暫存區，而不是直接把所有修改存成 commit？請舉一個你的專案中可以拆成兩個 commit 的例子。
-3. 若兩位組員同時修改 `index.html` 的同一段標題並各自推送，會發生什麼事？團隊可以用哪些工作方式降低衝突？
+- [ ] GitHub 上有我的 repo，裡面有 `README.md`
+- [ ] repo 已複製到電腦，VS Code 可以看到檔案
+- [ ] 已提交並同步變更，GitHub 網頁上看得到 `index.html` 和我的提交訊息
+- [ ] 會用時間軸或 GitHub Commits 查看歷史
+- [ ] 知道還沒提交時，可以用捨棄變更回到上一版
 
-## 10. 參考資料
-
-- [VS Code：Git 入門](https://code.visualstudio.com/docs/sourcecontrol/intro-to-git)
-- [VS Code：原始檔控制總覽](https://code.visualstudio.com/docs/sourcecontrol/overview)
-- [GitHub Docs：Hello World](https://docs.github.com/zh/get-started/start-your-journey/hello-world)
-- [GitHub Docs：關於合併衝突](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts)
-- [Git 官方文件：gitignore](https://git-scm.com/docs/gitignore)
-- [Pro Git 電子書（繁體中文）](https://git-scm.com/book/zh-tw/v2)，特別是第 1–3 章
-- [GitHub Skills：互動式課程](https://skills.github.com/)
-- [Learn Git Branching：視覺化練習分支操作](https://learngitbranching.js.org/?locale=zh_TW)
-
-下一步：[將網站部署到 Netlify](github_netlify_deploy.md)。
+更多問題見 [疑難排解手冊](error_guide.md)。下一步：[將網站部署到 Netlify](github_netlify_deploy.md)。

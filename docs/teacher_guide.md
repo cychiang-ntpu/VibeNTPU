@@ -4,6 +4,8 @@
 
 本文件供授課教師與助教使用，內容包括課前準備、課堂引導、常見故障點與處理方式、評量流程、倫理與隱私議題，以及作品牆維護。各週逐段時間分配與講述重點見各週的 `slides/outline.md`（[第 1 週](../lectures/wk01_1007_saas-storefront/slides/outline.md)、[第 2 週](../lectures/wk02_1014_baas-cicd/slides/outline.md)）；教學安排的學理依據見 [教學設計理據](learning_design.md)。
 
+**教材形式說明**：學生教材（[課前準備](tutorials/before_class.md)、[第 1 週](../lectures/wk01_1007_saas-storefront/README.md)、[第 2 週](../lectures/wk02_1014_baas-cicd/README.md)）已改為手把手實作指南，學生照步驟即可完成；SaaS、社群媒體系統、精實創業、表單與 CI/CD、Git 與 Copilot 等原理移至 [深入原理（選讀）](deep_dive/README.md)，課堂不要求。講述時建議只說明每一步「為什麼要做」的一句話，進階問題可引導學生課後閱讀選讀資料。
+
 ---
 
 ## 1. 教學核心原則

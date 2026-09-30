@@ -1,70 +1,68 @@
 # 第 2 週一頁版步驟卡
 
-上課時請開啟本頁，完成一項勾選一項。導航員讀出步驟並檢查結果，駕駛操作；每個實作段落結束後交換角色。
-
-[← 回第 2 週講義](README.md)
+做完一項勾一項。導航員讀步驟、駕駛操作，每做完一個 Part 交換。每一步的詳細說明見 [第 2 週手把手實作](README.md)，提示詞見 [prompts.md](prompts.md)。
 
 ---
 
-## 段落 0｜暖身回想（0:00–0:05）
+## 開始前確認
 
-- [ ] 不看筆記，與搭檔回答學習單第 1 題的三個問題
-- [ ] VS Code → **檔案 → 開啟最近使用的項目** → 開啟上週 clone 的 repo 資料夾
-- [ ] 原始檔控制面板按一次 **同步變更**，確保與 GitHub 一致
+- [ ] 手機打得開上週的 `https://…netlify.app` 網址
+- [ ] VS Code：**檔案（File）→ 開啟最近使用的項目（Open Recent）** → 打開上週的 repo 資料夾
+- [ ] 左側 **原始檔控制（Source Control）** → 按一次 **同步變更（Sync Changes）**
 
-## 段落 1｜觀念建立（0:05–0:20）
+## Part 0：回顧上週（0:00，5 分鐘）
 
-- [ ] 開啟 [data_flow.html](slides/data_flow.html) 分頁 1
-- [ ] 選「沒有後端」→ 在模擬手機上送出 → 觀察資料未被任何伺服器接收
-- [ ] 選「有 BaaS」→ 再送出一次 → 觀察資料進入 Netlify 後台
-- [ ] 在學習單第 2 題寫下可否證假設與成功門檻
+- [ ] 和搭檔完成 [學習單](worksheet.md) 第 1 題
 
-## 段落 2｜Netlify Forms（0:20–1:00）→ 檢核點 4
+## Part 1：資料去哪了（0:05，15 分鐘）
 
-- [ ] 開啟 [提示詞產生器](../wk01_1007_saas-storefront/slides/prompt_builder.html)，切換至 **第 2 週** 模式（或使用 [提示詞 1](prompts.md#31-提示詞-1加入早鳥候補名單表單)）
-- [ ] Copilot Chat → 模式選 **Agent** → 貼上提示詞送出（提示詞含 `#index.html`，Copilot 會直接修改檔案）
-- [ ] 檢視差異後按 **Keep**
-- [ ] 依 [驗證清單](prompts.md#4-copilot-產出後的驗證清單)「表單結構」逐項檢查；至少以 `Ctrl+F`（Mac：`⌘F`）搜尋到 `data-netlify`
-- [ ] Netlify → 你的專案 → 左側 **Forms** → 按 **Enable form detection**（新網站預設關閉，最常被遺漏）
-- [ ] 原始檔控制 → 訊息 `新增早鳥名單表單` → **提交（Commit）** → **同步變更（Sync）**
-- [ ] Netlify → **Deploys**，等待最新一筆變為 **Published**（若先 Sync 後才開啟偵測，按 **Trigger deploy** 重新部署）
-- [ ] 以 Netlify 網址（非本機 `file:///`）送出一筆測試資料
-- [ ] 與 3 位同學互相填寫
-- [ ] Netlify → **Forms** → **waitlist**，確認資料已收到（3 筆以上）
-- [ ] [網站自我檢核工具](../../tools/vibe_check.html) Level 2 通過 → **檢核點 4 完成**
+- [ ] 打開 [data_flow.html](slides/data_flow.html) → 分頁 **1. 表單資料的去向**
+- [ ] 按 **沒有後端** → 填表 → **送出** → **重新整理網頁**：資料不見了
+- [ ] 按 **使用 BaaS** → 填表 → **送出** → **重新整理網頁** → **換一台裝置**：後台資料還在
+- [ ] 學習單第 2 題：寫下報名目標人數
+
+## Part 2：Netlify Forms 候補名單（0:20，40 分鐘）→ 檢核點 4
+
+- [ ] [提示詞產生器](../wk01_1007_saas-storefront/slides/prompt_builder.html) 按 **第 2 週** 產生提示詞（或複製 prompts.md 的提示詞 1）
+- [ ] Copilot Chat → 模式選 **Agent** → 貼上 → 送出
+- [ ] 按 **保留（Keep）** → `Ctrl+S` 存檔
+- [ ] `Ctrl+F` 搜尋得到 `data-netlify` 和 `form-name`
+- [ ] Netlify → 你的網站 → 左側 **Forms** → **Enable form detection**
+- [ ] 原始檔控制 → 訊息 `新增早鳥名單表單` → **提交（Commit）** → **同步變更（Sync Changes）**
+- [ ] Netlify → **Deploys** → 最上面一筆變成 **Published**（先同步才開偵測的話：**Trigger deploy**）
+- [ ] 用 `https://…netlify.app` 網址（不是 `file:///`）自己填一次
+- [ ] 請 3 位同學用手機填寫
+- [ ] Netlify → **Forms** → **waitlist** 看到 3 筆以上 → **檢核點 4 完成**
 - [ ] 交換駕駛與導航員
 
-## 段落 3｜LocalStorage（1:00–1:35）→ 檢核點 5
+## Part 3：LocalStorage 會員畫面（1:00，35 分鐘）→ 檢核點 5
 
-- [ ] [data_flow.html](slides/data_flow.html) 分頁 1：送出後分別按「重新整理網頁」與「換一台手機」，比較差異
-- [ ] 分頁 2：完成儲存位置分類練習
-- [ ] 在同一個 Copilot 對話貼上 [提示詞 2](prompts.md#32-提示詞-2送出後原地切換為會員儀表板) → 檢視差異 → **Keep**
-- [ ] 依驗證清單「AJAX 與 LocalStorage」逐項檢查
-- [ ] 原始檔控制 → 訊息 `新增會員儀表板` → **提交** → **同步變更**
-- [ ] 以手機開啟網址 → 填表 → 看到「歡迎回來，〔姓名〕」
-- [ ] 重新整理，儀表板仍在
-- [ ] 按「登出」，回到表單
-- [ ] 開發者工具 → Application → Local storage，確認只存了名字
-- [ ] 網站自我檢核工具 Level 3 通過 → **檢核點 5 完成**
+- [ ] data_flow.html 分頁 1：送出 → **重新整理網頁** → **換一台裝置** → **登出**，看差異
+- [ ] Copilot Chat（Agent）貼上提示詞 2 → 送出 → **保留（Keep）** → 存檔
+- [ ] 訊息 `新增會員畫面` → **提交（Commit）** → **同步變更（Sync Changes）** → 等 **Published**
+- [ ] 手機：填表送出 → 看到「歡迎回來，〔姓名〕」
+- [ ] 手機：重新整理，歡迎畫面還在
+- [ ] 手機：按 **登出**，回到表單
+- [ ] （選做）電腦按 `F12` → **Application** → **Local storage**，只看到名字
+- [ ] [網站自我檢核工具](../../tools/vibe_check.html) Level 3 通過 → **檢核點 5 完成**
 - [ ] 交換駕駛與導航員
 
-## 段落 4｜持續部署（1:35–1:50）→ 檢核點 6
+## Part 4：自動更新 CI/CD（1:35，15 分鐘）→ 檢核點 6
 
-- [ ] [data_flow.html](slides/data_flow.html) 分頁 3：觀看 CI/CD 模擬，試用「回到上一版」
-- [ ] 學習單第 4 題寫下預測：Commit＋Sync 後是否需要到 Netlify 操作？
-- [ ] 以手機開啟網站，記下目前外觀
-- [ ] 貼上 [提示詞 3](prompts.md#33-提示詞-3快速改版以觀察持續部署) → **Keep**
-- [ ] 原始檔控制 → 訊息 `改按鈕顏色` → **提交** → **同步變更**
-- [ ] **不開啟 Netlify**，約 10–30 秒後以手機重新整理，確認已更新 → **檢核點 6 完成**
-- [ ] 學習單第 4 題寫下觀察與解釋
+- [ ] 手機記下目前按鈕的顏色；學習單第 3 題寫下預測
+- [ ] Copilot Chat 貼上提示詞 3 → **保留（Keep）** → 存檔
+- [ ] 訊息 `改按鈕顏色` → **提交（Commit）** → **同步變更（Sync Changes）**
+- [ ] **不打開 Netlify**，等 30 秒，手機重新整理，看到新顏色 → **檢核點 6 完成**
+- [ ] Netlify → **Deploys**：看到 `改按鈕顏色` 這一筆
+- [ ] （選做）點較舊的一筆 → **Publish deploy** → 確認回到舊版 → 再把最新一筆 **Publish deploy**
 
-## 段落 5｜發表與總結（1:50–2:00）→ 檢核點 7
+## Part 5：一分鐘發表與收尾（1:50，10 分鐘）→ 檢核點 7
 
-- [ ] 與鄰組互相進行 1 分鐘 MVP 發表 → **檢核點 7 完成**
-- [ ] 完成學習單出場券
-- [ ] 在學習歷程檔案勾選檢核點，寫下 3-2-1 反思
-- [ ] 檢核點 0–7 全部完成者，於網站自我檢核工具產生完課證明
+- [ ] 填好 README Part 5 的一分鐘講稿
+- [ ] 向鄰組發表，並互填對方的表單 → **檢核點 7 完成**
+- [ ] 學習單出場券
+- [ ] [學習歷程檔案](../../templates/portfolio_README.md) 勾選檢核點
 
 ---
 
-遇到問題：先查 [疑難排解手冊](../../docs/tutorials/error_guide.md) 的 Netlify Forms 與 LocalStorage 章節。依 15 分鐘求助原則，自行嘗試 15 分鐘仍無進展時，請舉起紅色課堂即時回饋卡。
+卡住時：先查 [疑難排解手冊](../../docs/tutorials/error_guide.md)（Q14–Q16 表單、Q17–Q18 LocalStorage）。自己試 15 分鐘仍沒有進展，請舉手。

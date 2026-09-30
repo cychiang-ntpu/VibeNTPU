@@ -1,37 +1,38 @@
 # 第 1 週課程公告
 
-以下框內文字可直接複製，張貼於課程群組（LINE、Teams、E-Learning 公告等）。建議張貼時機：上課前 5 天（安裝與帳號審核需要時間）、上課當天早上、下課後。
+下面框內的文字可以直接複製，貼到課程群組（LINE、Teams、E-Learning 公告）。建議張貼時間：上課前 5 天、上課當天早上、下課後。
 
-[← 回第 1 週講義](README.md)
+[← 回第 1 週手把手實作](README.md)
 
 ---
 
 ## 1. 上課前 5 天
 
 ```
-【10/7 Vibe Coding × SaaS 創業實戰：課前準備通知】
+【10/7 Vibe Coding × SaaS 創業實戰：課前準備】
 
 各位同學好：
 
-10 月 7 日的課程將使用 VS Code 與 GitHub Copilot 製作個人產品的形象網站，並於課堂中部署上線。為避免課堂上同時下載安裝造成網路壅塞，請於上課前完成「檢核點 0：課前準備」，所需時間約 30 至 40 分鐘：
+10/7 上課時，每個人會做出自己的產品網頁並放上網路。
+請在上課前完成以下 6 件事（約 30–40 分鐘）：
 
 1. 註冊 GitHub 帳號：https://github.com/signup
-   註冊過程需設定雙重驗證，請準備手機並妥善保存復原碼。
-   建議同時申請 GitHub 學生方案（可免費使用 Copilot Pro，審核需數日）：https://education.github.com/pack
+   （需要手機做雙重驗證，請保存好復原碼）
 2. 安裝 VS Code：https://code.visualstudio.com/
 3. 安裝 Git
    Windows：https://git-scm.com/downloads/win
-   macOS：於「終端機」輸入 git --version，依提示完成安裝
-4. 在 VS Code 登入 GitHub、啟用 Copilot（免費方案即可），並安裝 Live Preview 擴充功能
-5. 請 Copilot 產生一個「Hello NTPU」頁面，並成功預覽
-6. 以 GitHub 帳號登入 Netlify：https://app.netlify.com/signup
+   macOS：打開「終端機」，輸入 git --version，照提示安裝
+4. 在 VS Code 登入 GitHub、啟用 Copilot，並安裝 Live Preview 擴充功能
+5. 請 Copilot 做一個「Hello NTPU」頁面，並成功預覽
+6. 用 GitHub 帳號登入 Netlify：https://app.netlify.com/signup
 
-圖文步驟說明（第 2 至 5 項）：
+圖文步驟（第 2–5 項）：
 https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/vscode_copilot_starter.md
+
 完整清單：
 https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/before_class.md
 
-本課程不預設任何程式設計背景。安裝過程若遇到問題，請將畫面截圖張貼於群組，或於上課前 10 分鐘到教室，由助教協助處理。
+不需要任何程式背景。安裝卡住的話，請把畫面截圖貼到群組，或上課前 10 分鐘到教室找助教。
 
 授課教師　江振宇
 ```
@@ -39,21 +40,22 @@ https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/before_clas
 ## 2. 上課當天早上
 
 ```
-【今日 Vibe Coding × SaaS 創業實戰：上課提醒】
+【今天上課提醒】
 
 各位同學好：
 
-今天課程結束時，每位同學將完成一個可公開瀏覽的產品形象網站。請攜帶：
-・筆記型電腦（請充飽電，並攜帶充電器）
-・手機（用於檢查網站的行動版畫面）
+請帶：
+1. 筆電（充飽電，帶充電器）
+2. 手機（最後要用手機打開你的網站）
 
-上課時請開啟操作步驟卡，依序完成並勾選：
+進教室前請確認：VS Code 左下角的帳戶圖示看得到你的 GitHub 帳號。
+還沒完成課前準備的同學，請提早 10 分鐘到教室。
+
+上課時請打開這一頁，照著步驟做：
+https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/README.md
+
+一頁版勾選清單：
 https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/steps.md
-
-尚未完成課前準備的同學，請提早 10 分鐘到教室。進教室前，請確認 VS Code 左下角已顯示你的 GitHub 帳號。
-
-若想事先構思創業題目，可參考依學院整理的題目範例：
-https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/README.md#91-選擇創業題目5-分鐘
 
 授課教師　江振宇
 ```
@@ -65,21 +67,20 @@ https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-st
 
 各位同學好：
 
-感謝大家今天的投入。多數同學已完成網站部署；尚未完成的同學，請依步驟卡繼續操作，遇到問題可於群組提出，或參考疑難排解手冊：
+還沒完成網站上線的同學，請照上課頁面的 Part 4（步驟 20–25）繼續做：
+https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/README.md
+
+遇到問題先查疑難排解手冊，或在群組發問：
 https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/error_guide.md
 
 第 2 週上課前請完成：
-【必做】
-1. 將網站網址張貼於群組（尚未張貼者）。
-2. 將學習歷程檔案貼入 repo 的 README.md，完成第 1 週 3-2-1 反思，並 Commit 與 Sync。
-3. 閱讀核心閱讀〈現代網路服務與 SaaS 架構〉：
+1. 把網站網址貼到群組（還沒貼的同學）。
+2. 在 repo 的 README.md 貼上學習歷程檔案範本，寫 3-2-1 反思，再按「提交（Commit）」和「同步變更（Sync Changes）」。
+3. 閱讀兩份短講義：
    https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/saas_architecture.md
+   https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/social_media_architecture.md
 
-【延伸任務（選做）】
-・行動版排版修正：以手機檢查版面，請 Copilot 修正後 Commit 與 Sync，觀察網站是否自動更新。
-・產品架構分析：選擇一個常用的服務，繪製其可能的系統架構。
-
-下週將討論：靜態網站如何在不自建伺服器的情況下接收使用者資料，以及如何在瀏覽器中保存使用者狀態。
+下週預告：訪客想在你的網站留下 Email，資料要存到哪裡？
 
 授課教師　江振宇
 ```

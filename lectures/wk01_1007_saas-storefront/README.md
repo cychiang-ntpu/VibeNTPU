@@ -1,339 +1,487 @@
-# 第 1 週（2026/10/7）：SaaS 商業模式與數位店面建置
+# 第 1 週手把手實作（2026/10/7）
 
-[上課操作步驟卡](steps.md)　｜　[核心閱讀：現代網路服務與 SaaS 架構](saas_architecture.md)　｜　[下一週](../wk02_1014_baas-cicd/README.md)
-
----
-
-## 1. 單元概要
-
-| 項目 | 內容 |
-| --- | --- |
-| 日期與時數 | 2026 年 10 月 7 日，2 小時（兩節） |
-| 對應檢核點 | 檢核點 1 架構理解、檢核點 2 前端原型、檢核點 3 部署上線（定義見 [學習檢核點](../../docs/checkpoints.md)） |
-| 使用工具 | VS Code、GitHub Copilot（Agent／Ask 模式）、Git 與 GitHub、Netlify |
-| 單元成果 | 每位學生擁有一個 GitHub repo、一份以 AI 協助完成的產品形象首頁，以及一個可公開存取的 Netlify 網址 |
-| 核心閱讀 | [現代網路服務與 SaaS 架構](saas_architecture.md)、[社群媒體平台的系統架構](social_media_architecture.md) |
-
-本單元以「使用 SaaS 服務打造自己的 SaaS 產品」為主軸：前半段建立理解現代網路服務的概念框架，後半段實際使用業界通用的開發工具，完成從撰寫、版本控制到部署上線的完整流程。
+[一頁版步驟清單](steps.md)　｜　[提示詞](prompts.md)　｜　[學習單](worksheet.md)　｜　[下一週](../wk02_1014_baas-cicd/README.md)
 
 ---
 
-## 2. 學習目標
+## 今天會做出什麼
 
-完成本單元後，學生應能：
+今天你會從零開始，做出一個屬於自己的產品介紹網頁，並把它放上網路。你不需要會寫程式：網頁由 GitHub Copilot（寫在 VS Code 裡的 AI 助理）依照你的描述產生，你負責檢查、修改和上傳。
 
-1. **說明**大型社群平台的分層架構，並追蹤「按讚」操作在各服務之間的處理路徑。（理解）
-2. **比較**套裝軟體、ASP 與 SaaS 的交付模式，以及 IaaS、PaaS、SaaS 三種雲端服務模式的責任分擔。（理解、分析）
-3. **解釋** repo、commit、clone、sync 的意義，並區分本機儲存庫與 GitHub 遠端儲存庫。（理解）
-4. **建立** GitHub repo，並以 VS Code 複製（clone）到本機。（應用）
-5. **撰寫**結構完整的提示，運用 GitHub Copilot 產生符合自身創業題目的形象首頁，並在接受變更前審查差異。（應用、評鑑）
-6. **部署**網站至 Netlify，取得公開網址，並說明 Netlify 在部署過程中執行的工作。（應用）
-7. **評估**新創在自建與購買雲端服務之間的取捨。（評鑑）
+**最終成果：** 下課時，你會有
 
----
+1. 一個 GitHub 上的 repo（儲存庫）：放在 GitHub 上的專案資料夾，會記住每一次修改。
+2. 一個 `index.html` 網頁：介紹你的創業題目，有標題、功能介紹、價格方案，手機也能正常瀏覽。
+3. 一個公開網址，例如 `https://ntpu-rent-radar-123.netlify.app`：任何人用手機都打得開。
 
-## 3. 先備條件：檢核點 0（課前準備）
-
-請於上課前完成 [課前準備清單](../../docs/tutorials/before_class.md)，安裝與設定步驟見 [VS Code 與 Copilot 入門](../../docs/tutorials/vscode_copilot_starter.md)：
-
-- [ ] 已註冊 GitHub 帳號並完成雙重驗證（two-factor authentication）設定。
-- [ ] 已安裝 VS Code 與 Git，並在 VS Code 中登入 GitHub、啟用 GitHub Copilot。
-- [ ] 已安裝 Live Preview 擴充功能。
-- [ ] 已使用 GitHub 帳號登入 Netlify。
-- [ ] 已以 Copilot 產生一個「Hello NTPU」頁面並成功預覽。
-
-尚未完成者，請於上課前 10 分鐘到教室，由助教協助。環境問題初學者常遇到，屬正常現象；請勿等到實作段落才提出。
-
----
-
-## 4. 課堂進行方式
-
-- **配對程式設計（pair programming）**：兩人一組，一人擔任**駕駛（driver）**操作電腦，另一人擔任**導航員（navigator）**對照 [步驟卡](steps.md) 確認步驟、檢查畫面與錯誤訊息。每個段落結束後交換角色。兩人都必須在自己的電腦上完成所有步驟與成果。
-- **課堂即時回饋卡（紅綠便利貼）**：綠色表示已完成該段落；紅色表示需要協助，助教將依序巡視。
-- **15 分鐘求助原則**：同一個問題自行排除超過 15 分鐘仍無進展時，應先查閱 [疑難排解手冊](../../docs/tutorials/error_guide.md)，再貼紅色便利貼請求協助。
-- **預測—觀察—解釋（Predict–Observe–Explain, POE）**：開場請學生先預測，課程結束時對照觀察結果並解釋差異，以促進概念改變。
-
----
-
-## 5. 時程
-
-| 段落 | 時間 | 主題 | 核心概念 | 主要教材 |
-| --- | --- | --- | --- | --- |
-| 0 | 0:00–0:05 | 開場示範：從一句提示到網站上線 | 本單元的終點成果 | 教師現場示範 |
-| 1 | 0:05–0:35 | 現代網路服務與 SaaS 架構 | 交付模式、雲端服務模式、分層架構 | [social_saas.html](slides/social_saas.html)、[foodcourt.html](slides/foodcourt.html) |
-| 2 | 0:35–0:55 | 以 GitHub 建立專案儲存庫 | repo、commit、clone | [git_flow.html](slides/git_flow.html)、[Git 與 GitHub 入門](../../docs/tutorials/git_intro.md) |
-| 3 | 0:55–1:30 | 以 GitHub Copilot 建立產品前端 | 前端、提示設計、AI 輸出審查 | [prompt_builder.html](slides/prompt_builder.html)、[prompts.md](prompts.md) |
-| 4 | 1:30–1:55 | 提交、同步與 Netlify 部署 | commit／sync、靜態託管、CDN | [steps.md](steps.md)、[部署教學](../../docs/tutorials/github_netlify_deploy.md) |
-| 5 | 1:55–2:00 | 作品巡禮與出場券 | 反思與同儕回饋 | [worksheet.md](worksheet.md) |
-
----
-
-## 6. 段落 0：開場示範（5 分鐘）
-
-**教師示範**：不先講解理論，直接在 VS Code 以一句提示請 Copilot 建立「三峽美食地圖」頁面，接受變更後執行 Commit 與 Sync；Netlify 偵測到新的 commit 後自動部署。完成後將網址轉為 QR Code，學生以手機開啟。（教師事先建好 repo 並連結 Netlify，現場只展示「提示 → 提交 → 自動更新」三個動作。）
-
-**學生活動（POE 預測）**：在 [學習單](worksheet.md) 第 1 題寫下預測：若在十年前委外製作一個相同的網站並公開上線，需要多少費用、時間與哪些專業人員？此題沒有標準答案，目的在於事後對照。
-
----
-
-## 7. 段落 1：現代網路服務與 SaaS 架構（30 分鐘）
-
-**核心概念**：軟體交付模式、SaaS 的定義性特徵、IaaS／PaaS／SaaS、大型平台的分層架構、自建與購買的取捨。
-
-### 7.1 從買斷到訂閱（5 分鐘）
-
-**課堂調查**：請學生舉手回答每天使用 Instagram 或 LINE、每月訂閱 Netflix、Spotify 或 ChatGPT 的情形，引出「訂閱」與「免費但有廣告」兩種模式。
-
-| 面向 | 套裝軟體（買斷授權） | SaaS（軟體即服務） |
+| 時間 | 段落 | 你要做的事 |
 | --- | --- | --- |
-| 例子 | 光碟版 Office、單機遊戲 | Google Workspace、Canva、Netflix |
-| 取得方式 | 下載或安裝光碟 | 開啟瀏覽器或 App |
-| 軟體與資料位置 | 使用者的電腦 | 供應商的雲端 |
-| 更新方式 | 使用者自行安裝 | 供應商持續部署 |
-| 收入模式 | 一次性授權費 | 訂閱、廣告、交易抽成 |
+| 0:00 | Part 0 開場示範（5 分鐘） | 看老師示範，寫下一個預測 |
+| 0:05 | Part 1 認識 SaaS 架構（30 分鐘） | 操作兩個互動網頁，完成小測驗（檢核點 1） |
+| 0:35 | Part 2 GitHub 建 repo 並 clone（20 分鐘） | 在 GitHub 建立 repo，下載到 VS Code |
+| 0:55 | Part 3 用 Copilot 做網頁（35 分鐘） | 用提示詞請 Copilot 做出網頁並修改（檢核點 2） |
+| 1:30 | Part 4 提交、同步、Netlify 上線（25 分鐘） | 上傳到 GitHub，用 Netlify 發布網站（檢核點 3） |
+| 1:55 | Part 5 收尾（5 分鐘） | 看同學作品，寫出場券 |
 
-**概念說明**：SaaS 的經濟特性在於**高固定成本、低邊際成本**：軟體開發一次後，每多服務一位使用者只增加少量運算與頻寬費用；訂閱制則帶來可預測的經常性收入（MRR）。但低邊際成本並非零成本，客戶流失率（churn）與客戶取得成本（CAC）決定了一家 SaaS 公司能否獲利。完整說明與計算範例見 [核心閱讀第 4 節](saas_architecture.md#4-saas-的單位經濟學unit-economics)。
+**上課方式：** 兩人一組。一人操作電腦（駕駛），一人照著本頁唸步驟、看畫面（導航員），每個 Part 結束後交換。兩個人都要在自己的電腦上完成。卡住 15 分鐘以上，先查 [疑難排解手冊](../../docs/tutorials/error_guide.md)，再舉手或貼紅色便利貼。
 
-### 7.2 大型社群平台的系統架構（12 分鐘）
+---
 
-**教師示範**：開啟 [slides/social_saas.html](slides/social_saas.html)。
+## 上課前確認清單（檢核點 0）
 
-1. **架構圖分頁**：由上而下說明用戶端、邊緣層（CDN、負載平衡）、API 閘道、微服務、資料層、基礎設施與外部 SaaS 服務，並點選 CDN、推薦系統、推播三個元件。
-2. **操作流程分頁**：播放「按讚」動畫，提問：「介面上的愛心變色之後，還有哪些服務在工作？」引出訊息佇列與非同步處理；再播放「發布限時動態」與「傳送訊息」。
-3. **商業模式分頁**：廣告、訂閱與電商抽成。
+進教室前請逐項確認。任何一項沒完成，請提早 10 分鐘到教室找助教。詳細步驟見 [課前準備清單](../../docs/tutorials/before_class.md) 與 [VS Code 與 Copilot 入門](../../docs/tutorials/vscode_copilot_starter.md)。
+
+- [ ] 我有 GitHub 帳號，而且登入時會用手機做雙重驗證。
+- [ ] 我的電腦已安裝 VS Code 和 Git。
+- [ ] VS Code 左下角的人像圖示（帳戶，Accounts）點開後，看得到我的 GitHub 帳號。
+- [ ] VS Code 已啟用 GitHub Copilot，並安裝了 Live Preview 擴充功能。
+- [ ] 我已經用 GitHub 帳號登入過 Netlify（<https://app.netlify.com/>）。
+- [ ] 我曾經請 Copilot 做出一個「Hello NTPU」頁面，並成功預覽。
+- [ ] 筆電有電，手機也帶在身上（最後要用手機檢查網站）。
+
+---
+
+## Part 0：開場示範（0:00–0:05，5 分鐘）
+
+這一段你只要看和寫。老師會在 5 分鐘內，從一句話做出一個網站並讓大家用手機打開。
+
+### 步驟 1：看老師示範（約 3 分鐘）
+
+1. 看老師在 VS Code 輸入一句提示詞，請 Copilot 做出「三峽美食地圖」網頁。
+2. 看老師按下 **提交（Commit）** 和 **同步變更（Sync Changes）**。
+3. 用手機掃描投影幕上的 QR Code，打開老師的網站。
+
+**完成後你應該看到：** 手機上出現「三峽美食地圖」網頁。
+
+**如果不一樣：** 掃不到 QR Code → 請旁邊同學把網址傳給你，或手動輸入投影幕上的網址。
+
+### 步驟 2：寫下你的預測（約 2 分鐘）
+
+1. 打開 [學習單](worksheet.md) 第 1 題。
+2. 寫下你的猜測：十年前請人做一個同樣的網站並放上網路，要花多少錢、多少時間。
+
+**完成後你應該看到：** 學習單第 1 題已填好兩個數字。沒有標準答案，下課時會回頭對照。
+
+---
+
+## Part 1：認識 SaaS 架構（0:05–0:35，30 分鐘）
+
+這一段用兩個互動網頁，看懂「你每天用的 App 背後長怎樣」，以及「我們今天要用哪四個雲端服務」。做完會通過一個小測驗，也就是檢核點 1。
+
+SaaS（軟體即服務）＝ 不用安裝、打開瀏覽器或 App 就能用的軟體，例如 Instagram、Gmail、Canva。
+
+### 步驟 3：打開互動網頁（約 2 分鐘）
+
+1. 打開瀏覽器，前往 <https://github.com/cychiang-ntpu/VibeNTPU>。
+2. 按綠色的 **Code** 按鈕，再按 **Download ZIP**。
+3. 解壓縮下載的檔案。
+4. 進入 `lectures/wk01_1007_saas-storefront/slides/` 資料夾。
+5. 雙擊 `social_saas.html`，用瀏覽器開啟。
+
+**完成後你應該看到：** 網頁上方有三個分頁：「1. 分層架構圖」「2. 請求流程演示」「3. 商業模式與測驗」。
+
+**如果不一樣：** 在 GitHub 網頁上直接點 `.html` 只會看到一堆程式碼，這是正常的，請改用下載 ZIP 的方式。來不及下載的話，先看老師投影，下課再補。
+
+### 步驟 4：點選架構圖上的元件（約 6 分鐘）
+
+1. 確認目前在 **1. 分層架構圖** 分頁。
+2. 點選最上面的 **手機 App**，閱讀右側說明。
+3. 點選 **內容傳遞網路**（CDN），閱讀說明。
+4. 點選中間的 **推薦系統**，閱讀說明。
+5. 點選 **推播服務**，閱讀說明。
+6. 按上方的 **對照 MVP 架構** 按鈕。
+
+**完成後你應該看到：** 每點一個方塊，右側「元件說明」就換成那個元件的介紹；按下「對照 MVP 架構」後，畫面出現一段說明：新創只需要幾項現成服務就能運作。
+
+**如果不一樣：** 右側沒有出現說明 → 把瀏覽器視窗拉寬；視窗太窄時，說明會出現在架構圖下方，請往下捲動。
+
+### 步驟 5：播放「在 IG 按讚」（約 6 分鐘）
+
+1. 點選 **2. 請求流程演示** 分頁。
+2. 點選情境按鈕 **按讚**。
+3. 按 **下一步 →**，一次看一步，唸出每一步的說明給組員聽。
+4. 數一數從按讚到作者收到通知，一共經過幾步，寫在 [學習單](worksheet.md) 第 2 題。
+
+**完成後你應該看到：** 每按一次「下一步」，架構圖上就有一個方塊亮起並標上號碼，最後一步是「作者的手機顯示通知」。
+
+**如果不一樣：** 「下一步」按鈕是灰色的 → 先點選上方的情境按鈕 **按讚**。
+
+### 步驟 6：看懂一張簡單的架構圖（約 4 分鐘）
+
+1. 閱讀下面這張圖，由左往右看。
+2. 對照剛剛的按讚動畫，找出你的手機、資料庫和推播各在哪一格。
 
 ```mermaid
 flowchart LR
-    A["用戶端 App"] --> B["CDN 與負載平衡"] --> C["API 閘道"] --> D["微服務<br/>按讚、動態牆、私訊<br/>推薦、廣告"] --> E["資料層<br/>資料庫、快取、物件儲存"] --> F["資料中心"]
-    D --> G["推播服務<br/>Apple APNs、Google FCM"]
+    A["你的手機 App"] --> B["網路入口<br/>CDN 與負載平衡"]
+    B --> C["API<br/>收件窗口"]
+    C --> D["各種小服務<br/>按讚、私訊、推薦"]
+    D --> E["資料庫與照片倉庫"]
+    D --> F["推播<br/>通知對方手機"]
+    E --> G["資料中心"]
 ```
 
-**概念說明**：一個 App 背後由數十個獨立服務組成，稱為**微服務架構**。這種拆分讓各團隊能獨立開發與擴充，也讓單一功能故障（例如私訊）不致影響其他功能（例如動態牆）。此外，即使是大型平台也會使用外部 SaaS：iOS 與 Android 的推播通知必須經由 Apple 與 Google 的推播服務送達。完整說明（含動態牆生成策略、最終一致性、推薦管線）見 [社群媒體平台的系統架構](social_media_architecture.md)。
+**完成後你應該看到：** 你能用一句話說出按讚的路線：手機送出 → 入口 → 按讚服務 → 存進資料庫 → 推播通知作者。
 
-### 7.3 自建或購買（5 分鐘）
+想看每一格的白話說明：見 [你每天用的 App 背後長怎樣](social_media_architecture.md)。
 
-**教師示範**：開啟 [slides/foodcourt.html](slides/foodcourt.html) 第一個分頁，拖動月數拉桿比較兩種方案的累積成本。
+### 步驟 7：比較「自建」和「使用雲端服務」（約 5 分鐘）
 
-以一個類比引入：傳統創業像在深山買地蓋餐廳，水電、保全、廚房都要自己建；現代 SaaS 創業則像進駐百貨公司美食街，基礎設施由業者提供。對應到技術上，前者是自行架設伺服器、資料庫與部署流程（自建），後者是組合 PaaS、BaaS 與 SaaS 服務（購買）。
+1. 回到 `slides` 資料夾，雙擊 `foodcourt.html`。
+2. 在 **1. 自建與雲端服務** 分頁，拖動「驗證期間」拉桿，從 3 個月拉到 12 個月。
+3. 觀察兩條成本長條的差距。
+4. 點選 **2. 服務分工與資料流** 分頁，按 **播放資料流**。
 
-**概念說明**：兩者的差異在於前期成本、上市時間、維運負擔、擴充性、供應商鎖定與控制權。一般原則是「在驗證市場需求之前優先購買」。比較表見 [核心閱讀第 7 節](saas_architecture.md#7-自建或購買新創的技術決策)。
+**完成後你應該看到：** 自建的成本隨月數快速增加，雲端服務幾乎維持在 0 元；資料流動畫依序經過我們今天要用的幾個服務。
 
-### 7.4 本課程的架構組成（3 分鐘）
+一句話說明：自建就像在深山自己蓋餐廳，水電廚房都要自己來；使用雲端服務就像進駐美食街，水電、清潔由業者負責，你只要專心做菜。對剛起步的新創來說，還不確定有沒有人要買之前，先租用現成服務，花費少、上線快，這也是本課程的做法。
 
-切換到 foodcourt.html 第二個分頁播放資料流，並回到 social_saas.html 開啟 MVP 對照功能。
+我們今天的網站，就是由下面四塊組成：
 
-| 架構層 | 本課程使用的工具 | 服務模式 | 對應大型平台的元件 | 週次 |
-| --- | --- | --- | --- | --- |
-| 前端 | `index.html`（以 Copilot 協助撰寫） | — | App 與網頁介面 | 第 1 週 |
-| 版本控制 | Git ＋ GitHub | SaaS | 內部版本控制與 CI/CD 系統 | 第 1 週 |
-| 託管與 CDN | Netlify | PaaS | CDN、負載平衡、資料中心 | 第 1 週 |
-| 後端資料收集 | Netlify Forms | 後端即服務（BaaS） | 資料庫與後端服務 | 第 2 週 |
-
-本課程不直接操作 IaaS（例如 GCP、AWS 的虛擬機器），因為對早期新創而言，維運伺服器的成本遠高於其帶來的控制權。
-
-### 7.5 形成性評量：檢核點 1（5 分鐘）
-
-完成 [foodcourt.html](slides/foodcourt.html) 或 [social_saas.html](slides/social_saas.html) 的架構互動測驗，**答對 80% 以上**即達成檢核點 1。每題皆附解說，未達標準可重新作答；此即「提取練習（retrieval practice）」，回想本身有助於長期記憶。
-
----
-
-## 8. 段落 2：以 GitHub 建立專案儲存庫（20 分鐘）
-
-**核心概念**：儲存庫（repository, repo）、提交（commit）、暫存（stage）、複製（clone）、同步（sync：pull 與 push）。
-
-### 8.1 概念說明
-
-- **Git 與 GitHub**：Git 是在本機電腦上執行的**分散式版本控制系統（distributed version control system）**；GitHub 是代管 Git 儲存庫的雲端服務（SaaS），另提供協作、議題追蹤與自動化功能。
-- **儲存庫（repo）**：一個由 Git 追蹤的專案資料夾。除了你看得到的檔案之外，其中隱藏的 `.git` 資料夾保存了這個專案**完整的歷史紀錄**。
-- **提交（commit）**：專案在某一時間點的**完整快照**，並附帶作者、時間、說明訊息，以及一個由內容計算出的唯一識別碼（雜湊值，hash）。每個 commit 都記錄其前一個 commit，因此所有 commit 串成一條可追溯的歷史；任何時候都能比較兩個版本的差異，或回到過去的版本。
-- **暫存（stage）**：選擇哪些變更要納入下一個 commit 的步驟，讓一次 commit 只包含相關的修改。
-- **複製（clone）**：把遠端儲存庫連同全部歷史下載到本機，並記住它的來源位址（稱為 `origin`）。
-- **同步（sync）**：VS Code 的「同步變更」會依序執行 pull（取得遠端的新 commit）與 push（上傳本機的新 commit）。
-
-最重要的一點：**commit 只存在你的電腦上；執行 sync（push）之後，GitHub 與 Netlify 才看得到。** 本課程中，GitHub 上的 repo 同時是 Netlify 的部署來源，因此「推送到 GitHub」就等於「送出部署」。
-
-### 8.2 模擬器練習（5 分鐘）
-
-開啟 [slides/git_flow.html](slides/git_flow.html)，依序操作：請 Copilot 修改 → Stage → Commit（輸入說明）→ Sync，觀察網站如何更新。
-
-| 動作 | 意義 | VS Code 操作位置 |
+| 我們的四塊 | 白話說明 | 今天用的工具 |
 | --- | --- | --- |
-| Clone | 將遠端 repo 與歷史複製到本機 | 原始檔控制 → 複製存放庫 |
-| Commit | 在本機建立一個具說明的版本快照 | 訊息框 → 提交 |
-| Sync（pull ＋ push） | 與 GitHub 交換 commit | 同步變更 ↑1 |
+| 前端 | 使用者看到的網頁畫面 | `index.html`（Copilot 幫忙寫） |
+| 版本控制 | 存放網頁、記住每次修改的雲端資料夾 | GitHub |
+| 託管與 CDN | 把網頁放上網路，讓全世界都打得開 | Netlify |
+| 後端資料收集 | 收下訪客留下的資料（第 2 週才做） | Netlify Forms |
 
-### 8.3 建立 repo 並複製到本機（15 分鐘）
+### 步驟 8：完成小測驗（約 7 分鐘）
 
-**教師示範**後，學生依 [步驟卡第 2 節](steps.md#2-段落-2建立-repo-並複製到本機) 操作：
+1. 回到 `social_saas.html`，點選 **3. 商業模式與測驗** 分頁。
+2. 往下捲到 **3.3 架構理解測驗**。
+3. 逐題點選你認為正確的答案，閱讀每題下方的解說。
+4. 答錯的題目，讀完解說後重新作答。
 
-1. 於 <https://github.com/new> 建立 repo（名稱使用英文小寫與連字號，例如 `rent-radar`），選擇 **Public**，並勾選 **Add a README file**。
-2. 在 VS Code 開啟**原始檔控制**（`Ctrl+Shift+G`／`⌃⇧G`）→ **複製存放庫** → **從 GitHub 複製** → 選擇剛建立的 repo → 選擇存放位置 → **開啟**。
-3. 確認左側檔案總管顯示 `README.md`。
+**完成後你應該看到：** 答對 80% 以上。
 
-詳細說明見 [Git 與 GitHub 入門](../../docs/tutorials/git_intro.md)。選擇 Public 是因為 Netlify 免費方案與同儕檢視都需要公開存取；請勿在 repo 中放入個人資料、密碼或 API 金鑰，因為 commit 歷史會永久保留這些內容。
+**如果不一樣：** 分數不到 80% → 重做一次；也可以改做 `foodcourt.html` 的 **3. 架構理解測驗** 分頁。
 
-段落結束，駕駛與導航員交換角色。
+**檢核點 1（架構理解）完成：** 測驗答對 80% 以上。請把綠色便利貼貼在螢幕上。
+
+**這一步在架構中的位置：** 你剛剛看懂了整張架構圖。接下來的 Part 2 到 Part 4，會依序做出其中的「版本控制」「前端」「託管與 CDN」三塊。
+
+想了解原理（SaaS 的收費方式、打開網址時發生什麼事）：見 [SaaS 模式與網站運作（選讀）](../../docs/deep_dive/saas_and_web.md)。
 
 ---
 
-## 9. 段落 3：以 GitHub Copilot 建立產品前端（35 分鐘）
+## Part 2：GitHub 建 repo 並 clone（0:35–0:55，20 分鐘）
 
-**核心概念**：前端（frontend）、提示設計（prompt specification）、Agent 模式、AI 輸出審查。
+這一段先在 GitHub 網站上建立一個空的專案資料夾（repo），再把它下載到 VS Code。做完後，你的電腦和 GitHub 上各有一份同樣的資料夾。
 
-### 9.1 選擇創業題目（5 分鐘）
+clone（複製）＝ 把 GitHub 上的 repo 下載到自己電腦，而且兩邊之後可以同步。
 
-請選擇一個你真正關心、能具體描述目標使用者與痛點的題目：
+### 步驟 9：在 GitHub 建立 repo（約 5 分鐘）
+
+1. 打開瀏覽器，前往 <https://github.com/new>。
+2. 確認右上角是你自己的 GitHub 帳號（大頭貼）。
+3. 在 **Repository name** 欄位輸入你的 repo 名稱，例如 `rent-radar`（只能用英文小寫、數字和 -）。
+4. 選擇 **Public**（公開）。
+5. 找到 **Add README** 開關（或 **Add a README file** 勾選框），把它打開。
+6. 按頁面最下方綠色的 **Create repository** 按鈕。
+
+**完成後你應該看到：** 網址變成 `github.com/你的帳號/rent-radar`，頁面中間有一個 `README.md` 檔案。
+
+**如果不一樣：**
+- 顯示「name already exists」→ 換一個名字，例如加上學號末三碼：`rent-radar-123`。
+- 頁面沒有 `README.md` → 你漏了第 5 步。在該頁面按 **Add a README**，再按綠色的 **Commit changes** 即可補上。
+
+為什麼選 Public：Netlify 免費方案和同學互看作品都需要公開。因此 repo 裡絕對不要放個人資料、密碼。
+
+### 步驟 10：在 VS Code 打開「原始檔控制」（約 2 分鐘）
+
+1. 打開 VS Code。
+2. 如果 VS Code 已經開著某個資料夾，先按上方選單 **檔案（File）** → **新增視窗（New Window）**，在新視窗操作。
+3. 在 VS Code 左側最左邊那一排圖示中，點選形狀像樹枝分岔的圖示：**原始檔控制（Source Control）**。也可以按 `Ctrl+Shift+G`（macOS：`⌃⇧G`）。
+
+**完成後你應該看到：** 左側面板出現兩個藍色按鈕：**開啟資料夾（Open Folder）** 和 **複製存放庫（Clone Repository）**。
+
+**如果不一樣：** 沒有看到 **複製存放庫（Clone Repository）** 按鈕 → 表示 VS Code 找不到 Git，請回到 [VS Code 與 Copilot 入門](../../docs/tutorials/vscode_copilot_starter.md) 安裝 Git，並重新啟動 VS Code。
+
+### 步驟 11：把 repo 複製到電腦（clone）（約 8 分鐘）
+
+1. 按 **複製存放庫（Clone Repository）**。
+2. VS Code 上方中間會跳出一個選單，點選 **從 GitHub 複製（Clone from GitHub）**。
+3. 如果跳出「擴充功能 'GitHub' 想要使用 GitHub 登入」，按 **允許（Allow）**。
+4. 瀏覽器打開 GitHub 授權頁面時，按 **Authorize Visual-Studio-Code**，然後切換回 VS Code。
+5. 在上方的清單中，點選 `你的帳號/rent-radar`（可以直接輸入 `rent-radar` 搜尋）。
+6. 在跳出的資料夾視窗中，選擇一個好找的位置，例如「文件」（Documents）。
+7. 按 **選取為存放庫目的地（Select as Repository Destination）**。
+8. 等右下角跳出「要開啟複製的存放庫嗎？（Would you like to open the cloned repository?）」，按 **開啟（Open）**。
+9. 如果跳出「您信任此資料夾中檔案的作者嗎？」，按 **是，我信任作者（Yes, I trust the authors）**。
+
+**完成後你應該看到：** VS Code 左側 **檔案總管（Explorer）**（最上面那個兩張紙的圖示）中出現資料夾名稱 `RENT-RADAR`，裡面有 `README.md`。視窗左下角顯示 `main`。
+
+**如果不一樣：**
+- 清單裡找不到你的 repo → 確認步驟 9 已按下 **Create repository**；或回到 GitHub 頁面，按綠色 **Code** 按鈕，複製 `https://...` 網址，貼到 VS Code 上方的輸入框後按 Enter。
+- 不小心按掉右下角的通知 → 按 **檔案（File）** → **開啟資料夾（Open Folder）**，選擇剛才存放的 `rent-radar` 資料夾。
+
+### 步驟 12：確認兩邊都有同樣的檔案（約 2 分鐘）
+
+1. 在 VS Code 檔案總管中，點一下 `README.md`，看它的內容。
+2. 回到瀏覽器的 GitHub repo 頁面，對照 `README.md` 的內容。
+
+**完成後你應該看到：** 兩邊的 `README.md` 內容一樣，第一行都是 `# rent-radar`。
+
+**這一步在架構中的位置：** 你剛剛建立了課程架構中的「版本控制」這一塊。GitHub 上的 repo 之後也會成為 Netlify 發布網站的來源。
+
+請交換駕駛與導航員。
+
+---
+
+## Part 3：用 Copilot 做網頁（0:55–1:30，35 分鐘）
+
+這一段先決定你的創業題目，再用提示詞產生器寫好要求，交給 Copilot 做出網頁。做完後，你的 repo 資料夾裡會多一個可以預覽的 `index.html`，也就是檢核點 2。
+
+提示詞 ＝ 你交給 AI 的文字說明，寫得越具體，結果越接近你要的樣子。
+
+### 步驟 13：決定創業題目（約 5 分鐘）
+
+1. 從下表挑一個題目，或自己想一個你真的在意的問題。
+2. 在 [學習單](worksheet.md) 第 3 題寫下：產品名稱、給誰用、解決什麼問題。
 
 | 學院 | 題目參考 |
 | --- | --- |
-| 法律學院 | 租屋契約條款檢核工具、學生打工權益問答 |
-| 商學院 | 學生記帳與訂閱管理、二手教科書交易平台 |
-| 公共事務學院 | 三峽社區活動地圖、公共議題資訊整理 |
-| 社會科學學院 | 心情紀錄與同儕支持、志工媒合平台 |
+| 法律學院 | 租屋契約條款檢核、學生打工權益問答 |
+| 商學院 | 學生記帳與訂閱管理、二手教科書交易 |
+| 公共事務學院 | 三峽社區活動地圖、公共議題懶人包 |
+| 社會科學學院 | 心情紀錄與同儕支持、志工媒合 |
 | 人文學院 | 三峽老街文史導覽、語言交換配對 |
-| 電機資訊學院 | 課程作業互助、實驗室設備預約 |
 | 不限學院 | 三峽學餐地圖、寵物照顧媒合、運動揪團 |
 
-若尚無想法，可於 Copilot Chat 的 **Ask** 模式使用 [提示 0：創業題目發想](prompts.md#51-提示-0創業題目發想ask-模式)。
+**完成後你應該看到：** 你能用一句話說出「我的產品幫 ＿＿ 解決 ＿＿ 的問題」。
 
-### 9.2 概念說明
+**如果不一樣：** 想不出來 → 使用 [提示詞 0：題目發想](prompts.md)，請 Copilot 給你幾個點子。
 
-- **前端**：使用者在瀏覽器中直接看到並互動的部分，由三種技術組成：HTML 定義內容結構、CSS 定義視覺呈現與版面、JavaScript 定義互動行為。本課程要求三者寫在同一個 `index.html`，以便 Netlify 直接託管、不需任何建置步驟。
-- **Vibe coding**：以自然語言描述期望的結果，由 AI 產生程式碼，開發者負責檢視、測試並回饋修改。這個說法由 Andrej Karpathy 於 2025 年提出。它降低了撰寫程式的門檻，但**沒有降低對結果負責的要求**。
-- **Ask 模式與 Agent 模式**：Ask 模式只回答問題、不修改檔案。Agent 模式會讀取工作區內容、自行規劃步驟、建立或修改多個檔案，必要時提議執行終端機指令；所有檔案變更以差異（diff）呈現，按下 **Keep** 才會保留，按 **Undo** 則還原。
-- **Agent 模式的風險**：可能修改你未預期的檔案；可能提議執行 `git`、套件安裝等指令，若未看懂就允許，可能改變專案狀態；可能產生看似合理但錯誤的程式碼（常稱為幻覺，hallucination）。因此課堂規則是：**提議執行指令時一律選擇略過（Skip），Git 操作由自己在原始檔控制面板完成；接受變更前先閱讀差異。** 完整的審查清單與限制說明見 [prompts.md 的驗證清單](prompts.md#3-ai-輸出的驗證清單)。
+### 步驟 14：用提示詞產生器寫好提示詞（約 7 分鐘）
 
-### 9.3 教師示範（5 分鐘）
+1. 回到下載的 `slides` 資料夾，雙擊 `prompt_builder.html`（提示詞產生器）。
+2. 確認上方選的是 **第 1 週：產生首頁**。
+3. 在「使用的 AI 助理」選擇 **GitHub Copilot（VS Code）**。
+4. 依序填入 **產品名稱**、**一句話介紹**、**目標客群**、**三個核心功能**、**收費方式**。
+5. 選一個 **視覺風格**，例如「沉穩專業」。
+6. 確認「提示詞完整度」達到 100%。
+7. 按 **複製提示詞**。
 
-教師以「三峽租屋雷達」完整示範：在提示產生器填寫欄位 → 貼到 Copilot Chat（Agent 模式）→ 檢視 Copilot 建立的 `index.html` 差異 → Keep → 右鍵 **Show Preview** 預覽。此段學生只需觀察。
+**完成後你應該看到：** 按下複製後，按鈕旁出現「已複製」之類的提示；右側「2. 產生的提示詞」區塊有一大段文字。
 
-### 9.4 引導練習（15 分鐘）
+**如果不一樣：** 無法開啟提示詞產生器 → 改用 [prompts.md](prompts.md) 的「提示詞 1」，把 `【】` 裡的文字換成你的內容。
 
-1. 開啟 [slides/prompt_builder.html](slides/prompt_builder.html)（提示產生器），AI 工具選擇 **GitHub Copilot（VS Code）**。
-2. 填寫產品名稱、一句話介紹、目標使用者、三項核心功能等欄位，直到完整度達 100%，按下複製。
-3. 回到 VS Code，確認左側開啟的是剛才 clone 的 repo 資料夾。
-4. 開啟 Copilot Chat（`Ctrl+Alt+I`／`⌃⌘I`），模式選擇 **Agent**，貼上提示並送出。
-5. Copilot 完成後，檢視差異，確認只新增或修改了 `index.html`，再按 **Keep**。
-6. 在 `index.html` 上按右鍵 → **Show Preview**，或以瀏覽器開啟檔案。
+### 步驟 15：把提示詞交給 Copilot（約 8 分鐘）
 
-偏好自行撰寫提示者，可使用 [prompts.md 的提示 1](prompts.md#52-提示-1產生產品形象首頁agent-模式)。
+1. 回到 VS Code，確認左側檔案總管最上方是你的 repo 名稱（例如 `RENT-RADAR`）。
+2. 按 `Ctrl+Alt+I`（macOS：`⌃⌘I`）打開 Copilot Chat；或點選視窗最上方中間搜尋框旁的 Copilot 圖示。
+3. 在右側 Chat 輸入框下方，找到模式選單（可能顯示 Ask），點開並選擇 **Agent**。
+4. 在輸入框按 `Ctrl+V`（macOS：`⌘V`）貼上提示詞。
+5. 按 Enter 送出。
+6. 等待 Copilot 完成（約 1–3 分鐘），不要關閉視窗。
+7. 如果 Copilot 要求執行終端機指令（出現 **允許（Allow）**／**繼續（Continue）** 按鈕），請選擇 **略過（Skip）**。
 
-### 9.5 自主修改（10 分鐘）
+**完成後你應該看到：** Chat 中出現「已變更 1 個檔案」之類的訊息，檔案總管裡出現 `index.html`，旁邊有綠色的 **U**（代表新檔案）。
 
-AI 的第一次產出通常不完全符合需求，這是正常的迭代過程。請在同一個對話中提出具體、可驗證的修改要求，例如：
+**如果不一樣：**
+- 找不到 **Agent** 選項 → 先確認你已登入 Copilot（VS Code 左下角帳戶圖示）；仍找不到請舉手。
+- Copilot 回答「已達使用上限」→ 改用 [prompts.md](prompts.md) 最後的「備案：使用網頁版 AI」。
+- `index.html` 出現在別的資料夾 → 你開錯資料夾了。按 **檔案（File）** → **開啟資料夾（Open Folder）**，選擇 `rent-radar` 資料夾後，重做本步驟。
 
-```text
-請將 #index.html 的主色調改為低彩度的藍灰色，並在功能介紹之後新增「使用者回饋」區塊（三則，內容請標示為示意）。其他部分維持不變。
-```
+### 步驟 16：檢查後按「保留」（約 3 分鐘）
 
-更多範例見 [提示 2：迭代修改](prompts.md#53-提示-2迭代修改agent-模式)。Copilot 免費方案每月有使用額度限制，將兩到三項相關修改合併在一次提示中，比多次零碎修改更有效率。
+1. 在 Chat 中點選 `index.html`，看一下 Copilot 新增的內容（綠色底色的部分）。
+2. 確認被修改的檔案只有 `index.html`。
+3. 按 Chat 中的 **保留（Keep）** 按鈕。
 
-完成後以手機寬度檢查版面（Live Preview 或瀏覽器開發者工具的裝置模式）。範例作品見 [samples](../../samples/README.md)。
+**完成後你應該看到：** **保留（Keep）** 和 **復原（Undo）** 按鈕消失，`index.html` 被保存下來。
 
-**完成條件：檢核點 2**：已建立 GitHub repo 並在 VS Code clone，且 repo 資料夾中有一個由 Copilot 產生、可正常預覽的 `index.html`。
+**如果不一樣：** 不小心按了 **復原（Undo）** → 在同一個 Chat 再貼一次提示詞送出。
 
-段落結束，駕駛與導航員交換角色。
+### 步驟 17：預覽網頁（約 3 分鐘）
 
----
+1. 在左側檔案總管中，對 `index.html` 按右鍵。
+2. 點選 **顯示預覽（Show Preview）**。
+3. 在右側預覽畫面上下捲動，看完每個區塊。
 
-## 10. 段落 4：提交、同步與 Netlify 部署（25 分鐘）
+**完成後你應該看到：** 網頁出現你的產品名稱、功能介紹和價格方案。
 
-**核心概念**：commit 與 sync、持續部署的來源、靜態託管、CDN、HTTPS。
+**如果不一樣：**
+- 右鍵選單沒有 **顯示預覽（Show Preview）** → 表示沒裝 Live Preview。改用：在 `index.html` 按右鍵 → **在檔案總管中顯示（Reveal in File Explorer）**（macOS：**在 Finder 中顯示（Reveal in Finder）**），再雙擊檔案用瀏覽器開啟。
+- 畫面是空白的 → 使用 [prompts.md](prompts.md) 的修正提示詞，請 Copilot 修正。
 
-### 10.1 概念說明：Netlify 部署時做了什麼
+### 步驟 18：請 Copilot 修改一次（約 7 分鐘）
 
-當你在 Netlify 選擇「從 Git 匯入」並連結 repo 後：
+1. 打開 [prompts.md](prompts.md) 的「現成的修改提示詞」。
+2. 挑一則，複製後貼到同一個 Copilot Chat，把 `【】` 裡的文字換成你要的內容。
+3. 按 Enter 送出。
+4. 等 Copilot 完成後，重做步驟 16（檢查後按 **保留（Keep）**）。
+5. 回到預覽畫面，確認修改生效。
 
-1. **授權與監聽**：Netlify 透過 GitHub 授權取得讀取 repo 的權限，並監聽指定分支（本課程為 `main` 或 `master`）的推送事件。
-2. **取得程式碼**：每當有新的 commit 推送，Netlify 取得該版本的檔案。
-3. **建置**：執行設定的建置指令。本課程是純 HTML，建置指令與發布目錄皆留空，Netlify 直接發布 repo 根目錄。
-4. **原子化發布（atomic deploy）**：所有檔案上傳完成後才一次切換到新版本，使用者不會看到「一半新、一半舊」的網站。每次部署都保留紀錄與獨立網址，可隨時回復到先前版本。
-5. **網址、HTTPS 與 CDN**：配發 `專案名稱.netlify.app` 子網域與 TLS 憑證，並將檔案分發到 CDN 邊緣節點。
+**完成後你應該看到：** 網頁照你的要求改變了，例如主色換了、多了一個區塊。
 
-這條「推送 commit → 自動部署」的流程，就是第 2 週將深入討論的**持續部署（continuous deployment）**。
+**如果不一樣：** 改得不是你要的 → 按 **復原（Undo）**，把要求寫得更具體再送一次，例如「只修改價格方案區塊，其他部分維持不變」。
 
-```mermaid
-flowchart LR
-    A["VS Code<br/>index.html"] -- "1 提交 Commit" --> A2["本機 Git 歷史"]
-    A2 -- "2 同步 Sync" --> B["GitHub 遠端 repo"]
-    B -- "3 推送事件觸發部署" --> C["Netlify<br/>取得檔案並發布"]
-    C -- "4 發布至 CDN" --> D["https://專案名稱.netlify.app"]
-```
+### 步驟 19：用手機寬度檢查（約 2 分鐘）
 
-### 10.2 操作步驟
+1. 用瀏覽器打開 `index.html`（步驟 17 的第二種方式）。
+2. 按 `F12`（macOS：`⌥⌘I`）打開開發者工具。
+3. 點選開發者工具左上角像手機與平板的圖示（切換裝置工具列）。
+4. 在畫面上方選擇一個手機型號，例如 iPhone。
 
-依 [步驟卡第 4 節](steps.md#4-段落-4提交同步與-netlify-部署檢核點-3) 操作，詳細說明見 [部署教學](../../docs/tutorials/github_netlify_deploy.md)。
+**完成後你應該看到：** 網頁縮成手機寬度，沒有左右捲動，文字沒有被切掉。
 
-| 步驟 | 操作 | 技術意義 |
-| --- | --- | --- |
-| 1 | 原始檔控制輸入訊息 `新增第一版首頁` → **提交** | 在本機建立第一個含 `index.html` 的 commit |
-| 2 | **同步變更**，到 GitHub 網頁確認出現 `index.html` | 將 commit 推送到遠端 |
-| 3 | Netlify：Add new project → Import an existing project → GitHub → 選擇 repo → Deploy | 建立部署來源與自動部署設定 |
-| 4 | 設定易於辨識的專案名稱 | 決定 `*.netlify.app` 子網域 |
-| 5 | 以手機開啟網址，並貼到課程群組 | 驗證公開存取與行動版版面 |
+**如果不一樣：** 版面擠在一起或需要左右捲動 → 使用 [prompts.md](prompts.md) 中「手機版面」的修改提示詞。
 
-**常見問題**：首次提交時出現 Git 使用者名稱或 Email 未設定的錯誤；只提交而未同步，導致 GitHub 上看不到檔案；檔名不是小寫 `index.html`，導致網址顯示 404。處理方式見 [疑難排解手冊](../../docs/tutorials/error_guide.md)。
+**檢核點 2（前端原型）完成：** 你的 repo 資料夾裡有一個 Copilot 產生、可以正常預覽的 `index.html`。
 
-**完成條件：檢核點 3**：GitHub 上可見你的 commit；Netlify 部署成功並可從手機開啟；以 [網站自我檢核工具](../../tools/vibe_check.html) 檢查 `index.html`，Level 1 全部通過。
+**這一步在架構中的位置：** 你剛剛做出了架構中的「前端」，也就是使用者會看到的畫面。不過它現在只在你的電腦上，下一段要把它送上網路。
 
-整個過程沒有購買或設定任何伺服器，也不需要信用卡；網站已由 Netlify 的 CDN 對全球提供服務，並以 HTTPS 加密。這正是本單元所說的「以 SaaS 服務建構自己的 SaaS 產品」。
+想了解原理（Copilot 的 Ask 與 Agent 模式、AI 的限制）：見 [SaaS 模式與網站運作（選讀）](../../docs/deep_dive/saas_and_web.md) 的附錄。
 
----
-
-## 11. 段落 5：作品巡禮與出場券（5 分鐘）
-
-1. **作品巡禮（gallery walk）**：開啟課程群組中至少一組同學的網址，以「我喜歡／我希望／如果」的格式提供一則具體回饋（格式說明見 [作品牆說明](../../showcase/README.md)）。
-2. **出場券（exit ticket）**：完成 [學習單](worksheet.md) 第 5 部分，並回頭對照段落 0 的預測，說明差異的原因（POE 的「解釋」階段）。
-3. **學習歷程檔案**（可於課後完成）：在 VS Code 開啟 repo 中的 `README.md`，貼上 [學習歷程檔案範本](../../templates/portfolio_README.md)，勾選已完成的檢核點，再 Commit 與 Sync。這是你的第二個 commit，也會觸發 Netlify 再次部署。
+請交換駕駛與導航員。
 
 ---
 
-## 12. 本週教材
+## Part 4：提交、同步、Netlify 上線（1:30–1:55，25 分鐘）
 
-| 檔案 | 用途 |
-| --- | --- |
-| [steps.md](steps.md) | 上課操作步驟卡（一頁清單） |
-| [saas_architecture.md](saas_architecture.md) | 核心閱讀：軟體交付模式、雲端服務模式、單位經濟學、網址開啟流程、Jamstack、自建與購買 |
-| [social_media_architecture.md](social_media_architecture.md) | 延伸閱讀：大型社群平台的分層架構、動態牆策略、一致性、推薦系統、可靠性與隱私 |
-| [prompts.md](prompts.md) | Copilot 提示設計指南、驗證清單與 AI 使用規範 |
-| [worksheet.md](worksheet.md) | 學習單：預測、觀察、題目規劃、出場券 |
-| [slides/social_saas.html](slides/social_saas.html) | 互動教材：社群平台架構圖、操作流程動畫、商業模式、測驗 |
-| [slides/foodcourt.html](slides/foodcourt.html) | 互動教材：自建與購買成本比較、課程架構資料流、測驗 |
-| [slides/git_flow.html](slides/git_flow.html) | 互動教材：Git 流程模擬器、VS Code 原始檔控制介面導覽 |
-| [slides/prompt_builder.html](slides/prompt_builder.html) | 提示產生器 |
-| [slides/outline.md](slides/outline.md) | 教師授課大綱 |
-| [announcement.md](announcement.md) | 課程公告文字（課前、當日、課後） |
+這一段先把網頁存成一個版本（提交），再上傳到 GitHub（同步），最後讓 Netlify 把它變成公開網址。做完後，任何人用手機都能打開你的網站，也就是檢核點 3。
+
+commit（提交）＝ 在你的電腦上存一個版本，並寫一句說明；sync（同步）＝ 把這些版本上傳到 GitHub。只提交不同步，GitHub 和 Netlify 都看不到。
+
+### 步驟 20：提交（Commit）（約 3 分鐘）
+
+1. 點選 VS Code 左側的 **原始檔控制（Source Control）** 圖示（上面有一個數字，代表有幾個檔案改過）。
+2. 在面板最上方的訊息框輸入：`新增第一版首頁`。
+3. 按下方藍色的 **提交（Commit）** 按鈕。
+4. 如果跳出「沒有暫存的變更可提交，要自動暫存所有變更並直接提交嗎？」，按 **是（Yes）**。
+
+**完成後你應該看到：** 面板中的檔案清單消失，藍色按鈕變成 **同步變更（Sync Changes）**，旁邊顯示 `1↑`。
+
+**如果不一樣：** 出現「請確定您已設定 user.name 和 user.email」（Make sure you configure your "user.name" and "user.email" in git）→ 表示 Git 還不知道你是誰。請查 [疑難排解手冊](../../docs/tutorials/error_guide.md) 中 Git 使用者名稱的問題，設定後再按一次 **提交（Commit）**。
+
+### 步驟 21：同步（Sync Changes）（約 3 分鐘）
+
+1. 按藍色的 **同步變更（Sync Changes）** 按鈕。
+2. 如果跳出「此動作會推送及提取認可…」的確認視窗，按 **確定（OK）**。
+3. 回到瀏覽器的 GitHub repo 頁面，按 `F5` 重新整理。
+
+**完成後你應該看到：** GitHub 頁面上出現 `index.html`，旁邊寫著「新增第一版首頁」。
+
+**如果不一樣：** GitHub 上沒有 `index.html` → 回 VS Code 檢查：按鈕是否還顯示 `1↑`？若是，再按一次 **同步變更（Sync Changes）**。要求登入時，選擇用瀏覽器登入 GitHub 並授權。
+
+### 步驟 22：在 Netlify 匯入 repo（約 6 分鐘）
+
+1. 打開瀏覽器，前往 <https://app.netlify.com/>，用 GitHub 帳號登入。
+2. 點選 **Add new project**。
+3. 在跳出的選單中點選 **Import an existing project**。
+4. 在「Connect to Git provider」下方點選 **GitHub**。
+5. 如果跳出 GitHub 授權頁面，按 **Authorize Netlify**。
+6. 在 repo 清單中點選你的 repo（例如 `rent-radar`）。
+
+**完成後你應該看到：** 一個設定頁面，上方寫著你的 repo 名稱，下方有 **Branch to deploy**、**Build command**、**Publish directory** 等欄位。
+
+**如果不一樣：** 清單中沒有你的 repo → 點選清單下方的 **Configure the Netlify app on GitHub**，在 GitHub 頁面選擇 **All repositories**（或勾選你的 repo），按 **Save**，再回到 Netlify。
+
+### 步驟 23：部署（Deploy）（約 4 分鐘）
+
+1. 確認 **Branch to deploy** 是 `main`。
+2. **Build command** 保持空白，不要輸入任何東西。
+3. **Publish directory** 保持空白。
+4. 如果頁面上有 **Project name** 欄位，輸入好記的名字，例如 `ntpu-rent-radar-123`。
+5. 按頁面最下方的 **Deploy**（按鈕上可能寫 **Deploy 你的 repo 名稱**）。
+6. 等待約 30 秒到 1 分鐘。
+
+**完成後你應該看到：** 專案頁面上的部署狀態顯示 **Published**，頁面上方出現一個 `https://....netlify.app` 網址。
+
+**如果不一樣：**
+- 狀態顯示 **Failed** → 確認 Build command 和 Publish directory 都是空白；查 [疑難排解手冊](../../docs/tutorials/error_guide.md) 的 Netlify 部署問題。
+- 打開網址看到「Page not found」→ 檔名必須是全小寫的 `index.html`，而且放在 repo 最外層，不在任何子資料夾裡。
+
+### 步驟 24：修改網址名稱（約 3 分鐘，網址已經好記可跳過）
+
+1. 在 Netlify 專案頁面左側選單，點選 **Project configuration**。
+2. 點選 **General** → **Project details**。
+3. 按 **Change project name**（有些畫面顯示 **Manage project name**）。
+4. 輸入新名稱，例如 `ntpu-rent-radar-123`（英文小寫、數字、-）。
+5. 按 **Save**。
+
+**完成後你應該看到：** 網址變成 `https://ntpu-rent-radar-123.netlify.app`。
+
+**如果不一樣：** 顯示名稱已被使用 → 加上學號末三碼再試一次。注意：改名後舊網址就不能用了。
+
+### 步驟 25：用手機打開並分享（約 4 分鐘）
+
+1. 點選網址，在電腦上確認頁面正常。
+2. 把網址傳到自己的手機（例如用 LINE 傳給自己）。
+3. 用手機打開網址，上下捲動檢查。
+4. 把網址貼到課程群組。
+5. 打開 [網站自我檢核工具](../../tools/vibe_check.html)，選擇 repo 資料夾中的 `index.html`，確認 Level 1 全部通過。
+
+**完成後你應該看到：** 手機上看得到你的網站；自我檢核工具的 Level 1 全部顯示通過。
+
+**如果不一樣：** 自我檢核工具有項目沒通過 → 把未通過的項目名稱告訴 Copilot，請它修正，再重做步驟 20、21。Netlify 會自動更新網站。
+
+**檢核點 3（部署上線）完成：** GitHub 上看得到你的 commit，Netlify 顯示 Published，手機能打開你的網址。
+
+**這一步在架構中的位置：** 你剛剛用上了架構中的「託管與 CDN」。整個過程沒有買任何伺服器，也不用信用卡，網站已經用 HTTPS 對全世界公開。
+
+想了解原理（Netlify 部署時做了什麼、commit 與 sync 的差別）：見 [SaaS 模式與網站運作（選讀）](../../docs/deep_dive/saas_and_web.md) 的附錄。
 
 ---
 
-## 13. 課後作業（第 2 週上課前）
+## Part 5：收尾（1:55–2:00，5 分鐘）
+
+這一段看看同學的作品，並寫下今天的收穫。
+
+### 步驟 26：看一位同學的網站（約 2 分鐘）
+
+1. 在課程群組中點開一位同學的網址。
+2. 用「我喜歡…／我希望…／如果…」的句型，在群組回覆一則具體回饋。格式見 [作品牆說明](../../showcase/README.md)。
+
+**完成後你應該看到：** 群組裡有你寫的一則回饋。
+
+### 步驟 27：寫出場券（約 3 分鐘）
+
+1. 打開 [學習單](worksheet.md) 第 5 部分。
+2. 對照 Part 0 你寫的預測，寫下今天實際花了多少時間和錢。
+3. 寫一句今天最大的收穫或困難。
+
+**完成後你應該看到：** 學習單第 5 部分已填好。
+
+---
+
+## 課後作業（第 2 週上課前）
 
 **必做**
 
-- [ ] 確認網站可用手機開啟，並已將網址張貼於課程群組。
-- [ ] 將學習歷程檔案放入 repo 的 `README.md`，完成第 1 週的 3-2-1 反思（三項學到的概念、兩個疑問、一個想改進之處），Commit 並 Sync。
-- [ ] 閱讀 [現代網路服務與 SaaS 架構](saas_architecture.md)，思考第 9 節討論題第 3 題與第 5 題。
+- [ ] 確認網站用手機打得開，而且網址已貼到課程群組。
+- [ ] 在 VS Code 打開 repo 裡的 `README.md`，貼上 [學習歷程檔案範本](../../templates/portfolio_README.md)，勾選已完成的檢核點，寫下 3-2-1 反思（三個學到的、兩個疑問、一個想改進的）。
+- [ ] 重做步驟 20、21（提交、同步），訊息寫 `新增學習歷程檔案`。Netlify 會自動再部署一次。
+- [ ] 閱讀 [自建或使用雲端服務](saas_architecture.md) 與 [你每天用的 App 背後長怎樣](social_media_architecture.md)。
 
-**延伸任務（選做）**
+**選做**
 
-- [ ] 行動版排版修正：以手機檢查版面，請 Copilot 修正問題後 Commit 並 Sync，觀察 Netlify 是否自動更新。
-- [ ] 自訂網址名稱：在 Netlify 的專案設定中修改子網域名稱。
-- [ ] 同儕回饋：瀏覽三位同學的網站並提供具體回饋。
-- [ ] 產品架構分析：選擇一個常用服務（例如外送平台或音樂串流），依 [社群媒體平台的系統架構](social_media_architecture.md) 的分層方式繪製其可能的架構，並指出你推測其使用了哪些外部 SaaS。
+- [ ] 用手機檢查版面，請 Copilot 修正，再提交、同步，觀察網站是否自動更新。
+- [ ] 看三位同學的網站，各給一則回饋。
+- [ ] 參考範例作品：[samples](../../samples/README.md)。
 
-**下週預告**：若訪客想留下聯絡方式，資料應該存到哪裡？靜態網站如何在沒有自建伺服器的情況下接收資料？
+**下週預告：** 訪客想在你的網站留下 Email，資料要存到哪裡？
 
 ---
 
-## 14. 延伸閱讀
+## 本週教材
 
-- [Microsoft Azure：什麼是 SaaS？](https://azure.microsoft.com/zh-tw/resources/cloud-computing-dictionary/what-is-saas)
-- [System Design Primer](https://github.com/donnemartin/system-design-primer)
-- [VS Code：Git 版本控制入門](https://code.visualstudio.com/docs/sourcecontrol/intro-to-git)
-- [VS Code：Copilot Chat](https://code.visualstudio.com/docs/copilot/chat/copilot-chat)
-- [Pro Git（線上免費書籍）](https://git-scm.com/book/zh-tw/v2)
-- [Netlify 官方文件](https://docs.netlify.com/)
-- [延伸學習資源總整理](../../docs/resources.md)
+| 檔案 | 用途 |
+| --- | --- |
+| [steps.md](steps.md) | 一頁版步驟清單，上課邊做邊勾 |
+| [prompts.md](prompts.md) | 本週提示詞與修改提示詞 |
+| [worksheet.md](worksheet.md) | 學習單 |
+| [saas_architecture.md](saas_architecture.md) | 講義：自建或使用雲端服務、我們的四塊 |
+| [social_media_architecture.md](social_media_architecture.md) | 講義：你每天用的 App 背後長怎樣 |
+| [slides/social_saas.html](slides/social_saas.html) | 互動網頁：社群平台架構圖、按讚流程、測驗 |
+| [slides/foodcourt.html](slides/foodcourt.html) | 互動網頁：自建與雲端服務比較、測驗 |
+| [slides/git_flow.html](slides/git_flow.html) | 互動網頁：提交與同步的練習模擬器 |
+| [slides/prompt_builder.html](slides/prompt_builder.html) | 提示詞產生器 |
+| [slides/outline.md](slides/outline.md) | 教師授課大綱 |
+| [announcement.md](announcement.md) | 課程公告文字 |
+
+選讀（課堂不要求）：[SaaS 模式與網站運作](../../docs/deep_dive/saas_and_web.md)、[社群媒體系統設計深入](../../docs/deep_dive/social_media_systems.md)。
 
 ---
 
