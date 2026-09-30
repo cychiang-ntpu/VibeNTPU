@@ -61,16 +61,16 @@ def main():
             target = os.path.normpath(os.path.join(os.path.dirname(f), unquote(path))) if path else f
             rel = os.path.relpath(f, ROOT)
             if not os.path.exists(target):
-                print(f"❌ {rel}: 找不到檔案 {link}")
+                print(f"[錯誤] {rel}: 找不到檔案 {link}")
                 bad += 1
                 continue
             if anchor and target.endswith(".md"):
                 if target not in cache:
                     cache[target] = anchors_of(target)
                 if unquote(anchor) not in cache[target]:
-                    print(f"❌ {rel}: 找不到錨點 {link}")
+                    print(f"[錯誤] {rel}: 找不到錨點 {link}")
                     bad += 1
-    print(f"檢查 {len(md_files)} 個 Markdown 檔，{'全部連結正常 ✅' if not bad else f'{bad} 個壞連結'}")
+    print(f"檢查 {len(md_files)} 個 Markdown 檔，{'全部連結正常' if not bad else f'{bad} 個壞連結'}")
     return 1 if bad else 0
 
 

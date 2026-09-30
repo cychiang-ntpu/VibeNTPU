@@ -1,13 +1,15 @@
-name: 🖼️ 登記作品牆
-description: 把你的 SaaS MVP 展示在作品牆上！
-title: "🖼️ [作品牆] "
+name: 作品牆登記
+description: 將你的 SaaS MVP 登記至課程作品牆。
+title: "[作品牆] "
 labels: ["作品牆"]
 body:
   - type: markdown
     attributes:
       value: |
-        ## 🎉 恭喜你做出自己的產品！
-        登記後老師會把你的作品加到 [作品牆](https://github.com/cychiang-ntpu/VibeNTPU/blob/master/showcase/README.md)。可以用暱稱，**請勿填寫電話、住址等個資**。
+        ## 作品牆登記
+        教師確認網址可正常開啟、內容無不當資訊後，會將作品加入[作品牆](https://github.com/cychiang-ntpu/VibeNTPU/blob/master/showcase/README.md)。作品牆不排名，登記與否不影響成績。
+
+        **隱私提醒**：作品牆為公開頁面。創辦人欄位可使用暱稱；請勿填寫電話、住址、學號等個人資料。如需下架，請另開 Issue 告知。
   - type: input
     id: name
     attributes:
@@ -19,6 +21,7 @@ body:
     id: pitch
     attributes:
       label: 一句話介紹
+      description: 說明目標使用者與產品解決的問題。
       placeholder: 例如：北大學生專屬的真實租屋評價平台
     validations:
       required: true
@@ -33,15 +36,22 @@ body:
     id: makers
     attributes:
       label: 創辦人（可用暱稱）
+    validations:
+      required: false
   - type: textarea
-    id: proud
+    id: highlight
     attributes:
-      label: 你最得意的地方
-      placeholder: 例如：送出表單後會出現會員儀表板
+      label: 最具代表性的設計或功能
+      description: 以一至兩句說明，並可附上設計理由。
+      placeholder: 例如：送出表單後於原頁面切換為會員畫面，減少頁面跳轉。
+    validations:
+      required: false
   - type: checkboxes
     id: consent
     attributes:
       label: 同意事項
       options:
-        - label: 我同意把以上資訊公開展示在作品牆上
+        - label: 我同意將以上資訊公開展示於作品牆。
+          required: true
+        - label: 我確認網站內容不包含他人未經同意的個人資料。
           required: true

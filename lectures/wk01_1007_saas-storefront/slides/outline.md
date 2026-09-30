@@ -1,73 +1,77 @@
-# 第 1 週投影片大綱（2026/10/7）
+# 第 1 週授課大綱（2026/10/7）
 
-> 沒有另外製作投影片；上課以講義 [../README.md](../README.md) 為主，搭配四支互動網頁與 VS Code 現場示範。
-> 互動網頁都是單一 HTML 檔，**瀏覽器直接開、不需要網路**，投影也不怕教室網路塞車。
-> 架構圖的完整版（Mermaid，GitHub 上直接顯示）在 [../social_media_architecture.md](../social_media_architecture.md)。
+本單元不另製投影片，以講義 [../README.md](../README.md) 為主軸，搭配四個互動網頁與 VS Code 現場示範。互動網頁皆為單一 HTML 檔，可直接以瀏覽器離線開啟，不受教室網路狀況影響。架構圖的完整版（Mermaid，GitHub 上可直接顯示）見 [../social_media_architecture.md](../social_media_architecture.md) 與 [../saas_architecture.md](../saas_architecture.md)。
 
-## 互動教材
+---
 
-| 檔案 | 用在 | 操作 |
+## 1. 互動教材
+
+| 檔案 | 使用段落 | 內容 |
 | --- | --- | --- |
-| [social_saas.html](social_saas.html) | 段落 1.2、1.4 | ①架構圖（點方塊看說明、「🔍 對照我們的 MVP」開關）②按下去發生什麼事（❤️按讚／📸發限動／📰滑動態／💬傳訊息，逐步或自動播放）③商業模式與小測驗 |
-| [foodcourt.html](foodcourt.html) | 段落 1.3–1.5 | ①深山 vs 美食街（月數拉桿）②組裝樂高積木（▶ 播放資料流、←→ 逐步）③小測驗 |
-| [git_flow.html](git_flow.html) | 段落 2.1 | ①Git 模擬器（Copilot 修改 → Stage → Commit → Sync → Netlify 更新；Pull；回到存檔點）②對照 VS Code 原始檔控制畫面（7 個編號說明）③小測驗 |
-| [prompt_builder.html](prompt_builder.html) | 段落 3.3 | 填表產生咒語；AI 選 GitHub Copilot；🎲 隨機範例；咒語健康度；📋 一鍵複製 |
+| [social_saas.html](social_saas.html) | 段落 1（7.2、7.4） | 架構圖（點選元件看說明、MVP 對照）；操作流程動畫（按讚、發布限時動態、瀏覽動態牆、傳送訊息）；商業模式與測驗 |
+| [foodcourt.html](foodcourt.html) | 段落 1（7.3–7.5） | 自建與購買的累積成本比較（月數拉桿）；課程架構資料流；測驗 |
+| [git_flow.html](git_flow.html) | 段落 2（8.2） | Git 流程模擬（修改 → Stage → Commit → Sync → Netlify 更新；Pull；回復版本）；VS Code 原始檔控制介面導覽；測驗 |
+| [prompt_builder.html](prompt_builder.html) | 段落 3（9.4） | 依欄位產生提示；可選擇 AI 工具；完整度檢查；一鍵複製 |
 
-## 課前 10 分鐘
+## 2. 課前 10 分鐘
 
-- 助教在門口協助還沒裝好 VS Code／Git／Copilot 的同學（[before_class.md](../../../docs/tutorials/before_class.md)）
-- 投影機先開好 VS Code（字體放大：設定 → `editor.fontSize` 20 以上；`window.zoomLevel` 1～2）
+- 助教於教室門口協助尚未完成 [課前準備](../../../docs/tutorials/before_class.md) 的學生。
+- 投影設定：VS Code 字級（`editor.fontSize`）20 以上，`window.zoomLevel` 設為 1 至 2。
+- 確認示範用 repo 已連結 Netlify，並備妥 QR Code 產生工具。
 
-## 段落 0：🎬 開場魔術（5 分鐘）
+## 3. 段落 0：開場示範（0:00–0:05）
 
-1. **不講理論，直接示範**：在 VS Code 對 Copilot 說「幫我做一個三峽美食地圖的網站」→ Keep → Commit → Sync → Netlify 自動部署
-   （事先建好 repo 並接好 Netlify，現場只示範「說一句話 → 按兩個按鈕 → 網站更新」）
-2. 把網址做成 QR Code，全班用手機掃
-3. 請同學在學習單第 1 題**預測**：10 年前做這個要多少錢、多少時間？（ARCS：引起注意；POE：預測）
+1. 在 VS Code 以一句提示請 Copilot 建立「三峽美食地圖」頁面 → Keep → Commit → Sync → Netlify 自動部署。
+2. 將網址轉為 QR Code，學生以手機開啟。
+3. 學生於學習單第 1 題寫下預測（POE 的預測階段；ARCS 動機模型的「引起注意」）。
 
-## 段落 1：🧠 觀念建立（30 分鐘）
+## 4. 段落 1：現代網路服務與 SaaS 架構（0:05–0:35）
 
-4. **舉手調查**：誰每天打開 IG／LINE？誰有訂閱 Netflix／Spotify／ChatGPT？→ 帶出 SaaS
-5. **買斷 vs SaaS** 對照表 →「程式寫一次，放在雲端，可以租給全世界」
-6. 〔切到 social_saas.html ①〕**社群媒體架構圖**：由上往下講一次六層；點 CDN、推薦 AI、推播三個方塊
-7. 〔social_saas.html ②〕**播放「❤️ 在 IG 按讚」**：問全班「你看到愛心變紅之後，還有幾個服務在工作？」→ 訊息佇列、推播
-8. 金句：「連 IG 都在用別人的 SaaS 積木，推播一定要經過 Apple 和 Google。沒有公司什麼都自己做。」
-9. 〔social_saas.html ③〕**免費的社群怎麼賺錢**：「如果你沒有付錢，你就是商品」→ 為什麼推薦演算法讓你停不下來（連結學生生活經驗，ARCS：相關）
-10. 轉折：「社群巨頭有幾萬名工程師。我們只有自己＋隊友＋Copilot，怎麼辦？」
-11. 〔切到 foodcourt.html ①〕**深山 vs 美食街**：拉桿拉到 3 個月、6 個月
-12. 〔foodcourt.html ②〕**四塊積木**＋〔回到 social_saas.html 打開「對照我們的 MVP」〕→ 幾十種服務 vs 4 塊積木
-13. 金句：「我們完全不碰複雜的 GCP，因為聰明的現代創業者，是用 SaaS 服務來打造自己的 SaaS 產品！」
-14. 〔小測驗〕全班用手機作答（提取練習）
+4. 課堂調查：每天使用 Instagram 或 LINE、每月訂閱串流或 AI 服務的人數 → 引出訂閱與廣告兩種模式。
+5. 買斷與 SaaS 對照表；說明高固定成本、低邊際成本與經常性收入（MRR）。提及流失率與 CAC，指向核心閱讀第 4 節的計算範例。
+6. 〔social_saas.html 架構圖〕由上而下說明各層；點選 CDN、推薦系統、推播三個元件。
+7. 〔social_saas.html 操作流程〕播放「按讚」，提問：「愛心變色後，還有哪些服務在工作？」→ 訊息佇列、非同步處理、樂觀更新。
+8. 重點：推播必須經由 Apple 與 Google 的服務，大型平台同樣使用外部 SaaS；各公司的差異在於哪些自建、哪些租用。
+9. 〔social_saas.html 商業模式〕廣告制平台出售注意力 → 推薦系統的優化目標與其社會爭議（連結學生經驗；ARCS 的「關聯」）。
+10. 轉折：「大型平台有數千名工程師，新創團隊如何在有限資源下建立產品？」
+11. 〔foodcourt.html 成本比較〕以深山蓋餐廳與進駐美食街的類比引入，隨即切換為自建與購買的專業比較：前期成本、上市時間、維運負擔、供應商鎖定。
+12. 〔foodcourt.html 資料流〕＋〔social_saas.html MVP 對照〕→ 本課程四個元件與其服務模式（Netlify 為 PaaS、Netlify Forms 為 BaaS）。
+13. 說明本課程不直接操作 IaaS 的理由：早期新創的人力與時間比伺服器費用更稀缺。
+14. 〔測驗〕學生以手機作答，答對 80% 以上達成檢核點 1（提取練習）。
 
-## 段落 2：🗄️ GitHub（20 分鐘）
+## 5. 段落 2：以 GitHub 建立專案儲存庫（0:35–0:55）
 
-15. 〔切到 git_flow.html ①〕**Git 模擬器**：老師操作一輪，強調「Commit 只在你電腦；Sync 才送到 GitHub」
-16. 〔git_flow.html ②〕**對照 VS Code 畫面**：7 個編號，等一下實際會用到
-17. **我做**：投影建 repo（Public、Add README）→ VS Code Clone from GitHub
-18. **你做**：同學照 [steps.md](../steps.md) 段落 2；巡堂重點：授權視窗、選對資料夾、按「開啟」
-19. 🏗️ 架構呼應：「你在總部開了保險箱，並在自己的工作台放了一份副本」
+15. 概念說明：Git 與 GitHub 的區別；repo 包含完整歷史；commit 是具識別碼的快照；stage 決定納入哪些變更。
+16. 〔git_flow.html 模擬器〕教師操作一輪，強調「commit 只在本機，sync 後 GitHub 與 Netlify 才看得到」。
+17. 〔git_flow.html 介面導覽〕對照 VS Code 原始檔控制畫面的各編號位置。
+18. 教師示範：建立 Public repo 並勾選 Add README → VS Code 從 GitHub 複製。
+19. 學生依 [steps.md](../steps.md) 第 2 節操作。巡視重點：瀏覽器授權視窗、存放位置、按下「開啟」。
+20. 提醒：repo 為公開，commit 歷史會永久保留，不可放入個人資料或金鑰。
 
-## 段落 3：🎨 Copilot Vibe Coding（35 分鐘）
+## 6. 段落 3：以 GitHub Copilot 建立產品前端（0:55–1:30）
 
-20. **Vibe Coding 是什麼**：Karpathy 2025 年提出；你是導演，Copilot 是演員
-21. **選題**：學院點子表；強調「選你在乎的」（SDT：自主）
-22. **我做**：老師完整示範一次「三峽租屋雷達」：咒語產生器 → Copilot Agent → Keep → Show Preview（範例效應）
-23. **我們做**：〔切到 prompt_builder.html〕AI 選 Copilot，健康度 100% 再複製
-24. **你做**：自由修改；示範好的修改咒語（具體、合併多個需求、用 `#index.html`）
-25. ⚠️ 提醒：Copilot 要求執行指令時按 Skip；免費版次數省著用
-26. 🏗️ 架構呼應：「你們現在做出來的，就是 SaaS 架構中的前端，對應 IG 的 App 畫面」
+21. Vibe coding 的定義（Karpathy，2025）與其界限：降低撰寫門檻，但不降低對結果負責的要求。
+22. 選題：以學院題目表引導，強調選擇自己能具體描述使用者與痛點的題目（自我決定理論的「自主」）。
+23. 概念說明：Ask 與 Agent 模式的差異；Agent 模式的風險（修改非預期檔案、提議執行指令、幻覺）；課堂規則為指令一律略過、接受前先讀差異。
+24. 教師完整示範「三峽租屋雷達」：提示產生器 → Agent 模式 → 檢視差異 → Keep → Show Preview（範例效應）。
+25. 〔prompt_builder.html〕學生填寫至完整度 100% 後複製，於 Copilot 送出。
+26. 自主修改：示範具體、限定範圍、合併相關需求的修改提示；說明免費方案的使用額度。
+27. 示範驗證清單：手機寬度檢查、Console 錯誤檢查、虛構內容標示（[prompts.md 第 3 節](../prompts.md#3-ai-輸出的驗證清單)）。
+28. 巡視確認檢核點 2：repo 中有可預覽的 `index.html`。
 
-## 段落 4：🏪 存檔上線（25 分鐘）
+## 7. 段落 4：提交、同步與 Netlify 部署（1:30–1:55）
 
-27. **我做**：投影 Commit（寫好訊息）→ Sync → GitHub 網頁看到檔案 → Netlify Import → Deploy
-28. **你做**：同學照 [steps.md](../steps.md) 段落 4；助教巡紅色便利貼
-29. **巡堂重點**：user.name/email 未設定、只 Commit 沒 Sync、檔名 `index.html`、Build 設定留空
-30. 第一個成功的同學 → 請他當「小助教」幫隔壁（同儕教學）
-31. 🏗️ 架構呼應：「沒有碰任何一台實體伺服器，就把網站推向全世界；Netlify 背後的 CDN 跟 IG 是同一種技術！」
-32. 隨機挑 2～3 位同學的網址投影，全班鼓掌 👏（ARCS：滿足感）
+29. 教師示範：輸入有意義的提交訊息 → Commit → Sync → GitHub 網頁確認 → Netlify 從 Git 匯入 → Deploy。
+30. 概念說明：Netlify 監聽推送事件、取得檔案、建置（本課程為空）、原子化發布、配發子網域與 HTTPS、分發至 CDN。
+31. 學生依 [steps.md](../steps.md) 第 4 節操作；助教處理紅色便利貼。
+32. 巡視重點：Git 使用者名稱與 Email 未設定、只 Commit 未 Sync、檔名非 `index.html`、Build 設定未留空。
+33. 邀請先完成的學生協助鄰座（同儕教學）。
+34. 重點：未購買或設定任何伺服器，網站已由 CDN 以 HTTPS 對外服務。
+35. 隨機投影兩到三位學生的網站，簡短說明其題目與設計選擇（ARCS 的「滿足」）。
+36. 確認檢核點 3：GitHub 可見 commit、Netlify 部署成功、自我檢核工具 Level 1 通過。
 
-## 段落 5：🎉 收尾（5 分鐘）
+## 8. 段落 5：作品巡禮與出場券（1:55–2:00）
 
-33. 作品巡禮：「我喜歡／我希望／如果」
-34. 出場券：回頭看段落 0 的預測（POE：解釋）
-35. 預告下週：「如果客人按下『註冊』，資料去哪了？」（留下懸念）
+37. 作品巡禮：以「我喜歡／我希望／如果」提供一則具體回饋。
+38. 出場券：對照段落 0 的預測並解釋差異（POE 的解釋階段）。
+39. 預告第 2 週：「訪客按下送出之後，資料會到哪裡？靜態網站如何接收資料？」

@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
-  - name: 📖 卡關急救手冊
+  - name: 疑難排解手冊
     url: https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/error_guide.md
-    about: 90% 的問題都能在這裡找到解法
+    about: 開立求助單前，請先查閱疑難排解手冊；多數常見錯誤均有對應的處理步驟。
+  - name: 學習檢核點
+    url: https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/checkpoints.md
+    about: 各檢核點的完成條件、完成證據與驗證方式。

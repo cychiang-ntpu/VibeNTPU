@@ -1,87 +1,92 @@
-# 第 1 週｜一頁版步驟卡 📋
+# 第 1 週操作步驟卡
 
-> 上課請開著這一頁，**做完一步就打勾（或用手指點一下）**。
-> 🧭 領航員負責念步驟，🚗 駕駛負責操作。每個段落結束交換，**兩個人都要在自己電腦完成**！
-> 看不懂某一步？點旁邊的 📖 連結看詳細說明。
+上課時請開啟本頁，完成一項即勾選一項。導航員朗讀步驟並檢查畫面，駕駛負責操作；每個段落結束後交換角色，兩人都須在自己的電腦完成。各步驟的完整說明請見連結的教學文件。
 
 [← 回第 1 週講義](README.md)
 
 ---
 
-## 段落 1：看懂 SaaS 架構
+## 1. 段落 1：架構理解（檢核點 1）
 
-- [ ] 打開 [social_saas.html](slides/social_saas.html)（社群媒體的 SaaS 架構）
-- [ ] 分頁①：從上到下看一次架構圖，點 3 個你好奇的方塊
-- [ ] 分頁②：播放「❤️ 在 IG 按讚」，數數看經過幾個服務：＿＿ 個
-- [ ] 分頁①：打開「🔍 對照我們的 MVP」開關
-- [ ] 打開 [foodcourt.html](slides/foodcourt.html)：拉月數拉桿、播放資料流
-- [ ] 完成任一個小測驗，答對 4 題以上 → 🧠 **Q1 過關！**
+- [ ] 開啟 [social_saas.html](slides/social_saas.html)，在架構圖分頁由上而下瀏覽，點選三個元件閱讀說明。
+- [ ] 在操作流程分頁播放「按讚」，記錄經過的服務數量：＿＿ 個。
+- [ ] 在架構圖分頁開啟 MVP 對照功能。
+- [ ] 開啟 [foodcourt.html](slides/foodcourt.html)，拖動月數拉桿，並播放資料流。
+- [ ] 完成任一份架構互動測驗，答對 80% 以上。
 
-## 段落 2：打開總部保險箱（GitHub）
+## 2. 段落 2：建立 repo 並複製到本機
 
-### 2.1 先玩模擬器 🎮
-- [ ] 打開 [git_flow.html](slides/git_flow.html)，完成一次：修改 → Stage → Commit → Sync
+### 2.1 模擬器
 
-### 2.2 建 repo ☁️ 📖 [詳細說明](../../docs/tutorials/git_intro.md#步驟-1在-github-建立你的-repo-)
-- [ ] 打開 <https://github.com/new>
-- [ ] Repository name 填英文小寫，例如 `rent-radar`
-- [ ] 選 **Public**
-- [ ] ✅ 勾選 **Add a README file**
-- [ ] 按綠色 **Create repository**
+- [ ] 開啟 [git_flow.html](slides/git_flow.html)，完成一次「修改 → Stage → Commit → Sync」。
 
-### 2.3 Clone 到電腦 💻 📖 [詳細說明](../../docs/tutorials/git_intro.md#步驟-2把-repo-複製到你的電腦clone)
-- [ ] VS Code → 左側 **原始檔控制**（`Ctrl+Shift+G`／`⌃⇧G`）
-- [ ] 按 **複製存放庫（Clone Repository）** → **從 GitHub 複製**
-- [ ] （第一次）瀏覽器授權 GitHub
-- [ ] 選 `你的帳號/rent-radar`
-- [ ] 選一個資料夾存放 → 右下角按 **開啟（Open）**
-- [ ] 左側檔案總管看到 `README.md` ✅
-- [ ] 🔄 **交換駕駛／領航員**
+### 2.2 建立 repo（說明：[Git 與 GitHub 入門](../../docs/tutorials/git_intro.md)）
 
-## 段落 3：用 Copilot 詠唱店面
+- [ ] 開啟 <https://github.com/new>。
+- [ ] Repository name 使用英文小寫與連字號，例如 `rent-radar`。
+- [ ] 選擇 **Public**。
+- [ ] 勾選 **Add a README file**。
+- [ ] 按 **Create repository**。
+
+### 2.3 複製到本機（Clone）
+
+- [ ] VS Code 左側開啟 **原始檔控制**（`Ctrl+Shift+G`／`⌃⇧G`）。
+- [ ] 按 **複製存放庫（Clone Repository）** → **從 GitHub 複製**。
+- [ ] 首次使用時，於瀏覽器完成 GitHub 授權。
+- [ ] 選擇 `你的帳號/rent-radar`。
+- [ ] 選擇存放資料夾，並在右下角提示中按 **開啟（Open）**。
+- [ ] 確認檔案總管中出現 `README.md`。
+- [ ] 交換駕駛與導航員。
+
+## 3. 段落 3：以 Copilot 建立前端（檢核點 2）
 
 - [ ] 決定創業題目：＿＿＿＿＿＿＿＿＿＿
-- [ ] 打開 [咒語產生器](slides/prompt_builder.html)，AI 選 **GitHub Copilot**，填好欄位，健康度到 100%
-- [ ] 按「📋 複製咒語」
-- [ ] 確認 VS Code 左側開的是**剛 clone 的 repo 資料夾**（上方看得到 repo 名稱）
-- [ ] 打開 Copilot Chat（`Ctrl+Alt+I`／`⌃⌘I`）→ 模式選 **Agent**
-- [ ] 貼上咒語 → 送出 → 等 Copilot 完成
-- [ ] 看一下變更 → 按 **Keep（保留）**
-- [ ] 左側出現 `index.html`（旁邊有綠色 **U**）
-- [ ] 在 `index.html` 上按右鍵 → **Show Preview**（或雙擊用瀏覽器打開）→ 🎨 **Q2 過關！**
-- [ ] 至少請 Copilot 修改一次，讓它更像你心中的樣子（記得 **Keep**）
-- [ ] 🔄 **交換駕駛／領航員**
+- [ ] 開啟 [提示產生器](slides/prompt_builder.html)，AI 工具選擇 **GitHub Copilot**，填寫欄位至完整度 100%。
+- [ ] 按複製。
+- [ ] 確認 VS Code 左側開啟的是剛才 clone 的 repo 資料夾。
+- [ ] 開啟 Copilot Chat（`Ctrl+Alt+I`／`⌃⌘I`），模式選擇 **Agent**。
+- [ ] 貼上提示並送出，等待 Copilot 完成。
+- [ ] 若 Copilot 提議執行終端機指令，選擇略過（Skip）。
+- [ ] 檢視差異，確認只新增 `index.html`，按 **Keep**。
+- [ ] 確認檔案總管中出現 `index.html`（旁邊標示綠色 **U**，表示尚未追蹤的新檔案）。
+- [ ] 在 `index.html` 上按右鍵 → **Show Preview**（或以瀏覽器開啟）。
+- [ ] 至少提出一次修改要求（參考 [提示 2](prompts.md#53-提示-2迭代修改agent-模式)），檢視差異後按 **Keep**。
+- [ ] 以手機寬度檢查版面，並確認開發者工具 Console 沒有錯誤（[驗證清單](prompts.md#3-ai-輸出的驗證清單)）。
+- [ ] 交換駕駛與導航員。
 
-## 段落 4：存檔、上雲、開店
+## 4. 段落 4：提交、同步與 Netlify 部署（檢核點 3）
 
-### 4.1 Commit ＋ Sync 💾 📖 [詳細說明](../../docs/tutorials/git_intro.md#步驟-4存檔點stage--commit)
-- [ ] 打開 **原始檔控制** 面板（圖示上有數字）
-- [ ] 訊息框輸入：`第一版首頁`
-- [ ] 按 **✓ 提交（Commit）**（問要不要全部暫存 → 按 **是**）
-- [ ] 按藍色 **同步變更（Sync Changes）↑1** → 問「推送和提取」按 **確定**
-- [ ] 到 GitHub 網頁重新整理 repo，看到 `index.html` 和你的訊息 ✅
+### 4.1 Commit 與 Sync（說明：[Git 與 GitHub 入門](../../docs/tutorials/git_intro.md)）
 
-### 4.2 Netlify：租一個攤位 ☁️ 📖 [詳細說明](../../docs/tutorials/github_netlify_deploy.md#part-b到美食街擺攤位netlify)
-- [ ] 打開 <https://app.netlify.com/>（用 GitHub 登入）
-- [ ] 點 **Add new project** → **Import an existing project**
-- [ ] 選 **GitHub** → 授權（Authorize Netlify）
-- [ ] 選你的 repo
-- [ ] Build command、Publish directory **都留空**
-- [ ] Project name 填好記的名字，例如 `ntpu-rent-radar-123`
-- [ ] 按 **Deploy**，等狀態變成 **Published** 🎉
+- [ ] 開啟 **原始檔控制** 面板（圖示上顯示變更數量）。
+- [ ] 在訊息框輸入：`新增第一版首頁`。
+- [ ] 按 **提交（Commit）**；若詢問是否暫存所有變更，選擇 **是**。
+- [ ] 按 **同步變更（Sync Changes）↑1**；詢問推送與提取時選擇 **確定**。
+- [ ] 在 GitHub 網頁重新整理 repo，確認出現 `index.html` 與提交訊息。
 
-### 4.3 驗收 🌍
-- [ ] 點網址，電腦上打得開
-- [ ] 用 LINE 傳給自己，**手機**也打得開
-- [ ] 網址貼到課程群組
-- [ ] 打開 [Vibe 健檢站](../../tools/vibe_check.html)，選你 repo 資料夾裡的 `index.html`，Level 1 全亮 → 🏪 **Q3 過關！**
+### 4.2 Netlify 部署（說明：[部署教學](../../docs/tutorials/github_netlify_deploy.md)）
 
-## 段落 5：收尾
+- [ ] 開啟 <https://app.netlify.com/>，以 GitHub 帳號登入。
+- [ ] 點選 **Add new project** → **Import an existing project**。
+- [ ] 選擇 **GitHub**，完成授權（Authorize Netlify）。
+- [ ] 選擇你的 repo。
+- [ ] Build command 與 Publish directory 皆留空。
+- [ ] Project name 填入易辨識的名稱，例如 `ntpu-rent-radar-123`。
+- [ ] 按 **Deploy**，等待狀態顯示 **Published**。
 
-- [ ] 逛隔壁組網站，給一句「我喜歡／我希望／如果」
-- [ ] 完成 [學習單](worksheet.md) 的出場券
-- [ ] （回家也可以）把 [冒險護照](../../templates/passport_README.md) 貼進 repo 的 `README.md` → Commit ＋ Sync
+### 4.3 驗收
+
+- [ ] 在電腦上開啟網址，頁面正常顯示。
+- [ ] 將網址傳到自己的手機，確認手機也能開啟且版面正常。
+- [ ] 將網址貼到課程群組。
+- [ ] 開啟 [網站自我檢核工具](../../tools/vibe_check.html)，選擇 repo 資料夾中的 `index.html`，確認 Level 1 全部通過。
+
+## 5. 段落 5：收尾
+
+- [ ] 瀏覽至少一組同學的網站，以「我喜歡／我希望／如果」提供一則回饋。
+- [ ] 完成 [學習單](worksheet.md) 第 5 部分（出場券）。
+- [ ] 課後：將 [學習歷程檔案範本](../../templates/portfolio_README.md) 貼入 repo 的 `README.md`，Commit 並 Sync。
 
 ---
 
-😵 卡關了？👉 [卡關急救手冊](../../docs/tutorials/error_guide.md)　｜　⏱️ 15 分鐘沒進展就貼紅色便利貼！
+遇到問題時：先查閱 [疑難排解手冊](../../docs/tutorials/error_guide.md)；同一問題 15 分鐘無進展，請貼紅色便利貼請求協助。

@@ -1,53 +1,83 @@
-name: 🆘 求救單（卡關了！）
-description: 卡關很正常！填好這張單，助教和同學會來幫你。
-title: "🆘 [求救] "
-labels: ["求救"]
+name: 求助單
+description: 操作過程中遇到無法自行解決的問題時，填寫此表單以取得助教或同學協助。
+title: "[求助] "
+labels: ["求助"]
 body:
   - type: markdown
     attributes:
       value: |
-        ## 💪 卡關 = 經驗值
-        每個工程師每天都在卡關，你不是一個人！
-        送出前，請先看看 [卡關急救手冊](https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/error_guide.md)，說不定答案就在那裡。
+        ## 開立求助單前
+        1. 請先查閱[疑難排解手冊](https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/error_guide.md)。
+        2. 依 15 分鐘求助原則：同一問題自行嘗試 15 分鐘仍無進展時，即可求助。
+        3. 描述越具體（錯誤訊息、操作步驟、截圖），越能快速找到原因。
 
-        🔐 **請不要**貼上密碼、驗證碼或同學填寫的個人資料。
+        **隱私提醒**：請勿貼上密碼、驗證碼、存取權杖（token），或他人填寫的個人資料。截圖前請遮蔽 Email 等個資。本 Issue 為公開內容。
   - type: dropdown
-    id: quest
+    id: checkpoint
     attributes:
-      label: 你卡在哪一關？
+      label: 問題發生在哪個檢核點？
       options:
-        - Q0 報到（帳號申請）
-        - Q2 詠唱店面（AI 產生 index.html）
-        - Q3 開店上線（GitHub / Netlify 部署）
-        - Q4 收單（Netlify Forms）
-        - Q5 記住客人（LocalStorage）
-        - Q6 自動傳真魔法（CI/CD）
+        - 檢核點 0：課前準備（帳號、VS Code、Git、Copilot）
+        - 檢核點 1：架構理解
+        - 檢核點 2：前端原型（repo、clone、Copilot 產生 index.html）
+        - 檢核點 3：部署上線（Commit、Sync、Netlify）
+        - 檢核點 4：表單串接（Netlify Forms）
+        - 檢核點 5：狀態保存（LocalStorage）
+        - 檢核點 6：持續部署（CI/CD）
+        - 檢核點 7：成果發表
         - 其他
     validations:
       required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: 作業系統與電腦
+      options:
+        - Windows（個人電腦）
+        - macOS（個人電腦）
+        - 電腦教室公用電腦
+        - 其他
+    validations:
+      required: false
   - type: textarea
     id: expected
     attributes:
-      label: 你想做到什麼？
-      placeholder: 例如：我想讓網站在 Netlify 上線
+      label: 預期結果
+      description: 你原本想完成什麼？
+      placeholder: 例如：修改標題後按下 Sync，Netlify 網站應自動更新。
     validations:
       required: true
   - type: textarea
     id: actual
     attributes:
-      label: 實際發生了什麼？
-      description: 可以直接貼上截圖（Ctrl+V / ⌘+V），或複製錯誤訊息
-      placeholder: 例如：打開網址顯示 Page not found
+      label: 實際結果
+      description: 實際發生了什麼？請貼上完整錯誤訊息，或直接貼上截圖（Ctrl+V／⌘V）。
+      placeholder: 例如：開啟網址後顯示 Page not found。
     validations:
       required: true
   - type: textarea
+    id: steps
+    attributes:
+      label: 操作步驟
+      description: 依序列出你做了哪些操作，讓協助者能重現問題。
+      placeholder: |
+        1. 在 VS Code 修改 index.html
+        2. 在原始檔控制面板輸入訊息並按 Commit
+        3. ……
+    validations:
+      required: false
+  - type: textarea
     id: tried
     attributes:
-      label: 你已經試過哪些方法？
-      description: 寫下來很有幫助，而且你會發現自己其實已經很努力了 👍
-      placeholder: 例如：我確認過檔名是 index.html，也問過 AI
+      label: 已嘗試的方法
+      description: 列出你已查過的資料或嘗試過的做法，以及各自的結果。
+      placeholder: 例如：已確認檔名為 index.html；已依疑難排解手冊重新部署，結果相同。
+    validations:
+      required: false
   - type: input
     id: url
     attributes:
-      label: 你的網址或 GitHub repo（選填）
+      label: 網址或 GitHub repo（選填）
       placeholder: https://xxx.netlify.app
+    validations:
+      required: false
