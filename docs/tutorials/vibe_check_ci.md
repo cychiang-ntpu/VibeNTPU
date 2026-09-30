@@ -1,7 +1,7 @@
 # 🤖 支線任務：請機器人助教幫你自動健檢
 
 > 🟡 **挑戰任務**（+20 XP，支線 🤖 機器人助教）。不做也完全沒關係！
-> 完成後，你每次上傳 `index.html` 到 GitHub，機器人就會自動檢查，並在 repo 上顯示 ✅ 或 ❌。
+> 完成後，你每次 Commit ＋ Sync `index.html` 到 GitHub，機器人就會自動檢查，並在 repo 上顯示 ✅ 或 ❌。
 
 [← 回教學目錄](README.md)
 
@@ -26,19 +26,19 @@ flowchart LR
 ## 🛠️ 安裝步驟（約 5 分鐘）
 
 1. 打開 [tools/ci/vibe-check.yml](../../tools/ci/vibe-check.yml)，點右上角的 **複製圖示（Copy raw file）** 📋。
-2. 到**你自己的** GitHub repo（放 `index.html` 的那個），點 **Add file** → **Create new file**。
-3. 檔名欄位輸入（**一字不差**，斜線會自動變成資料夾）：
+2. VS Code 打開**你自己的** repo 資料夾，在左側檔案總管按 **新增檔案** 圖示，檔名輸入（**一字不差**，斜線會自動建立資料夾）：
    ```
    .github/workflows/vibe-check.yml
    ```
-4. 在下方大框框貼上剛剛複製的內容。
-5. 按 **Commit changes**。
+3. 貼上剛剛複製的內容，`Ctrl+S`（Mac：`⌘S`）存檔。
+4. 原始檔控制 → 訊息寫 `新增自動健檢` → **✓ 提交** → **同步變更**。
+5. （也可以在 GitHub 網頁 **Add file → Create new file** 建立，之後回 VS Code 先按一次同步變更。）
 6. 點 repo 上方的 **Actions** 分頁，會看到機器人正在執行（黃色圓圈 🟡）。
 7. 等 30 秒左右，變成 ✅ 綠色勾勾就成功了！點進去可以看到完整的健檢報告。
 
 ## 🔧 第 2 週：提高檢查等級
 
-打開你 repo 裡的 `.github/workflows/vibe-check.yml`，按鉛筆圖示 ✏️ 編輯，找到這一行：
+在 VS Code 打開 repo 裡的 `.github/workflows/vibe-check.yml`，找到這一行：
 
 ```yaml
   LEVEL: "1"
@@ -47,14 +47,14 @@ flowchart LR
 - 加了早鳥表單後 → 改成 `"2"`
 - 加了會員儀表板後 → 改成 `"3"`
 
-Commit 之後機器人會用新標準重新檢查。
+存檔 → Commit ＋ Sync 之後，機器人會用新標準重新檢查。
 
 ## ❓ 常見狀況
 
 | 狀況 | 解法 |
 | --- | --- |
 | Actions 分頁看不到任何東西 | 確認檔名是 `.github/workflows/vibe-check.yml`（開頭有一個點，`workflows` 有 s） |
-| ❌ 紅色叉叉 | 很正常！點進去看報告，照「請跟 AI 說」的提示修改，再上傳一次 |
+| ❌ 紅色叉叉 | 很正常！點進去看報告，照「請跟 AI 說」的提示請 Copilot 修改，再 Commit ＋ Sync 一次 |
 | 「下載健檢腳本」這一步失敗 | 可能是網路暫時問題，到 Actions 頁面按 **Re-run jobs** 重跑一次 |
 | 我的 repo 裡找不到 `index.html` | 檔案要放在 repo 最外層，不是資料夾裡 |
 

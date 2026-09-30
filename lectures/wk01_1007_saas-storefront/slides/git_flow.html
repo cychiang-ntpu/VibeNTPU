@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Git 存檔點模擬器</title>
+<style>
+:root{
+  --primary:#0f766e; --primary-2:#14b8a6; --accent:#f59e0b;
+  --bg:#f5faf9; --surface:#fff; --surface-2:#e6f4f1;
+  --text:#12302c; --muted:#4b635f; --border:#c9e2dd;
+  --bad:#b91c1c; --bad-bg:#fdecec; --good:#15803d; --good-bg:#e8f7ec;
+  --warn-bg:#fff5de; --vs-bg:#f3f3f3; --vs-side:#ffffff; --vs-act:#2c2c2c; --vs-status:#007acc;
+  --shadow:0 4px 16px rgba(15,118,110,.12); --radius:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --primary:#2dd4bf; --primary-2:#14b8a6; --accent:#fbbf24;
+    --bg:#0b1716; --surface:#12211f; --surface-2:#183230;
+    --text:#e3f4f1; --muted:#9dbab5; --border:#2a4a46;
+    --bad:#f87171; --bad-bg:#3a1a1a; --good:#4ade80; --good-bg:#143321;
+    --warn-bg:#3a2c0d; --vs-bg:#1e1e1e; --vs-side:#252526; --vs-act:#333; --vs-status:#0e639c;
+    --shadow:0 4px 16px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:18px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+.wrap{max-width:1240px;margin:0 auto;padding:16px}
+header h1{margin:.2em 0 .1em;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--primary)}
+header p{margin:0 0 10px;color:var(--muted)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px;border-bottom:2px solid var(--border)}
+.tab{border:0;background:transparent;padding:10px 14px;border-radius:12px 12px 0 0;font-weight:700;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--primary);color:#fff}
+@media (prefers-color-scheme: dark){.tab[aria-selected="true"]{color:#06201d}}
+[hidden]{display:none!important}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.btn{border:2px solid var(--primary);background:var(--primary);color:#fff;border-radius:12px;padding:8px 12px;font-weight:700;line-height:1.35;text-align:left}
+@media (prefers-color-scheme: dark){.btn{color:#06201d}}
+.btn.alt{background:transparent;color:var(--primary)}
+.btn.amber{background:var(--accent);border-color:var(--accent);color:#2b1a00}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.small{font-size:.85rem;color:var(--muted)}
+/* status + messages */
+.statusbar{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;background:var(--vs-status);color:#fff;border-radius:10px;padding:6px 12px;font-size:.9rem;margin-bottom:10px}
+.statusbar b{font-weight:700}
+.msg{border-radius:12px;padding:10px 14px;margin-bottom:12px;border:1px solid var(--border);background:var(--surface-2);min-height:3em}
+.msg.good{background:var(--good-bg);border-color:var(--good)}
+.msg.bad{background:var(--warn-bg);border-color:var(--accent)}
+.msg .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+/* zones */
+.zones{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:22px}
+.zone{position:relative;background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0;transition:border-color .3s,box-shadow .3s}
+.zone:not(:last-child)::after{content:"➜";position:absolute;right:-20px;top:40%;font-size:1.1rem;color:var(--primary)}
+.zone h2{margin:0;font-size:1.02rem;line-height:1.35}
+.zone .desc{margin:0;font-size:.82rem;color:var(--muted);line-height:1.45}
+.zone.flash{border-color:var(--accent);box-shadow:0 0 0 4px rgba(245,158,11,.35)}
+@media (max-width:1020px){
+  .zones{grid-template-columns:1fr;gap:26px}
+  .zone:not(:last-child)::after{content:"⬇";right:auto;left:50%;top:auto;bottom:-26px;transform:translateX(-50%)}
+}
+.file{display:flex;align-items:center;gap:6px;background:var(--surface-2);border-radius:8px;padding:4px 8px;font-family:ui-monospace,Consolas,monospace;font-size:.85rem;min-width:0}
+.file .nm{flex:1;min-width:0;overflow-wrap:anywhere}
+.badge{font-weight:800;border-radius:6px;padding:0 6px;font-size:.8rem}
+.badge.M{color:#b45309;background:#fde7c2}
+.badge.U{color:#15803d;background:#d7f5df}
+.empty{font-size:.85rem;color:var(--muted);font-style:italic}
+.zone input{width:100%;border:2px solid var(--border);border-radius:10px;padding:6px 8px;background:var(--bg);font-size:.9rem}
+.choices{display:flex;flex-wrap:wrap;gap:6px}
+.choices .btn{font-size:.85rem;padding:4px 8px}
+/* mini page */
+.mini{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff;color:#1f2937;font-size:.78rem;line-height:1.4}
+.mini .bar{background:#e5e7eb;padding:2px 6px;font-size:.66rem;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .body{padding:8px}
+.mini h3{margin:0 0 6px;font-size:.92rem;color:#111}
+.mini .cta{display:inline-block;color:#fff;border-radius:6px;padding:2px 10px;font-weight:700}
+.mini .sec{margin-top:6px;background:#f1f5f9;border-radius:6px;padding:3px 6px}
+.mini.old{opacity:.6}
+/* timeline */
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.node{width:100%;display:flex;gap:8px;align-items:flex-start;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:6px 8px;text-align:left;font-size:.82rem;line-height:1.35}
+.node .dot{flex:0 0 12px;height:12px;border-radius:50%;background:var(--primary-2);margin-top:3px}
+.node.head .dot{background:var(--accent);box-shadow:0 0 0 3px rgba(245,158,11,.35)}
+.node code{font-weight:700}
+.node .t{color:var(--muted)}
+.node.sel{outline:3px solid var(--accent)}
+.tag{font-size:.7rem;border-radius:6px;padding:0 5px;background:var(--primary);color:#fff;margin-left:4px;white-space:nowrap}
+@media (prefers-color-scheme: dark){.tag{color:#06201d}}
+.progress{height:10px;background:var(--surface-2);border-radius:6px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary-2),var(--accent));transition:width .2s linear}
+.caption{background:var(--good-bg);border:1px solid var(--good);border-radius:10px;padding:6px 8px;font-size:.85rem;font-weight:700}
+.packet{position:fixed;z-index:50;font-size:1.6rem;pointer-events:none;transition:transform .8s ease-in-out,opacity .3s}
+.preview{margin-top:14px}
+.preview h3{margin:0 0 6px}
+.preview .grid{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:640px){.preview .grid{grid-template-columns:1fr}}
+/* tab2 VS Code mock */
+.vsgrid{display:grid;grid-template-columns:minmax(0,520px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.vsgrid{grid-template-columns:1fr}}
+.vs{position:relative;background:var(--vs-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;font-family:"Segoe UI",system-ui,sans-serif;font-size:.82rem;color:var(--text)}
+.vs .main{display:flex;min-height:330px}
+.vs .act{width:48px;flex:0 0 48px;background:var(--vs-act);display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:12px;color:#aaa;font-size:1.1rem}
+.vs .act .on{color:#fff;border-left:3px solid #fff;background:#505050;width:100%;text-align:center}
+.vs .side{flex:1;min-width:0;background:var(--vs-side);padding:10px 42px 14px 16px;display:flex;flex-direction:column;gap:8px}
+.vs .ttl{font-size:.72rem;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.vs .inp{border:1px solid #0078d4;border-radius:3px;padding:4px 6px;color:var(--muted);background:var(--vs-bg)}
+.vs .cbtn{background:#0078d4;color:#fff;text-align:center;border-radius:3px;padding:4px}
+.vs .sbtn{background:#0078d4;color:#fff;text-align:center;border-radius:3px;padding:4px}
+.vs .li{display:flex;align-items:center;gap:6px;padding:2px 4px}
+.vs .li .nm{flex:1;min-width:0}
+.vs .plus{border:1px solid var(--border);border-radius:3px;padding:0 5px;font-weight:700}
+.vs .status{background:var(--vs-status);color:#fff;display:flex;gap:14px;padding:4px 44px 4px 10px;font-size:.78rem}
+.co{position:absolute;width:26px;height:26px;border-radius:50%;border:2px solid #fff;background:var(--accent);color:#2b1a00;font-weight:800;font-size:.95rem;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.35);padding:0;z-index:2}
+.co[aria-pressed="true"]{background:#dc2626;color:#fff}
+.explain{min-height:9em}
+.explain h3{margin-top:0;color:var(--primary)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--border);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--surface-2)}
+td code{font-family:ui-monospace,Consolas,monospace;overflow-wrap:anywhere}
+kbd{border:1px solid var(--border);border-bottom-width:3px;border-radius:6px;padding:0 5px;background:var(--surface-2);font-family:inherit}
+/* quiz */
+.q{margin-bottom:14px}
+.q h3{margin:0 0 8px;font-size:1.02rem}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opt{border:2px solid var(--border);background:var(--surface-2);border-radius:10px;padding:8px 10px;text-align:left}
+.opt.right{border-color:var(--good);background:var(--good-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.fb{margin-top:6px;font-weight:700}
+.score{font-size:1.2rem;font-weight:800;color:var(--primary)}
+.party{font-size:2rem;display:inline-block;animation:pop 1s ease-out 2}
+@keyframes pop{0%{transform:scale(.4) rotate(-20deg)}60%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1)}}
+footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🎮 Git 存檔點模擬器</h1>
+  <p>在 VS Code 的「原始檔控制」面板按幾個按鈕，就能把作品存檔、送到 GitHub 總部保險箱，Netlify 美食街攤位就會自動更新！先在這裡玩一次吧 👇</p>
+</header>
+
+<div class="tabs" role="tablist" aria-label="教材分頁">
+  <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true">🎮 Git 模擬器</button>
+  <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">🗺️ 對照 VS Code 畫面</button>
+  <button class="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">📝 小測驗</button>
+</div>
+
+<!-- ============ TAB 1 ============ -->
+<section class="panel" id="p1" role="tabpanel" aria-labelledby="t1">
+  <div class="statusbar" aria-label="模擬 VS Code 狀態列"><span>⎇ main</span><span id="stChanges"></span><span id="stSync"></span></div>
+  <div class="msg" id="msg" role="status" aria-live="polite">👋 從左邊開始：先按「🤖 請 Copilot 修改」，讓 AI 幫你改網頁。</div>
+
+  <div class="zones">
+    <div class="zone" id="zW">
+      <h2>💻 工作區</h2>
+      <p class="desc">你的電腦資料夾，VS Code 打開的地方。改檔案都發生在這裡。</p>
+      <div id="wFiles"></div>
+      <div id="wMini"></div>
+      <button class="btn" id="bCopilot" aria-expanded="false" aria-controls="copChoices">🤖 請 Copilot 修改</button>
+      <div class="choices" id="copChoices" hidden>
+        <button class="btn alt" data-c="title">改標題</button>
+        <button class="btn alt" data-c="color">改按鈕顏色</button>
+        <button class="btn alt" data-c="section">加一個區塊</button>
+      </div>
+      <button class="btn" id="bStage">➕ Stage（按檔案旁的 +）</button>
+    </div>
+
+    <div class="zone" id="zS">
+      <h2>📋 暫存區 Staging</h2>
+      <p class="desc">準備要存檔的東西，像把東西放進要寄出的箱子 📦</p>
+      <div id="sFiles"></div>
+      <label for="cmsg" class="small">存檔訊息（寫你改了什麼）</label>
+      <input id="cmsg" type="text" placeholder="例如：把按鈕改成橘色" autocomplete="off">
+      <button class="btn" id="bCommit">✅ Commit（輸入訊息後按 ✓ Commit）</button>
+    </div>
+
+    <div class="zone" id="zL">
+      <h2>🗂️ 本機存檔紀錄</h2>
+      <p class="desc">Commit 歷史，像遊戲存檔列表。點任一個存檔點可以回去看。</p>
+      <ol class="timeline" id="lTimeline"></ol>
+      <button class="btn" id="bSync">☁️ Sync / Push（同步變更）</button>
+    </div>
+
+    <div class="zone" id="zR">
+      <h2>☁️ GitHub 遠端</h2>
+      <p class="desc">總部保險箱＋自動傳真機：一收到新存檔，就傳真通知 Netlify。</p>
+      <ol class="timeline" id="rTimeline"></ol>
+      <button class="btn alt" id="bMate">👩‍💻 模擬：隊友在 GitHub 網頁上改了 README</button>
+      <button class="btn" id="bPull">⬇️ Pull（從 GitHub 拉下來）</button>
+    </div>
+
+    <div class="zone" id="zN">
+      <h2>🏪 Netlify 網站</h2>
+      <p class="desc">美食街攤位。GitHub 一更新，它就自動重新上架（部署）。</p>
+      <div id="nMini"></div>
+      <div id="nDeploy" hidden>
+        <div class="small" id="nDeployTxt">🚚 收到傳真，部署中…</div>
+        <div class="progress" role="progressbar" aria-label="部署進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="nBar"></i></div>
+      </div>
+      <div class="caption" id="nCap" hidden>🎉 這就是 CI/CD！你沒有碰 Netlify，網站就自己更新了</div>
+    </div>
+  </div>
+
+  <div class="card preview" id="preview" hidden>
+    <h3 id="pvTitle">⏪ 回到某個存檔點</h3>
+    <div class="grid">
+      <div id="pvMini"></div>
+      <div>
+        <p id="pvInfo"></p>
+        <p class="small">👀 <b>看一眼（checkout）</b>就像遊戲裡「讀取舊存檔偷看一下」，看完還能回到現在。<br>
+        ⏪ <b>還原（revert）</b>不是把後面的存檔刪掉，而是<b>新增一個存檔點</b>，內容跟那一版一樣。歷史不會被刪掉，隨時還能再反悔 👍</p>
+        <div class="row" style="display:flex;flex-wrap:wrap;gap:8px">
+          <button class="btn amber" id="bRevert">還原成這一版（新增一個存檔點）</button>
+          <button class="btn alt" id="bClosePv">回到現在</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="small" style="margin-top:14px">💡 建議順序：🤖 修改 → ➕ Stage → ✅ Commit → ☁️ Sync，然後看最右邊的網站自己變！也試試隊友改 README → ⬇️ Pull，以及點存檔點 ⏪ 還原。
+    <button class="btn alt" id="bReset" style="font-size:.8rem;padding:2px 8px;margin-left:6px">🔄 重新開始</button></p>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="panel" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+  <p>下面是用 CSS 畫的 VS Code「原始檔控制」面板。點<b>橘色數字</b>看說明。快捷鍵：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>（Mac：<kbd>⌃</kbd><kbd>⇧</kbd><kbd>G</kbd>）直接打開這個面板。</p>
+  <div class="vsgrid">
+    <div class="vs" aria-label="VS Code 原始檔控制面板示意圖">
+      <div class="main">
+        <div class="act" aria-hidden="true"><span>📄</span><span>🔍</span><span class="on">⑂</span><span>▷</span></div>
+        <div class="side">
+          <div class="ttl">原始檔控制 SOURCE CONTROL</div>
+          <div class="inp">訊息 (Ctrl+Enter 以提交)</div>
+          <div class="cbtn">✓ Commit</div>
+          <div class="ttl" style="margin-top:4px">變更 CHANGES <span class="badge M" style="float:right">2</span></div>
+          <div class="li"><span>📄</span><span class="nm">index.html</span><span class="plus">+</span><span class="badge M">M</span></div>
+          <div class="li"><span>🎨</span><span class="nm">style.css</span><span class="plus">+</span><span class="badge U">U</span></div>
+          <div class="sbtn" style="margin-top:10px">🔄 同步變更 1↑</div>
+        </div>
+      </div>
+      <div class="status"><span>⎇ main</span><span>🔄 0↓ 1↑</span><span>☁️</span></div>
+      <button class="co" data-k="1" aria-pressed="false" aria-label="說明 1" style="left:36px;top:128px">1</button>
+      <button class="co" data-k="2" aria-pressed="false" aria-label="說明 2" style="left:36px;top:178px">2</button>
+      <button class="co" data-k="3" aria-pressed="false" aria-label="說明 3" style="right:8px;top:180px">3</button>
+      <button class="co" data-k="4" aria-pressed="false" aria-label="說明 4" style="right:8px;top:36px">4</button>
+      <button class="co" data-k="5" aria-pressed="false" aria-label="說明 5" style="right:8px;top:74px">5</button>
+      <button class="co" data-k="6" aria-pressed="false" aria-label="說明 6" style="right:8px;top:240px">6</button>
+      <button class="co" data-k="7" aria-pressed="false" aria-label="說明 7" style="right:8px;bottom:1px">7</button>
+    </div>
+    <div class="card explain" id="explain" aria-live="polite">
+      <h3>👈 點一個數字</h3>
+      <p>每個數字對應 VS Code 裡真的會看到的按鈕或標記。全部點一遍，下課打開 VS Code 就不會迷路！</p>
+    </div>
+  </div>
+
+  <h2 style="font-size:1.2rem;margin-top:24px">🔁 VS Code 按鈕 ↔ 指令</h2>
+  <p class="small">不用背指令，知道有這回事就好。VS Code 其實就是幫你打這些指令 😉</p>
+  <div class="card" style="padding:0;overflow:hidden">
+  <table>
+    <thead><tr><th>VS Code 按鈕</th><th>背後的指令</th><th>白話</th></tr></thead>
+    <tbody>
+      <tr><td>Clone 複製存放庫</td><td><code>git clone 網址</code></td><td>把總部保險箱整個複製一份到你電腦</td></tr>
+      <tr><td>＋ Stage 暫存</td><td><code>git add 檔案</code></td><td>放進要寄出的箱子</td></tr>
+      <tr><td>✓ Commit</td><td><code>git commit -m "訊息"</code></td><td>建立一個存檔點</td></tr>
+      <tr><td>🔄 Sync / Push</td><td><code>git push</code></td><td>把存檔送到 GitHub</td></tr>
+      <tr><td>⬇️ Pull</td><td><code>git pull</code></td><td>把 GitHub 上的新東西拉下來</td></tr>
+      <tr><td>Timeline / 歷史</td><td><code>git log</code></td><td>看存檔列表</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============ TAB 3 ============ -->
+<section class="panel" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
+  <p>5 題小測驗，選完馬上知道答案。答錯沒關係，就是這樣記住的 💪</p>
+  <div id="quiz"></div>
+  <div class="card" id="scoreBox" aria-live="polite"><span class="score" id="score">得分：0 / 5</span> <span id="party"></span>
+    <button class="btn alt" id="bQuizReset" style="margin-left:8px;font-size:.85rem;padding:3px 10px">再玩一次</button></div>
+</section>
+
+<footer>VibeNTPU 互動教材｜瀏覽器直接開，不需要網路</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Tabs ---------- */
+var tabs=[].slice.call(document.querySelectorAll('.tab'));
+function selectTab(t){
+  tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;$(x.getAttribute('aria-controls')).hidden=!on;});
+}
+tabs.forEach(function(t,i){
+  t.addEventListener('click',function(){selectTab(t)});
+  t.addEventListener('keydown',function(e){
+    var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;
+    if(d){var n=tabs[(i+d+tabs.length)%tabs.length];selectTab(n);n.focus();e.preventDefault();}
+  });
+});
+
+/* ---------- Simulator state ---------- */
+var TITLES=['小農便當店','小農便當 🍱 今日特餐','北大小農便當','現做便當，準時開賣！'];
+var COLORS=[['#2563eb','藍色'],['#f97316','橘色'],['#16a34a','綠色'],['#db2777','粉紅色']];
+var SECS=['⭐ 顧客好評','🕒 營業時間','📍 店面地圖'];
+var S;
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function eq(a,b){return JSON.stringify(a)===JSON.stringify(b)}
+function hash(){var h='';for(var i=0;i<7;i++)h+='0123456789abcdef'[Math.floor(Math.random()*16)];return h}
+function now(){var d=new Date();return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+function reset(){
+  var base={page:{t:0,c:0,s:0},readme:'# 小農便當店'};
+  var c0={h:hash(),m:'第一次存檔：建立網站',time:now(),content:base};
+  S={working:clone(base),index:clone(base),local:[c0],remote:[clone(c0)],site:clone(base.page),
+     sel:null,deploying:false,copIdx:{t:0,c:0,s:0}};
+  $('nCap').hidden=true;$('preview').hidden=true;$('cmsg').value='';
+  render();
+}
+function head(){return S.local[S.local.length-1]}
+function workChanges(){ // files differing working vs index
+  var f=[];if(!eq(S.working.page,S.index.page))f.push('index.html');if(S.working.readme!==S.index.readme)f.push('README.md');return f}
+function stagedChanges(){
+  var h=head().content,f=[];if(!eq(S.index.page,h.page))f.push('index.html');if(S.index.readme!==h.readme)f.push('README.md');return f}
+function hasHash(list,h){return list.some(function(c){return c.h===h})}
+function ahead(){return S.local.filter(function(c){return !hasHash(S.remote,c.h)}).length}
+function behind(){return S.remote.filter(function(c){return !hasHash(S.local,c.h)}).length}
+
+function mini(page,label,old){
+  var col=COLORS[page.c][0],secs='';
+  for(var i=0;i<page.s;i++)secs+='<div class="sec">'+SECS[i]+'</div>';
+  return '<div class="mini'+(old?' old':'')+'"><div class="bar">🌐 '+label+'</div><div class="body"><h3>'+TITLES[page.t]+
+    '</h3><span class="cta" style="background:'+col+'">立即訂購</span>'+secs+'</div></div>';
+}
+function fileRow(name,badge,btn){
+  return '<div class="file"><span>📄</span><span class="nm">'+name+'</span>'+(btn||'')+'<span class="badge '+badge+'" title="'+(badge==='M'?'Modified 已修改':'Untracked')+'">'+badge+'</span></div>';
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function timeline(list,el,isLocal){
+  var html='',hd=list[list.length-1];
+  for(var i=list.length-1;i>=0;i--){
+    var c=list[i],tags='';
+    if(c===hd)tags+='<span class="tag">'+(isLocal?'目前':'最新')+'</span>';
+    if(isLocal&&!hasHash(S.remote,c.h))tags+='<span class="tag" style="background:var(--accent);color:#2b1a00">還沒同步↑</span>';
+    if(c.mate)tags+='<span class="tag" style="background:#7c3aed;color:#fff">隊友</span>';
+    var inner='<span class="dot"></span><span><code>'+c.h+'</code> <span class="t">'+c.time+'</span>'+tags+'<br>'+esc(c.m)+'</span>';
+    if(isLocal)html+='<li><button class="node'+(c===hd?' head':'')+(S.sel===c.h?' sel':'')+'" data-h="'+c.h+'" aria-label="存檔點 '+c.h+'：'+esc(c.m)+'，點一下預覽">'+inner+'</button></li>';
+    else html+='<li><div class="node'+(c===hd?' head':'')+'">'+inner+'</div></li>';
+  }
+  el.innerHTML=html;
+}
+function render(){
+  var w=workChanges(),s=stagedChanges(),a=ahead(),b=behind();
+  $('wFiles').innerHTML=w.length?w.map(function(f){return fileRow(f,'M','')}).join(''):'<div class="empty">✨ 沒有未存的變更</div>';
+  $('wMini').innerHTML=mini(S.working.page,'預覽：你電腦上的 index.html');
+  $('sFiles').innerHTML=s.length?s.map(function(f){return fileRow(f,'M','')}).join(''):'<div class="empty">📦 箱子還是空的</div>';
+  timeline(S.local,$('lTimeline'),true);
+  timeline(S.remote,$('rTimeline'),false);
+  $('nMini').innerHTML=mini(S.site,'bento-ntpu.netlify.app');
+  var n=w.length+s.length;
+  $('stChanges').textContent=n?('✏️ '+n+' 個變更尚未存檔'+(s.length?'（'+s.length+' 個已暫存）':'')):'✅ 沒有未存檔的變更';
+  var sync=[];
+  if(a)sync.push('有 '+a+' 個存檔點還沒同步到 GitHub ↑'+a);
+  if(b)sync.push('GitHub 上有 '+b+' 個新存檔可以拉下來 ↓'+b);
+  $('stSync').textContent=sync.length?'🔄 '+sync.join('；'):'☁️ 已和 GitHub 同步 0↓ 0↑';
+  $('bSync').textContent='☁️ Sync / Push（同步變更）'+(a||b?' '+b+'↓ '+a+'↑':'');
+}
+function say(html,kind){var m=$('msg');m.className='msg'+(kind?' '+kind:'');m.innerHTML=html}
+function flash(id){var z=$(id);z.classList.add('flash');setTimeout(function(){z.classList.remove('flash')},900)}
+function fly(from,to,emoji,cb){
+  if(reduce){cb();return}
+  var a=$(from).getBoundingClientRect(),b=$(to).getBoundingClientRect();
+  var p=document.createElement('div');p.className='packet';p.textContent=emoji;p.setAttribute('aria-hidden','true');
+  p.style.left=(a.left+a.width/2-14)+'px';p.style.top=(Math.min(a.top+60,innerHeight-60))+'px';
+  document.body.appendChild(p);
+  var dx=(b.left+b.width/2)-(a.left+a.width/2),dy=Math.min(b.top+60,innerHeight-60)-Math.min(a.top+60,innerHeight-60);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){p.style.transform='translate('+dx+'px,'+dy+'px)'})});
+  setTimeout(function(){p.remove();cb()},850);
+}
+
+/* ---------- Actions ---------- */
+$('bCopilot').addEventListener('click',function(){
+  var c=$('copChoices');c.hidden=!c.hidden;this.setAttribute('aria-expanded',!c.hidden);
+  if(!c.hidden)say('🤖 你想請 Copilot 改什麼？選一個 👇（真實情況是你在 Copilot Chat 打字請它改）');
+});
+[].forEach.call(document.querySelectorAll('#copChoices .btn'),function(b){
+  b.addEventListener('click',function(){
+    var k=b.dataset.c,p=S.working.page,txt;
+    if(k==='title'){p.t=(p.t+1)%TITLES.length;txt='標題改成「'+TITLES[p.t]+'」';}
+    else if(k==='color'){p.c=(p.c+1)%COLORS.length;txt='按鈕改成'+COLORS[p.c][1];}
+    else{if(p.s>=SECS.length){p.s=0;txt='移除所有區塊（清爽一下）';}else{p.s++;txt='加上「'+SECS[p.s-1]+'」區塊';}}
+    $('copChoices').hidden=true;$('bCopilot').setAttribute('aria-expanded','false');
+    render();flash('zW');
+    say('🤖 Copilot 已經把'+txt+'。看！檔案旁邊出現 <span class="badge M">M</span>（Modified 已修改）。這只改了<b>你電腦上的檔案</b>，網站還沒變喔。下一步：按「➕ Stage」。');
+    $('cmsg').placeholder='例如：'+txt.replace('標題改成','把標題改成').replace(/^按鈕改成/,'把按鈕改成');
+  });
+});
+function doStage(){S.index=clone(S.working);render();flash('zS');}
+$('bStage').addEventListener('click',function(){
+  if(!workChanges().length){say('🤔 目前沒有新的變更可以放進暫存區。先按「🤖 請 Copilot 修改」改點東西吧！','bad');return}
+  fly('zW','zS','📦',function(){doStage();say('📦 變更已經放進「暫存區」這個箱子了。接著在下面輸入一句存檔訊息，再按「✅ Commit」。','good');$('cmsg').focus();});
+});
+function doCommit(msg){
+  var c={h:hash(),m:msg,time:now(),content:clone(S.index)};
+  S.local.push(c);$('cmsg').value='';render();flash('zL');
+  var tip=/^(update|aaa+|test|123|改|修改|asdf|\.+)$/i.test(msg.trim())?'<br>💬 小建議：訊息寫具體一點，例如「把按鈕改成橘色」，以後找存檔點會輕鬆很多！':'';
+  say('✅ 存檔成功！存檔點 <code>'+c.h+'</code>「'+esc(msg)+'」出現在「本機存檔紀錄」。但它還只在<b>你的電腦</b>裡，網站不會變。下一步：按「☁️ Sync / Push」送到 GitHub。'+tip,'good');
+}
+$('bCommit').addEventListener('click',function(){
+  var msg=$('cmsg').value.trim(),s=stagedChanges(),w=workChanges();
+  if(!s.length&&!w.length){say('🤔 沒有任何變更可以存檔喔！先請 Copilot 改點東西吧。','bad');return}
+  if(!msg){say('✍️ 寫一句話說明你改了什麼，例如「把按鈕改成橘色」','bad');$('cmsg').focus();return}
+  if(!s.length){
+    say('📦 暫存區是空的！在 VS Code 裡，這時候 VS Code 會問你要不要全部一起存，按「是」就好。<div class="row"><button class="btn" id="bYes">是（全部暫存並 Commit）</button><button class="btn alt" id="bNo">取消</button></div>','bad');
+    $('bYes').addEventListener('click',function(){doStage();doCommit(msg)});
+    $('bNo').addEventListener('click',function(){say('好的，你也可以先按「➕ Stage」再 Commit。')});
+    $('bYes').focus();return;
+  }
+  doCommit(msg);
+});
+function applyReadme(r){ // teammate only edits README; carry it into local work
+  S.local.forEach(function(c){c.content.readme=r});S.index.readme=r;S.working.readme=r;
+}
+function pullCore(){
+  var inc=S.remote.filter(function(c){return !hasHash(S.local,c.h)});
+  if(!inc.length)return 0;
+  var mine=S.local.filter(function(c){return !hasHash(S.remote,c.h)});
+  var r=S.remote[S.remote.length-1].content.readme;
+  S.local=clone(S.remote).concat(mine);applyReadme(r);
+  return inc.length;
+}
+function deploy(){
+  S.deploying=true;$('nDeploy').hidden=false;
+  if(innerWidth<=1020)setTimeout(function(){$('zN').scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'})},300);$('nCap').hidden=true;var bar=$('nBar'),pg=bar.parentNode,t=0;
+  $('nDeployTxt').textContent='🚚 GitHub 傳真通知 Netlify：部署中…';
+  var iv=setInterval(function(){t+=10;bar.style.width=t+'%';pg.setAttribute('aria-valuenow',t);
+    if(t>=100){clearInterval(iv);S.deploying=false;
+      S.site=clone(S.remote[S.remote.length-1].content.page);render();flash('zN');
+      $('nDeploy').hidden=true;bar.style.width='0';$('nCap').hidden=false;
+      say('🏪 Netlify 部署完成，網站更新了！<b>這就是 CI/CD！你沒有碰 Netlify，網站就自己更新了</b> 🎉','good');
+    }},250);
+}
+$('bSync').addEventListener('click',function(){
+  if(S.deploying){say('⏳ Netlify 還在部署中，稍等一下下～');return}
+  var a=ahead(),b=behind();
+  if(!a&&!b){
+    var n=workChanges().length+stagedChanges().length;
+    say(n?'🤔 目前沒有新的存檔點可以同步喔！先 Commit 吧（你有 '+n+' 個變更還沒存檔）。':'🤔 目前沒有新的存檔點可以同步喔！先 Commit 吧','bad');return}
+  var pulled=b?pullCore():0;
+  if(pulled)render();
+  if(!a){say('⬇️ 同步變更會「先拉再推」：已從 GitHub 拉下 '+pulled+' 個新存檔。你這邊沒有新存檔要推。','good');return}
+  fly('zL','zR','🚀',function(){
+    S.remote=clone(S.local);render();flash('zR');
+    say((pulled?'⬇️ 先把隊友的新存檔拉下來，再 ':'')+'☁️ 已把 '+a+' 個存檔點送到 GitHub 總部保險箱！GitHub 正在傳真通知 Netlify… 看最右邊 👉');
+    fly('zR','zN','📠',deploy);
+  });
+});
+$('bMate').addEventListener('click',function(){
+  if(S.deploying){say('⏳ 等 Netlify 部署完再試～');return}
+  var h=S.remote[S.remote.length-1],c=clone(h);
+  c.h=hash();c.m='隊友：更新 README 說明';c.time=now();c.mate=true;
+  c.content.readme=h.content.readme+'\n營業時間：週一到週五 11:00–14:00';
+  S.remote.push(c);render();flash('zR');
+  say('👩‍💻 隊友直接在 GitHub 網頁上改了 README.md，GitHub 多了一個存檔點。你的電腦還不知道！狀態列出現 <b>↓1</b>。按「⬇️ Pull」把它拉下來。（GitHub 更新也會觸發 Netlify 重新部署）');
+  deploy();
+});
+$('bPull').addEventListener('click',function(){
+  if(!behind()){say('😊 GitHub 上沒有你還沒拿到的新東西，已經是最新的了！想試試看，先按「👩‍💻 模擬：隊友改了 README」。','bad');return}
+  fly('zR','zL','📥',function(){
+    var n=pullCore();render();flash('zL');flash('zW');
+    say('⬇️ Pull 完成！拉下 '+n+' 個隊友的存檔點，你電腦上的 README.md 也更新了。<br>💡 好習慣：<b>每次開始工作前先 Pull</b>，拿到隊友最新的版本。','good');
+  });
+});
+/* history / revert */
+$('lTimeline').addEventListener('click',function(e){
+  var b=e.target.closest('.node');if(!b)return;
+  var c=S.local.filter(function(x){return x.h===b.dataset.h})[0];if(!c)return;
+  S.sel=c.h;render();
+  $('preview').hidden=false;
+  $('pvTitle').textContent='⏪ 偷看存檔點 '+c.h;
+  $('pvMini').innerHTML=mini(c.content.page,'存檔點 '+c.h+' 的樣子',c!==head());
+  var isHead=c===head();
+  $('pvInfo').innerHTML='📝「'+esc(c.m)+'」（'+c.time+'）'+(isHead?'<br>這就是目前最新的存檔點。':'<br>這是以前的版本。如果最近改壞了，可以還原回這一版。');
+  $('bRevert').disabled=isHead;
+  $('preview').scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
+  say('👀 正在偷看存檔點 <code>'+c.h+'</code>，看下面的預覽。');
+});
+$('bClosePv').addEventListener('click',function(){S.sel=null;$('preview').hidden=true;render();say('🔙 回到現在。')});
+$('bRevert').addEventListener('click',function(){
+  var c=S.local.filter(function(x){return x.h===S.sel})[0];if(!c)return;
+  if(workChanges().length||stagedChanges().length){say('✋ 你還有沒存檔的變更，先 Commit 起來再還原，才不會弄丟喔！','bad');return}
+  var content={page:clone(c.content.page),readme:head().content.readme};
+  if(eq(content,head().content)){say('😊 這一版的內容跟現在一模一樣，不用還原喔！','bad');return}
+  var r={h:hash(),m:'還原成「'+c.m+'」那一版',time:now(),content:content};
+  S.local.push(r);S.working=clone(content);S.index=clone(content);S.sel=null;$('preview').hidden=true;render();flash('zL');
+  say('⏪ 還原完成！多了一個新存檔點 <code>'+r.h+'</code>，之前的存檔點都還在（歷史不會被刪掉）。記得按「☁️ Sync」，網站才會跟著還原。','good');
+});
+$('bReset').addEventListener('click',function(){reset();say('🔄 已重新開始。先按「🤖 請 Copilot 修改」吧！')});
+reset();
+
+/* ---------- Tab 2 callouts ---------- */
+var CO={
+ 1:['① 原始檔控制圖示','左邊那排圖示裡，長得像<b>樹枝分岔</b> ⑂ 的就是「原始檔控制」。有變更時上面會出現藍色數字。點它（或按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>，Mac 按 <kbd>⌃</kbd><kbd>⇧</kbd><kbd>G</kbd>）就會打開這個面板。'],
+ 2:['② 變更清單與 M / U 標記','這裡列出你改過的檔案。<span class="badge M">M</span> = Modified（改過的舊檔案）；<span class="badge U">U</span> = Untracked（全新、Git 還沒見過的檔案）。點檔名可以看<b>改了哪裡</b>（紅色刪掉、綠色新增）。'],
+ 3:['③ ＋ 暫存（Stage）','滑鼠移到檔名上會出現 <b>＋</b>。按下去，檔案就移到「暫存的變更」，等於放進要寄出的箱子。想全部一起放，按「變更」標題旁的 ＋。'],
+ 4:['④ 訊息輸入框','在這裡寫一句話說明你改了什麼，例如「把 CTA 按鈕改成橘色」。好訊息＝未來的你看得懂。不要只寫「update」或「aaa」😅'],
+ 5:['⑤ ✓ Commit 按鈕','按下去就建立一個<b>存檔點</b>。如果你忘了 Stage，VS Code 會問你要不要全部一起存，按「是」就好。注意：Commit 只存在你電腦，網站還不會變！'],
+ 6:['⑥ 同步變更 Sync Changes','Commit 之後按鈕會變成「同步變更 1↑」。<b>↑ 數字</b>＝要推上 GitHub 的存檔點數；<b>↓ 數字</b>＝GitHub 上有、你還沒拉下來的數量。按一下就會先 Pull 再 Push，推上去後 Netlify 會自動部署。'],
+ 7:['⑦ 狀態列的同步圖示','最下面藍色狀態列：左邊 ⎇ main 是目前的分支，旁邊 🔄 0↓ 1↑ 顯示同步狀態，點它也能同步。如果看到<b>雲朵 ☁️ 加箭頭</b>，代表這個分支還沒發佈到 GitHub，點它就會發佈。']
+};
+var cos=[].slice.call(document.querySelectorAll('.co'));
+cos.forEach(function(b){b.addEventListener('click',function(){
+  cos.forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+  var d=CO[b.dataset.k];$('explain').innerHTML='<h3>'+d[0]+'</h3><p>'+d[1]+'</p>';
+})});
+
+/* ---------- Tab 3 quiz ---------- */
+var QZ=[
+ ['Commit 像遊戲裡的什麼？',['🎮 存檔點','🗑️ 刪除角色','🛒 商城購物'],0,'沒錯！每次 Commit 就是一個存檔點，改壞了可以回去。','Commit 就像遊戲存檔點：把現在的進度存起來，之後可以讀檔回來。'],
+ ['改完檔案、Commit 之後，網站會更新嗎？',['會，馬上更新','不會，要 Sync/Push 到 GitHub 才會','要重開電腦才會'],1,'答對！Commit 只存在你的電腦，要 Sync/Push 到 GitHub，Netlify 才會收到。','Commit 只存在你電腦的「本機存檔紀錄」，要按 Sync/Push 送到 GitHub 才會觸發更新。'],
+ ['Push 到 GitHub 之後，要去 Netlify 按按鈕嗎？',['要，每次都要手動上傳','不用，CI/CD 會自動部署','要打電話給 Netlify'],1,'正確！GitHub 像自動傳真機，會自動通知 Netlify 更新攤位，這就是 CI/CD。','不用喔！GitHub 一更新，Netlify 就自動部署，這就是 CI/CD。'],
+ ['下面哪一個是好的 commit 訊息？',['update','把 CTA 按鈕改成橘色','aaa'],1,'太棒了！具體說明改了什麼，以後找存檔點超輕鬆。','好訊息要說清楚改了什麼，「把 CTA 按鈕改成橘色」一看就懂。'],
+ ['網站改壞了怎麼辦？',['刪掉整個專案重來','回到之前的存檔點','假裝沒看到'],1,'對！回到之前的存檔點（還原），而且歷史不會被刪掉。','不用重來！點之前的存檔點還原就好，歷史都還在。']
+];
+var answered;
+function buildQuiz(){
+  answered={};var h='';
+  QZ.forEach(function(q,i){
+    h+='<div class="card q" role="group" aria-labelledby="qh'+i+'"><h3 id="qh'+i+'">Q'+(i+1)+'. '+q[0]+'</h3><div class="opts">';
+    q[1].forEach(function(o,j){h+='<button class="opt" data-q="'+i+'" data-o="'+j+'">'+o+'</button>'});
+    h+='</div><div class="fb" id="fb'+i+'" aria-live="polite"></div></div>';
+  });
+  $('quiz').innerHTML=h;$('score').textContent='得分：0 / 5';$('party').innerHTML='';
+}
+$('quiz').addEventListener('click',function(e){
+  var b=e.target.closest('.opt');if(!b)return;
+  var i=+b.dataset.q,j=+b.dataset.o,q=QZ[i];if(i in answered)return;
+  answered[i]=j===q[2];
+  [].forEach.call(document.querySelectorAll('.opt[data-q="'+i+'"]'),function(x){
+    var k=+x.dataset.o;if(k===q[2])x.classList.add('right');else if(k===j)x.classList.add('wrong');x.setAttribute('aria-disabled','true');
+  });
+  $('fb'+i).innerHTML=answered[i]?'✅ '+q[3]:'💡 差一點！'+q[4];
+  $('fb'+i).style.color=answered[i]?'var(--good)':'var(--bad)';
+  var sc=0,n=0;for(var k in answered){n++;if(answered[k])sc++}
+  $('score').textContent='得分：'+sc+' / 5';
+  if(n===5)$('party').innerHTML=sc===5?'<span class="party" aria-hidden="true">🎉</span> 全對！你已經是 Git 存檔大師了！':sc>=3?'<span class="party" aria-hidden="true">👏</span> 很棒！再回模擬器玩一次就全懂了':'<span class="party" aria-hidden="true">💪</span> 回到「🎮 Git 模擬器」多玩幾次，再來挑戰！';
+});
+$('bQuizReset').addEventListener('click',buildQuiz);
+buildQuiz();
+})();
+</script>
+</body>
+</html>

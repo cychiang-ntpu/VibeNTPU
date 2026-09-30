@@ -31,3 +31,16 @@
 | **MRR** | Monthly Recurring Revenue／月經常性收入 | 每月固定的會員費 | SaaS 最重要的營收指標 | [Stripe：什麼是 MRR](https://stripe.com/resources/more/what-is-monthly-recurring-revenue) |
 | **Vibe Coding** | 氛圍程式設計 | 跟主廚說「我要清爽的感覺」 | 用自然語言描述需求，讓 AI 寫程式 | [維基百科](https://en.wikipedia.org/wiki/Vibe_coding) |
 | **Prompt** | 提示詞（咒語） | 點餐單 | 你給 AI 的指令 | [Anthropic 提示工程](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview) |
+| **VS Code** | Visual Studio Code | 廚房工作台 | 全世界最常用的免費程式編輯器 | [VS Code](https://code.visualstudio.com/) |
+| **GitHub Copilot** | AI 程式設計助理 | 工作台旁的 AI 主廚助理 | 住在 VS Code 裡，用中文說需求就能直接改檔案 | [VS Code 的 Copilot](https://code.visualstudio.com/docs/copilot/overview) |
+| **Agent 模式** | Copilot 代理模式 | 讓助理自己動手做 | Copilot 會直接建立、修改檔案（Ask 模式只回答） | [Copilot Chat](https://code.visualstudio.com/docs/copilot/chat/copilot-chat) |
+| **Clone** | 複製 | 把總部的存檔下載到你電腦 | 把 GitHub 上的 repo 複製一份到本機 | [Git 入門](tutorials/git_intro.md) |
+| **Push／Sync** | 推送／同步 | 把設計圖傳真回總部 | 把本機的 commit 送到 GitHub | [Git 入門](tutorials/git_intro.md) |
+| **Pull** | 拉取 | 從總部取回最新設計圖 | 把 GitHub 上的新修改下載到本機 | [Git 入門](tutorials/git_intro.md) |
+| **CDN** | Content Delivery Network／內容傳遞網路 | 開在各城市的分店倉庫 | 把照片影片複製到離使用者最近的機房 | [MDN：CDN](https://developer.mozilla.org/zh-TW/docs/Glossary/CDN) |
+| **負載平衡** | Load Balancer | 百貨門口的引導員 | 把大量請求平均分給很多台伺服器 | [社群媒體架構](../lectures/wk01_1007_saas-storefront/social_media_architecture.md) |
+| **API** | Application Programming Interface／應用程式介面 | 服務台窗口 | 程式之間溝通的約定格式 | [MDN：API](https://developer.mozilla.org/zh-TW/docs/Glossary/API) |
+| **微服務** | Microservices | 美食街分工的各櫃位 | 把大系統拆成很多獨立的小服務 | [Red Hat：微服務](https://www.redhat.com/zh/topics/microservices/what-are-microservices) |
+| **快取** | Cache | 熱門菜先放保溫台 | 常用資料放在超快的地方，下次秒拿 | [MDN：Cache](https://developer.mozilla.org/en-US/docs/Glossary/Cache) |
+| **訊息佇列** | Message Queue | 排隊叫號機 | 不急的工作排隊慢慢做，避免塞車 | [社群媒體架構](../lectures/wk01_1007_saas-storefront/social_media_architecture.md) |
+| **推播** | Push Notification | 外送平台送通知 | 由 Apple／Google 把通知送到手機 | [社群媒體架構](../lectures/wk01_1007_saas-storefront/social_media_architecture.md) |

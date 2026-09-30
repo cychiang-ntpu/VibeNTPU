@@ -14,8 +14,8 @@
 上課前請確認：
 ✅ 上週的網站用手機打得開（還沒完成的同學，照步驟卡補做，卡住就在群組問！）
    👉 https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/steps.md
-✅ 找得到你的 index.html（電腦裡，或到 GitHub repo 下載）
-✅ 記得 AI 助理的帳號密碼
+✅ VS Code 打得開你上週 clone 的 repo 資料夾
+✅ Copilot Chat 還能用（免費版次數還夠嗎？）
 
 🤔 先想一個問題：上週的網站如果有人按「註冊」，資料會跑去哪裡？
 （答案可能會讓你嚇一跳，上課揭曉 😏）
@@ -32,7 +32,7 @@ https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk02_1014_baas-ci
 今天結束時，你的網站會：
 📦 收集真實的早鳥名單
 💾 記得回訪的客人
-🔄 一上傳就自動更新
+🔄 一按 Sync 就自動更新
 主線全破還可以列印 🎓 完課證書！
 ```
 

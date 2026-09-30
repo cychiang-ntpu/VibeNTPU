@@ -74,7 +74,7 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
 <body>
 <header>
   <h1>🪄 咒語產生器</h1>
-  <p class="sub">填好表單，AI 咒語自動生成，一鍵複製貼給 AI 就能做出網站！</p>
+  <p class="sub">填好表單，AI 咒語自動生成，一鍵複製貼到 VS Code 的 Copilot Chat 就能做出網站！</p>
   <div class="modes" role="group" aria-label="選擇模式">
     <button type="button" data-mode="w1" aria-pressed="true">第 1 週：產生首頁</button>
     <button type="button" data-mode="w2" aria-pressed="false">第 2 週：加入早鳥名單表單</button>
@@ -91,7 +91,21 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     </div>
   </div>
 
+  <fieldset>
+    <legend>🤖 使用的 AI</legend>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="ai" value="Copilot">GitHub Copilot（VS Code）</label>
+    </div>
+    <p class="hint" style="margin:8px 0 6px">沒有 Copilot 時的備案：</p>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="ai" value="Claude">Claude</label>
+      <label class="chip"><input type="radio" name="ai" value="ChatGPT">ChatGPT</label>
+      <label class="chip"><input type="radio" name="ai" value="Gemini">Gemini</label>
+    </div>
+  </fieldset>
+
   <div class="remind" id="w2remind" hidden>📌 記得先把你的 index.html 完整貼給 AI！<br><span class="hint" style="color:inherit">（咒語複製後，在下面貼上整份 index.html 程式碼，再送出）</span></div>
+  <div class="remind" id="w2remindCp" hidden>📌 Copilot 看得到你的檔案：請確認 VS Code 已打開你的 repo 資料夾，並在 Chat 中用 #index.html 或把 index.html 分頁打開<br><span class="hint" style="color:inherit">（不用再手動貼上程式碼，Copilot 會直接修改檔案）</span></div>
 
   <div class="field">
     <label for="name">產品名稱 <span class="hint">例：三峽租屋雷達</span></label>
@@ -147,14 +161,6 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
       <legend>🧱 要包含的區塊</legend>
       <div class="chips" id="secs"></div>
     </fieldset>
-    <fieldset>
-      <legend>🤖 使用的 AI</legend>
-      <div class="chips">
-        <label class="chip"><input type="radio" name="ai" value="Claude">Claude</label>
-        <label class="chip"><input type="radio" name="ai" value="ChatGPT">ChatGPT</label>
-        <label class="chip"><input type="radio" name="ai" value="Gemini">Gemini</label>
-      </div>
-    </fieldset>
   </div>
 
   <div id="w2fields" hidden>
@@ -187,7 +193,8 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
 
 <script>
 (function(){
-  var KEY = 'vibentpu_prompt_builder_v1';
+  var KEY = 'vibentpu_prompt_builder_v2', OLD_KEY = 'vibentpu_prompt_builder_v1';
+  var AIS = ['Copilot','Claude','ChatGPT','Gemini'];
   var SECS = [['導覽列',1],['主視覺+CTA',1],['痛點',1],['功能介紹',1],['使用者推薦',0],['團隊介紹',0],['價格方案',1],['FAQ',1],['倒數計時',0],['頁尾',1]];
   var SEC_DESC = {
     '導覽列':'導覽列（Logo + 選單，手機版變漢堡選單）',
@@ -210,19 +217,33 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     {name:'揪運動 GoSport',pitch:'一個人也能運動！快速找到同校球友一起流汗',audience:'想運動但找不到伴的大學生',f1:'依運動項目與時段揪團',f2:'場地空位即時查詢',f3:'運動紀錄與成就徽章',pricing:'免費使用，進階版每月 NT$39',style:'科技未來感',color:'墨黑配金色',u1:'校際友誼賽',u2:'私人教練媒合',u3:'運動穿戴裝置同步'}
   ];
   var TIPS = {
-    Claude:'💡 <b>Claude 小撇步</b>：貼上咒語送出後，程式碼會出現在右側的 <b>Artifacts</b> 視窗，可以直接預覽網頁；點右上角的「下載」按鈕，就能把 index.html 存到電腦。',
-    ChatGPT:'💡 <b>ChatGPT 小撇步</b>：可以先開啟 <b>Canvas</b>（畫布）功能再送出咒語，就能在右側預覽網頁；也可以把程式碼複製到記事本，另存成 index.html（編碼選 UTF-8）。',
-    Gemini:'💡 <b>Gemini 小撇步</b>：在輸入框選擇 <b>Canvas</b> 再送出咒語，就能在右側預覽網頁；完成後可以複製程式碼，另存成 index.html（編碼選 UTF-8）。'
+    Copilot:'💡 <b>Copilot 小撇步</b>：點 VS Code 上方的 <b>Copilot 圖示</b>打開 Copilot Chat（快捷鍵：Ctrl+Alt+I，Mac：⌃⌘I）→ Chat 上方選 <b>Agent</b> 模式 → 貼上咒語送出 → 看完變更按 <b>Keep（保留）</b> → 在左側 index.html 上按右鍵「Reveal in File Explorer（在檔案總管中顯示）」，再雙擊用瀏覽器打開（有裝 Live Preview 擴充套件也可以按右鍵「Show Preview」）。滿意後到「原始檔控制」<b>Commit</b>，再按 <b>Sync Changes</b> 推送到 GitHub。',
+    Claude:'💡 <b>Claude 小撇步</b>：貼上咒語送出後，程式碼會出現在右側的 <b>Artifacts</b> 視窗，可以直接預覽網頁；點右上角的「下載」按鈕，把 index.html 存到你的 repo 資料夾（覆蓋舊檔），再用 VS Code 的原始檔控制 Commit ＋ Sync。',
+    ChatGPT:'💡 <b>ChatGPT 小撇步</b>：可以先開啟 <b>Canvas</b>（畫布）功能再送出咒語，就能在右側預覽網頁；也可以把程式碼複製到 VS Code，貼進 repo 資料夾裡的 index.html 存檔，再 Commit ＋ Sync。',
+    Gemini:'💡 <b>Gemini 小撇步</b>：在輸入框選擇 <b>Canvas</b> 再送出咒語，就能在右側預覽網頁；完成後複製程式碼，貼進 VS Code 裡 repo 資料夾的 index.html 存檔，再 Commit ＋ Sync。'
   };
-  var W2TIP = '💡 <b>第 2 週小撇步</b>：送出前，把你第 1 週的 index.html <b>整份</b>貼在咒語下面。AI 回傳新版後，覆蓋舊檔並重新部署到 Netlify，表單才會在 Netlify 後台「Forms」出現喔！';
+  var W2TIP = '💡 <b>第 2 週小撇步</b>：送出前，把你第 1 週的 index.html <b>整份</b>貼在咒語下面。AI 回傳新版後，在 VS Code 覆蓋 repo 資料夾裡的 index.html，再到「原始檔控制」Commit ＋ Sync 推送到 GitHub，Netlify 會自動重新部署，表單才會在 Netlify 後台「Forms」出現喔！';
+  var W2TIP_CP = '💡 <b>第 2 週小撇步</b>：在 Copilot Chat（<b>Agent</b> 模式）貼上咒語送出，看完變更按 <b>Keep（保留）</b>。接著到左側「原始檔控制」寫一句說明按 <b>Commit</b>，再按 <b>Sync Changes</b> 推送到 GitHub，Netlify 會自動重新部署，表單才會在 Netlify 後台「Forms」出現喔！';
+  var NO_GIT = '改完後請不要幫我執行 git 指令，我會自己用 VS Code 的原始檔控制存檔。';
 
   function blank(){
-    var s = {mode:'w1',name:'',pitch:'',audience:'',f1:'',f2:'',f3:'',pricing:'',style:'清新活潑',styleCustom:'',color:'青綠色',colorCustom:'',ai:'Claude',u1:'',u2:'',u3:'',sections:[]};
+    var s = {mode:'w1',name:'',pitch:'',audience:'',f1:'',f2:'',f3:'',pricing:'',style:'清新活潑',styleCustom:'',color:'青綠色',colorCustom:'',ai:'Copilot',u1:'',u2:'',u3:'',sections:[]};
     SECS.forEach(function(x){ if(x[1]) s.sections.push(x[0]); });
     return s;
   }
   var S = blank();
-  try{ var saved = JSON.parse(localStorage.getItem(KEY)||'null'); if(saved && typeof saved==='object'){ for(var k in saved) if(k in S) S[k]=saved[k]; } }catch(e){}
+  try{
+    var saved = JSON.parse(localStorage.getItem(KEY)||'null');
+    if(!saved){ // 舊版資料：保留填過的內容，AI 改回預設的 Copilot
+      saved = JSON.parse(localStorage.getItem(OLD_KEY)||'null');
+      if(saved && typeof saved==='object') delete saved.ai;
+    }
+    if(saved && typeof saved==='object'){ for(var k in saved) if(k in S) S[k]=saved[k]; }
+  }catch(e){}
+  if(AIS.indexOf(S.ai)<0) S.ai = 'Copilot';
+  if(S.mode!=='w1' && S.mode!=='w2') S.mode = 'w1';
+  if(!Array.isArray(S.sections)) S.sections = blank().sections;
+  function isCp(){ return S.ai==='Copilot'; }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
   var $ = function(q){ return document.querySelector(q); };
@@ -248,7 +269,8 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     $$('input[name=ai]').forEach(function(i){ i.checked = i.value===S.ai; });
     $$('[data-mode]').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.mode===S.mode?'true':'false'); });
     var w2 = S.mode==='w2';
-    $('#w1fields').hidden = w2; $('#w2fields').hidden = !w2; $('#w2remind').hidden = !w2;
+    $('#w1fields').hidden = w2; $('#w2fields').hidden = !w2;
+    $('#w2remind').hidden = !w2 || isCp(); $('#w2remindCp').hidden = !w2 || !isCp();
     render();
   }
 
@@ -260,7 +282,8 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     var color = S.color==='自訂' ? v(S.colorCustom, '由你決定') : S.color;
     var secs = SECS.map(function(x){return x[0];}).filter(function(n){ return S.sections.indexOf(n)>=0; });
     var L = [];
-    L.push('你是一位資深前端工程師兼 UI 設計師。請幫我做一個 SaaS 產品的「形象首頁（Landing Page）」，要漂亮、專業、讓人想立刻註冊。');
+    if(isCp()) L.push('你是一位資深前端工程師兼 UI 設計師。請在目前的工作區（資料夾）根目錄建立一個 index.html，做成 SaaS 產品的「形象首頁（Landing Page）」，要漂亮、專業、讓人想立刻註冊。');
+    else L.push('你是一位資深前端工程師兼 UI 設計師。請幫我做一個 SaaS 產品的「形象首頁（Landing Page）」，要漂亮、專業、讓人想立刻註冊。');
     L.push('');
     L.push('【產品資訊】');
     L.push('- 產品名稱：' + v(S.name, TBD));
@@ -288,14 +311,22 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     L.push('4. 要有 RWD 響應式設計，手機上也要好看好用（不能出現左右捲動）。');
     L.push('5. 網頁上所有文字都使用繁體中文（台灣用語）。');
     L.push('6. <head> 裡一定要有 <meta charset="UTF-8"> 和 <meta name="viewport" content="width=device-width, initial-scale=1.0">。');
-    L.push('7. 請直接回傳「完整」的 index.html 程式碼，不要省略任何部分，也不要用「…其餘相同」帶過。');
+    if(isCp()){
+      L.push('7. 請把「完整」的程式碼直接寫進 index.html 檔案，不要省略任何部分，也不要用「…其餘相同」帶過。');
+      L.push('');
+      L.push('完成後請告訴我怎麼在瀏覽器預覽。');
+      L.push(NO_GIT);
+    }else{
+      L.push('7. 請直接回傳「完整」的 index.html 程式碼，不要省略任何部分，也不要用「…其餘相同」帶過。');
+    }
     return L.join('\n');
   }
 
   function buildW2(){
     var name = v(S.name, '我的產品');
     var L = [];
-    L.push('你是一位資深前端工程師。下面是我目前的網站 index.html（產品名稱：' + name + '）。請幫我在頁面中加入一個「早鳥名單（Waitlist）」表單，並部署在 Netlify 上可以正常收集資料。');
+    if(isCp()) L.push('你是一位資深前端工程師。請直接修改工作區中的 index.html（產品名稱：' + name + '），在頁面中加入一個「早鳥名單（Waitlist）」表單（其他部分保持不變），並讓它部署在 Netlify 上可以正常收集資料。');
+    else L.push('你是一位資深前端工程師。下面是我目前的網站 index.html（產品名稱：' + name + '）。請幫我在頁面中加入一個「早鳥名單（Waitlist）」表單，並部署在 Netlify 上可以正常收集資料。');
     L.push('');
     L.push('【表單規格（Netlify Forms，請完全照做）】');
     L.push('1. 表單標籤必須是：<form name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field">');
@@ -326,10 +357,16 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     L.push('1. 程式碼請加上繁體中文註解，讓初學者看得懂。');
     L.push('2. 表單與儀表板的樣式要和原本網站的風格一致，手機上也要好看。');
     L.push('3. 網站其他部分請保持不變，不要刪改原本的內容。');
-    L.push('4. 請回傳「完整」的 index.html 程式碼，不要省略任何部分。');
-    L.push('');
-    L.push('以下是我目前的 index.html：');
-    L.push('（↓↓↓ 請在這裡貼上你完整的 index.html ↓↓↓）');
+    if(isCp()){
+      L.push('4. 請直接修改 index.html 檔案，不要只在聊天視窗貼程式碼。');
+      L.push('');
+      L.push(NO_GIT);
+    }else{
+      L.push('4. 請回傳「完整」的 index.html 程式碼，不要省略任何部分。');
+      L.push('');
+      L.push('以下是我目前的 index.html：');
+      L.push('（↓↓↓ 請在這裡貼上你完整的 index.html ↓↓↓）');
+    }
     return L.join('\n');
   }
 
@@ -367,7 +404,7 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     $('#barFill').style.width = h.pct+'%';
     $('#bar').setAttribute('aria-valuenow', h.pct);
     $('#meterMsg').textContent = h.msg;
-    $('#tip').innerHTML = S.mode==='w2' ? W2TIP : TIPS[S.ai];
+    $('#tip').innerHTML = S.mode==='w2' ? (isCp() ? W2TIP_CP : W2TIP) : TIPS[S.ai];
     save();
   }
 
@@ -378,7 +415,7 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
   });
   document.addEventListener('change', function(e){
     var t = e.target;
-    if(t.name==='ai'){ S.ai=t.value; render(); }
+    if(t.name==='ai'){ S.ai=t.value; syncUI(); }
     if(t.closest && t.closest('#secs')){ S.sections = $$('#secs input:checked').map(function(i){return i.value;}); render(); }
   });
   $$('[data-group] .chip').forEach(function(c){
@@ -398,7 +435,7 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
   });
   $('#resetBtn').addEventListener('click', function(){
     if(!confirm('確定要清空所有欄位嗎？')) return;
-    var m=S.mode; S=blank(); S.mode=m; syncUI(); toast('🧹 已清空，重新開始吧！');
+    var m=S.mode, a=S.ai; S=blank(); S.mode=m; S.ai=a; syncUI(); toast('🧹 已清空，重新開始吧！');
   });
 
   var tt;
@@ -414,7 +451,7 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
   }
   $('#copyBtn').addEventListener('click', function(){
     var text=$('#out').textContent;
-    var done=function(){ toast(S.mode==='w2'?'✅ 已複製！記得在後面貼上你的 index.html 喔':'✅ 咒語已複製！快去貼給 '+S.ai+' 吧 🚀'); };
+    var done=function(){ toast(isCp()?'✅ 咒語已複製！到 VS Code 的 Copilot Chat（Agent 模式）貼上送出吧 🚀':(S.mode==='w2'?'✅ 已複製！記得在後面貼上你的 index.html 喔':'✅ 咒語已複製！快去貼給 '+S.ai+' 吧 🚀')); };
     var fail=function(){ if(fallbackCopy(text)) done(); else toast('⚠️ 複製失敗，請手動選取文字複製'); };
     if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(text).then(done, fail); }
     else fail();

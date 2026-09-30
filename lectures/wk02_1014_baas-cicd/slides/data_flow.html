@@ -69,7 +69,7 @@ code{background:var(--soft);padding:0 .3em;border-radius:6px;font-size:.9em;word
 .q .fb.ok{background:var(--oksoft);color:var(--ok)}
 .q .fb.no{background:var(--badsoft);color:var(--bad)}
 .score{font-size:1.2rem;font-weight:700;color:var(--pri)}
-.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0;list-style:none;padding:0}
+.pipe{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:12px 0;list-style:none;padding:0}
 .step{border:2px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;background:var(--card);font-size:.88rem;transition:all .3s}
 .step .ic{font-size:1.8rem;display:block}
 .step.on{border-color:var(--acc);background:var(--accsoft);transform:translateY(-4px)}
@@ -85,6 +85,7 @@ code{background:var(--soft);padding:0 .3em;border-radius:6px;font-size:.9em;word
 .badge.pub{background:var(--pri2);color:#062522;font-weight:700}
 footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
 [hidden]{display:none!important}
+@media (max-width:1000px){.pipe{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:760px){
   .grid1,.grid3,.cmp{grid-template-columns:minmax(0,1fr)}
   .pipe{grid-template-columns:minmax(0,1fr)}
@@ -199,11 +200,12 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
 <section id="p3" role="tabpanel" aria-labelledby="t3" hidden>
   <p>📐 <b>GitHub＝總部設計圖</b>、<b>Netlify＝分店</b>。總部設計圖一改，<b>自動傳真機</b>就傳給分店，分店<b>不用關店</b>就換上新裝潢。</p>
   <ol class="pipe" id="pipe">
-    <li class="step"><span class="ic">🤖</span><span>AI 改程式</span></li>
-    <li class="step"><span class="ic">💻</span><span>拖曳上傳 GitHub（Commit）</span></li>
+    <li class="step"><span class="ic">🤖</span><span>Copilot 改程式</span></li>
+    <li class="step"><span class="ic">✅</span><span>Commit（存檔點）</span></li>
+    <li class="step"><span class="ic">☁️</span><span>Sync／Push 到 GitHub</span></li>
     <li class="step"><span class="ic">📠</span><span>GitHub 通知 Netlify</span></li>
     <li class="step"><span class="ic">🏗️</span><span class="lbl">Netlify 部署<span class="prog"><i id="progBar"></i></span></span></li>
-    <li class="step"><span class="ic">📱</span><span>全世界重新整理就看到新版</span></li>
+    <li class="step"><span class="ic">📱</span><span>重新整理看到新版</span></li>
   </ol>
   <div class="grid3">
     <div>
@@ -218,13 +220,13 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
       </div>
     </div>
     <div class="card">
-      <h3>🎨 請 AI 改按鈕顏色</h3>
+      <h3>🎨 請 Copilot 改按鈕顏色</h3>
       <div class="chips" id="chips" role="group" aria-label="選擇按鈕顏色"></div>
       <div class="row" style="margin-top:12px">
-        <button class="btn-pri" id="bPush">⬆️ 上傳到 GitHub</button>
+        <button class="btn-pri" id="bPush">✅ Commit ＋ ☁️ Sync</button>
         <button id="bRoll">⏪ 回到上一版</button>
       </div>
-      <p class="sub" id="status3" role="status" aria-live="polite">選一個顏色，按「上傳到 GitHub」。</p>
+      <p class="sub" id="status3" role="status" aria-live="polite">選一個顏色，按「✅ Commit ＋ ☁️ Sync」。</p>
       <h3 style="margin-top:10px">📋 Netlify Deploys</h3>
       <ul class="list log" id="log"></ul>
     </div>
@@ -386,14 +388,15 @@ function setStep(n){steps.forEach(function(s,i){s.classList.toggle('on',i===n);s
 $('bPush').onclick=function(){
   if(running)return;running=true;drawLog();
   var k=COLORS[pick],msg='把按鈕改成'+k[0]+'色',st=$('status3'),bar=$('progBar');bar.style.width='0';
-  setStep(0);st.textContent='🤖 AI 正在修改 index.html…';
-  wait(900).then(function(){setStep(1);st.textContent='💻 Commit：「'+msg+'」上傳到 GitHub（總部設計圖更新）';return wait(1000)})
-  .then(function(){setStep(2);st.textContent='📠 自動傳真機啟動：GitHub 通知 Netlify「設計圖改了！」';return wait(1000)})
-  .then(function(){setStep(3);st.textContent='🏗️ Netlify 在旁邊蓋新版中…舊版照常營業，沒有「維修中」';
+  setStep(0);st.textContent='🤖 VS Code 裡的 Copilot 正在修改 index.html…';
+  wait(900).then(function(){setStep(1);st.textContent='✅ Commit：在「原始檔控制」寫下「'+msg+'」，存一個存檔點（還在你的電腦裡）';return wait(1000)})
+  .then(function(){setStep(2);st.textContent='☁️ Sync Changes（Push）：把存檔點推送到 GitHub（總部設計圖更新）';return wait(1000)})
+  .then(function(){setStep(3);st.textContent='📠 自動傳真機啟動：GitHub 通知 Netlify「設計圖改了！」';return wait(1000)})
+  .then(function(){setStep(4);st.textContent='🏗️ Netlify 在旁邊蓋新版中…舊版照常營業，沒有「維修中」';
     var p=0;return new Promise(function(r){var t=setInterval(function(){p+=RM?100:5;bar.style.width=Math.min(p,100)+'%';if(p>=100){clearInterval(t);r()}},120)})})
   .then(function(){deploys.push({color:k[1],name:k[0],msg:msg,time:now()});cur=deploys.length-1;
-    setStep(4);drawLive();st.textContent='📱 Published！全世界重新整理就看到新版按鈕了 🎉';return wait(1200)})
-  .then(function(){setStep(5);running=false;drawLog()});
+    setStep(5);drawLive();st.textContent='📱 Published！全世界重新整理就看到新版按鈕了 🎉';return wait(1200)})
+  .then(function(){setStep(6);running=false;drawLog()});
 };
 $('bRoll').onclick=function(){
   if(running||cur===0)return;cur--;var d=deploys[cur];

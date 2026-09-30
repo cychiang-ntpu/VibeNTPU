@@ -1,5 +1,7 @@
 # 麻瓜版網路架構圖：現代網路服務大解密 🍱
 
+> 📱 先看 [社群媒體的 SaaS 架構圖](social_media_architecture.md)，了解大公司怎麼組；這一頁講**我們自己的創業**怎麼組。
+
 > 第一週開場 20～30 分鐘的觀念課講義。**這一頁是整堂課的靈魂，請一定要看懂再動手。**
 
 [← 回第 1 週](README.md)
@@ -113,7 +115,7 @@ sequenceDiagram
 
 | 需求 | 本課用的積木 | 其他常見選擇（延伸探索） |
 | --- | --- | --- |
-| 寫前端 | AI 助理（Vibe Coding） | [v0](https://v0.dev/)、[Bolt](https://bolt.new/)、[Lovable](https://lovable.dev/) |
+| 寫前端 | GitHub Copilot（VS Code，Vibe Coding） | [v0](https://v0.dev/)、[Bolt](https://bolt.new/)、[Lovable](https://lovable.dev/) |
 | 存程式碼 | GitHub | [GitLab](https://about.gitlab.com/) |
 | 放網站 | Netlify | [Vercel](https://vercel.com/)、[GitHub Pages](https://pages.github.com/)、[Cloudflare Pages](https://pages.cloudflare.com/) |
 | 收表單 | Netlify Forms | [Google 表單](https://www.google.com/forms/about/)、[Tally](https://tally.so/)、[Formspree](https://formspree.io/) |
@@ -141,4 +143,4 @@ sequenceDiagram
 
 ---
 
-下一步 👉 [第一週實戰：Vibe Coding 詠唱你的 SaaS 產品前端](README.md)
+下一步 👉 [第 1 週講義](README.md)

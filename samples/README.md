@@ -58,7 +58,7 @@
 ## 👀 怎麼看這些作品？
 
 - **看程式碼**：在 GitHub 上直接點開 `index.html`。
-- **看畫面**：點開檔案 → 右上角「Download raw file」下載 → 雙擊用瀏覽器打開。
+- **看畫面**：用 VS Code clone 整個課程 repo（`https://github.com/cychiang-ntpu/VibeNTPU`），在 `samples/` 裡的 `index.html` 按右鍵 **Show Preview**；或在 GitHub 點開檔案 → 右上角「Download raw file」下載後雙擊。
   > ⚠️ 🥇 卓越作品的表單在電腦上直接打開（`file:///`）時**送出一定會失敗**，因為 Netlify Forms 要部署到 Netlify 後才有作用。
 - **用健檢站比較**：把三份檔案丟進 [Vibe 健檢站](../tools/vibe_check.html)，看看徽章亮的差別。
 

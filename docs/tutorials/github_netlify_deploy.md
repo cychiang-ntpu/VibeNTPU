@@ -1,42 +1,27 @@
-# ☁️ 組裝 SaaS 第一步：GitHub 上傳 ＋ Netlify 部署
+# ☁️ 組裝 SaaS 第一步：GitHub 存檔 ＋ Netlify 部署
 
-> 這一頁帶你把電腦裡的 `index.html`，變成全世界都能打開的網址。
-> 全程只需要**滑鼠拖曳 ＋ 點按鈕**，不需要打任何指令。
+> 這一頁帶你把 VS Code 裡的 `index.html`，變成全世界都能打開的網址。
+> 全程只需要**點按鈕**：VS Code 的 Commit／Sync ＋ Netlify 網頁上的幾個按鈕。
 
-[← 回第 1 週](../../lectures/wk01_1007_saas-storefront/README.md)
+[← 回第 1 週](../../lectures/wk01_1007_saas-storefront/README.md)　｜　[教學目錄](README.md)
 
-> 📝 GitHub 與 Netlify 的介面偶爾會改版，按鈕位置可能跟下面描述略有不同。找不到按鈕時，請對照官方文件：
-> [GitHub：新增檔案到儲存庫](https://docs.github.com/zh/repositories/working-with-files/managing-files/adding-a-file-to-a-repository)｜[Netlify：從 Git 儲存庫部署](https://docs.netlify.com/start/quickstarts/deploy-from-repository/)
+> 📝 GitHub、VS Code 與 Netlify 的介面偶爾會改版，按鈕位置可能跟下面描述略有不同。找不到按鈕時，請對照官方文件：
+> [VS Code：Git 入門](https://code.visualstudio.com/docs/sourcecontrol/intro-to-git)｜[Netlify：從 Git 儲存庫部署](https://docs.netlify.com/start/quickstarts/deploy-from-repository/)
 
 ---
 
-## Part A：把設計圖放進總部保險箱（GitHub）🗄️
+## Part A：把設計圖存進總部保險箱（GitHub）🗄️
 
-### A1. 建立新的 Repository（儲存庫）
+> 詳細圖文與觀念 👉 [Git 與 GitHub 入門](git_intro.md)。這裡是濃縮版。
 
-> **Repository（簡稱 repo）** ＝ 一個專案資料夾，GitHub 會幫你記住裡面每個檔案的每一次修改。
+1. **建 repo**：到 <https://github.com/new>，名稱如 `rent-radar`，選 **Public**，✅ 勾 **Add a README file** → **Create repository**。
+2. **Clone**：VS Code → 左側 **原始檔控制**（`Ctrl+Shift+G`／`⌃⇧G`）→ **複製存放庫** → **從 GitHub 複製** → 選你的 repo → 選資料夾 → **開啟**。
+3. **做網頁**：請 Copilot 在這個資料夾建立 `index.html`，按 **Keep**。
+4. **Commit**：原始檔控制面板 → 訊息框寫 `第一版首頁` → **✓ 提交**（問要不要全部暫存就按 **是**）。
+5. **Sync**：按 **同步變更（Sync Changes）↑1**。
+6. **確認**：到 GitHub 網頁重新整理 repo，看到 `index.html` ✅
 
-1. 登入 <https://github.com/>。
-2. 點右上角的 **「+」** → **「New repository」**（或直接前往 <https://github.com/new>）。
-3. 填寫：
-   - **Repository name**：用英文小寫＋連字號，例如 `rent-radar`。
-   - **Description**（選填）：一句話介紹你的產品。
-   - 選 **Public（公開）**。
-   - ✅ 勾選 **「Add a README file」**（這樣 repo 一建立就不是空的，比較好上傳檔案）。
-4. 按綠色的 **「Create repository」**。
-
-### A2. 拖曳上傳 `index.html`
-
-1. 在你的 repo 頁面，點 **「Add file」** → **「Upload files」**。
-2. 把桌面上的 `index.html` **直接拖曳**到網頁中間的虛線框裡。
-3. 在下方「Commit changes」的欄位寫一句說明，例如 `第一版首頁`。
-   > **Commit** ＝ 存檔點。就像打電動時的「存檔」，之後隨時可以回到這個版本。
-4. 按綠色的 **「Commit changes」**。
-5. 回到 repo 首頁，確認看到 `index.html` 出現在檔案列表中。✅
-
-> ⚠️ 檔名一定要是 **`index.html`**。Netlify 會自動把這個檔案當作「首頁」，檔名不對就會出現 `Page not found`。
-
-📖 延伸學習：[GitHub 官方：關於儲存庫](https://docs.github.com/zh/repositories/creating-and-managing-repositories/about-repositories)｜[什麼是 Git？（Git 官方書，繁中）](https://git-scm.com/book/zh-tw/v2/%E9%96%8B%E5%A7%8B-%E9%97%9C%E6%96%BC%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6)
+> ⚠️ 檔名一定要是 **`index.html`**，而且放在 repo 的**最外層**（不是在資料夾裡）。Netlify 會自動把這個檔案當作「首頁」，檔名不對就會出現 `Page not found`。
 
 ---
 
@@ -81,7 +66,7 @@
 3. 把網址貼到課程群組，互相逛逛同學的店面！
 
 > 🏗️ **架構呼應**：恭喜！你們剛剛 **沒有碰任何一台實體伺服器，沒有綁信用卡**，就利用 Netlify 這個「雲端託管 SaaS」把網站推向全世界了！
-> 而且因為 GitHub 和 Netlify 已經「連線」了，下週你會看到更神奇的事：**只要更新 GitHub 上的檔案，網站就會自動更新**（這叫 CI/CD）。
+> 而且因為 GitHub 和 Netlify 已經「連線」了，**之後你在 VS Code 每按一次 Commit ＋ Sync，網站就會自動更新**（這叫 CI/CD，下週細講）。
 
 ---
 
@@ -89,10 +74,11 @@
 
 | 狀況 | 原因與解法 |
 | --- | --- |
-| 網站顯示 `Page not found` | 檔名不是 `index.html`（可能是 `Index.html`、`index.html.txt`），請到 GitHub 重新命名或重新上傳 |
+| 網站顯示 `Page not found` | 檔名不是 `index.html`（可能是 `Index.html`），或檔案被放在子資料夾裡。在 VS Code 改名／移到最外層後，Commit ＋ Sync |
 | Netlify 列表裡找不到我的 repo | 授權時沒勾選該 repo。點列表下方的「Configure the Netlify app on GitHub」重新勾選 |
-| 中文變成亂碼 | 存檔時沒選 UTF-8，請 AI 在 `<head>` 裡確認有 `<meta charset="UTF-8">`，並重新用 UTF-8 存檔 |
+| 中文變成亂碼 | 請 Copilot 確認 `<head>` 裡有 `<meta charset="UTF-8">`；VS Code 右下角狀態列應顯示 `UTF-8` |
 | Deploy 失敗（Failed） | 檢查 Build command 和 Publish directory 是否都留空 |
+| 網站沒更新 | 你是不是只按了 Commit、沒按 **同步變更（Sync）**？Commit 只存在你的電腦裡 |
 | 想先試試看、不想用 GitHub | 可以用 [Netlify Drop](https://app.netlify.com/drop) 直接拖曳資料夾上線。但**這樣就沒有自動更新（CI/CD）的魔法**，所以課堂上請用 GitHub 的方式 |
 
 更多問題 👉 [常見問題 FAQ](error_guide.md)

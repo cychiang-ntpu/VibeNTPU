@@ -24,9 +24,9 @@
 
 ## 段落 2：📦 Netlify Forms（40 分鐘）
 
-8. **我做**：老師完整示範（加表單 → Enable form detection → 上傳 → 填表 → 後台）
+8. **我做**：老師完整示範（Copilot 加表單 → Enable form detection → Commit ＋ Sync → 填表 → 後台）
 9. ⚠️ **大聲提醒三次**：Form detection 預設是關的！開完要重新部署！
-10. **我們做**：咒語產生器第 2 週模式；提醒先貼 index.html
+10. **我們做**：咒語產生器第 2 週模式（AI 選 Copilot）；提醒 VS Code 要開著 repo 資料夾、用 `#index.html`
 11. 巡堂重點：`data-netlify`、`name`、`form-name`；用 `file:///` 測試是收不到的
 12. 全班互填 → 投影老師的後台，看到大家的名字出現 🎉
 13. 🏗️ 架構呼應：「只要加一行字，Netlify 這個房東就會變成你的警衛」
@@ -43,8 +43,8 @@
 ## 段落 4：🔄 CI/CD（15 分鐘）
 
 20. 〔data_flow.html ③〕模擬一次，含 ⏪ 回到上一版
-21. **預測**：「上傳後要去 Netlify 按什麼？」
-22. 〔現場〕老師用投影機開自己的網站，現場改顏色上傳，全班盯著看它自動變色
+21. **預測**：「Commit ＋ Sync 之後要去 Netlify 按什麼？」
+22. 〔現場〕老師用投影機開自己的網站，在 VS Code 請 Copilot 改顏色 → Commit → Sync，全班盯著看它自動變色
 23. 同學自己做一次
 24. 🏗️ 架構呼應：「這就是為什麼 IG、Netflix 每天都在更新，你卻不會遇到維修中」
 

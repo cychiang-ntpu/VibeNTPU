@@ -7,26 +7,29 @@
 
 ---
 
-### 📢 上課前 3 天
+### 📢 上課前 5 天（安裝需要時間，請早點貼）
 
 ```
-📢【10/7 Vibe Coding × SaaS 創業】上課前請完成「Q0 報到任務」（約 15 分鐘）🥚
+📢【10/7 Vibe Coding × SaaS 創業】上課前請完成「Q0 報到任務」（約 30～40 分鐘）🥚
 
-下週我們要用 AI 做出你人生第一個網站，而且當天就會上線，全世界都能看到！
-為了讓上課順利，請先完成這 4 件事：
+下週我們要用 VS Code ＋ GitHub Copilot（AI 工程師）做出你人生第一個網站，而且當天就會上線！
+全班同時下載安裝會塞爆網路，所以請先在家完成：
 
 ① 申請 GitHub 帳號 👉 https://github.com/signup
    （會要求設定雙重驗證，請準備手機、保存好復原碼）
-② 用 GitHub 登入 Netlify 👉 https://app.netlify.com/signup
-   （選 Sign up with GitHub，不用綁信用卡）
-③ 準備一個 AI 助理（Claude / ChatGPT / Gemini 擇一，免費版就可以）
-④ 跟 AI 說：「請幫我寫一個顯示『Hello NTPU』的 HTML 網頁」，看看它做出什麼 😆
+   🎓 建議順便申請 GitHub 學生方案（可免費用 Copilot Pro，審核要幾天）👉 https://education.github.com/pack
+② 安裝 VS Code 👉 https://code.visualstudio.com/
+③ 安裝 Git 👉 Windows：https://git-scm.com/downloads/win ／ macOS：終端機輸入 git --version 依提示安裝
+④ 在 VS Code 登入 GitHub、啟用 Copilot（免費版即可）、安裝 Live Preview
+⑤ 請 Copilot 做一個「Hello NTPU」網頁 😆
+⑥ 用 GitHub 登入 Netlify 👉 https://app.netlify.com/signup
 
-完成 ④ 的你，已經拿到第一個徽章 🎫 了！
+完成 ⑤ 的你，已經拿到第一個徽章 🎫 了！
 
-• 圖文說明：https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/before_class.md
+• 一步一步的圖文說明（②～⑤）：https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/vscode_copilot_starter.md
+• 總清單：https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/before_class.md
 • 完全沒寫過程式？太好了，這堂課就是為你設計的 💪
-• 卡住了？直接在群組問，或上課時跟助教說，一點都不丟臉！
+• 卡住了？把畫面截圖丟到群組，或上課前 10 分鐘到教室找助教，一點都不丟臉！
 ```
 
 ### 📢 上課當天早上
@@ -39,9 +42,10 @@
 上課請打開這一頁，照著打勾就好：
 👉 一頁版步驟卡：https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/steps.md
 
-還沒申請 GitHub / Netlify 帳號的同學，請趁上課前 10 分鐘完成～
+VS Code / Copilot 還沒裝好的同學，請提早 10 分鐘到教室，助教幫你～
+記得確認 VS Code 左下角看得到你的 GitHub 帳號 ✅
 想先想想創業題目？這裡有依學院分類的點子：
-https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/README.md#21-選一個你在乎的題目10-分鐘
+https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/README.md#31-選一個你在乎的題目5-分鐘
 ```
 
 ### 📢 下課後
@@ -52,7 +56,8 @@ https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-st
 回家小任務：
 🟢 把網站網址傳到群組（還沒傳的同學）
 🟢 在冒險護照寫下今天的 3-2-1 反思
-🟡 挑戰：用手機檢查排版，請 AI 修好（支線 📱 手機美容師 +20 XP）
+🟡 挑戰：用手機檢查排版，請 Copilot 修好 → Commit ＋ Sync，看網站自己更新（支線 📱 手機美容師 +20 XP）
+🔵 延伸：挑一個你常用的 App，試著畫出它的 SaaS 架構圖
 
 下週要讓你的網站「收名單」和「記住客人」，敬請期待 📦💾
 ```

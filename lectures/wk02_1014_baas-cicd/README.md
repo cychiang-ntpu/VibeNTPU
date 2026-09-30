@@ -3,7 +3,7 @@
 對應關卡：📦 Q4 收單 → 💾 Q5 記住客人 → 🔄 Q6 自動傳真魔法 → 🎤 Q7 MVP 發表
 時間：2 小時（兩節）
 
-> **課前準備（同學）**：確認上週的網站用手機打得開，並準備好你的 `index.html`（電腦裡的檔案，或到 GitHub repo 點檔案 → 下載）。上週還沒完成？先照 [第 1 週步驟卡](../wk01_1007_saas-storefront/steps.md) 補完，卡住就請助教幫忙。
+> **課前準備（同學）**：確認上週的網站用手機打得開，並在 VS Code 打開你上週 clone 的 repo 資料夾（檔案 → 開啟最近使用的項目），按一次 **同步變更** 確保是最新版。上週還沒完成？先照 [第 1 週步驟卡](../wk01_1007_saas-storefront/steps.md) 補完，卡住就請助教幫忙。
 >
 > **上課請開著 👉 [steps.md（一頁版步驟卡）](steps.md)**。
 >
@@ -18,7 +18,7 @@
 1. **解釋**為什麼創業初期（MVP 階段）不需要自己寫後端，以及 BaaS 怎麼幫我們省下這些工作。
 2. 用一行 `data-netlify="true"` **串接** Netlify Forms，並在後台看到收集到的名單。
 3. **比較**「雲端資料庫」與「瀏覽器 LocalStorage」兩種記住使用者的方式，說出各自適合的情境。
-4. **體驗** CI/CD：改版上傳 GitHub 後，網站自動更新，並說明它為什麼讓科技公司能每天改版。
+4. **體驗** CI/CD：在 VS Code Commit ＋ Sync 後，網站自動更新，並說明它為什麼讓科技公司能每天改版。
 5. 用 1 分鐘向別人**介紹**自己的 MVP 與背後的架構。
 
 ## 💼 這跟我有什麼關係？
@@ -104,15 +104,15 @@
 
 | 步驟 | 動作 | 教材 |
 | --- | --- | --- |
-| 2.1 👀 我做 | 老師示範：加表單 → 開啟偵測 → 上傳 → 填表 → 看後台（5 分鐘） | 投影 |
-| 2.2 🤝 我們做 | 用 [咒語產生器](../wk01_1007_saas-storefront/slides/prompt_builder.html)（切到「第 2 週」模式）或 [咒語 1](prompts.md#咒語-1加入早鳥候補名單waitlist表單)，**先把你的 index.html 貼給 AI**，請它加上早鳥表單 | [prompts.md](prompts.md) |
+| 2.1 👀 我做 | 老師示範：Copilot 加表單 → 開啟偵測 → Commit ＋ Sync → 填表 → 看後台（5 分鐘） | 投影 |
+| 2.2 🤝 我們做 | 用 [咒語產生器](../wk01_1007_saas-storefront/slides/prompt_builder.html)（切到「第 2 週」模式）或 [咒語 1](prompts.md#咒語-1加入早鳥候補名單waitlist表單)，在 **Copilot Chat（Agent 模式）** 請它**直接修改** `index.html` 加上早鳥表單，按 **Keep** | [prompts.md](prompts.md) |
 | 2.3 🔍 自我檢查 | 用 `Ctrl+F` 搜尋 `data-netlify`，找得到就對了；或丟進 [Vibe 健檢站](../../tools/vibe_check.html) 看 Level 2 | [健檢站](../../tools/vibe_check.html) |
 | 2.4 ⚠️ 開偵測 | Netlify → 你的專案 → **Forms** → **Enable form detection**（**最多人漏掉這步！**） | [Forms 教學 步驟 2](../../docs/tutorials/netlify_forms.md#步驟-2在-netlify-開啟表單偵測form-detection) |
-| 2.5 上傳 | 新的 `index.html` 拖到 GitHub 覆蓋舊檔 → Commit | [steps.md](steps.md) |
+| 2.5 存檔上雲 | 原始檔控制：訊息 `新增早鳥名單表單` → ✓ Commit → 同步變更 | [steps.md](steps.md) |
 | 2.6 🤝 互相填 | 網址丟群組，**幫 3 位同學填表**，也請他們幫你填 | — |
 | 2.7 🎉 看後台 | Netlify → **Forms** → **waitlist**，看到名單了！ | [Forms 教學 步驟 4](../../docs/tutorials/netlify_forms.md#步驟-4到後台查看收集到的名單) |
 
-> 🔑 **關鍵魔法**：交代 AI「請務必在表單 `<form>` 標籤中加入 `data-netlify="true"` 屬性」。
+> 🔑 **關鍵魔法**：交代 Copilot「請務必在表單 `<form>` 標籤中加入 `data-netlify="true"` 屬性」。
 
 > 🏗️ **架構呼應**：只要加一行字，Netlify 這個房東就會變成你的警衛，**免費幫你把客人的資料收好放在雲端後台**。這就是串接 BaaS 的威力！
 > 📦 **Q4 過關**：後台收到 3 筆以上＋健檢站 Level 2 全亮 → **收單徽章（60 XP）**
@@ -149,7 +149,7 @@
 1. 送出表單後，網頁**不跳轉**，原地變成歡迎畫面。
 2. 重新整理，歡迎畫面**還在**。
 3. 按「登出」，回到表單。
-4. 上傳 GitHub → 用手機測試 → 丟進 [健檢站](../../tools/vibe_check.html) 看 Level 3。
+4. Keep → Commit（`新增會員儀表板`）＋ Sync → 用手機測試 → 丟進 [健檢站](../../tools/vibe_check.html) 看 Level 3。
 
 📂 參考 🥇 卓越示範作品：[samples/HIGH](../../samples/HIGH/index.html)
 
@@ -165,13 +165,13 @@
 🆕 **本段唯一新概念**：CI/CD，設計圖一改，分店自動換裝潢。
 
 1. 先在 [data_flow.html](slides/data_flow.html) 第三個分頁「CI/CD 自動傳真機」看一次模擬（也試試 ⏪ 回到上一版）。
-2. **🔮 預測**：等一下你上傳新版後，需要進 Netlify 按什麼按鈕嗎？（寫在學習單）
-3. 請 AI 做一個**明顯**的修改（例如按鈕改亮橘色）：[咒語 3](prompts.md#咒語-3快速改版體驗-cicd)。
-4. 拖曳上傳到 GitHub 覆蓋舊檔 → Commit。
+2. **🔮 預測**：等一下你 Commit ＋ Sync 之後，需要進 Netlify 按什麼按鈕嗎？（寫在學習單）
+3. 請 Copilot 做一個**明顯**的修改（例如按鈕改亮橘色）：[咒語 3](prompts.md#咒語-3快速改版體驗-cicd)。
+4. Keep → 原始檔控制 Commit（`改按鈕顏色`）→ **同步變更**。
 5. **不要進 Netlify**，直接用手機重新整理……🪄 **網頁已經自動更新了！**
 
 > 🏗️ **架構呼應**：這叫做 **CI/CD 自動化部署**！這就是為什麼 IG、Netflix 每天都在更新，你卻不會遇到「維修中」。
-> 只要架構對了（GitHub 串 Netlify），老闆一句話，AI 寫出 Code，上傳後幾十秒內全世界的用戶都會看到更新！**這就是科技公司的敏捷開發！**
+> 只要架構對了（GitHub 串 Netlify），老闆一句話，Copilot 寫出 Code，按下 Sync 後幾十秒內全世界的用戶都會看到更新！**這就是科技公司的敏捷開發！**
 > 🔄 **Q6 過關** → **魔法師徽章（50 XP）**
 
 📖 [CI/CD 完整教學](../../docs/tutorials/cicd.md)
@@ -184,7 +184,7 @@
 
 用手機展示你的網站，套用這個句型：
 
-> 「我們的產品是 ______，解決 ______ 的問題。我們用 **AI 輔助開發** 做出前端，部署在 **Netlify** 上，用 **Netlify Forms** 收集早鳥名單，目前已經收到 ___ 筆！」
+> 「我們的產品是 ______，解決 ______ 的問題。我們用 **GitHub Copilot 輔助開發** 做出前端，部署在 **Netlify** 上，用 **Netlify Forms** 收集早鳥名單，目前已經收到 ___ 筆！」
 
 🎤 **Q7 過關** → **說書人徽章（80 XP）**。完整期末版 👉 [Pitch 模板](../../docs/pitch_template.md)
 

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>社群媒體的 SaaS 架構</title>
+<style>
+:root{
+  --primary:#0f766e; --primary-2:#14b8a6; --accent:#f59e0b;
+  --bg:#f5faf9; --surface:#ffffff; --surface-2:#e6f4f1;
+  --text:#12302c; --muted:#4b635f; --border:#c9e2dd;
+  --good:#15803d; --good-bg:#e8f7ec; --bad:#b91c1c; --bad-bg:#fdecec;
+  --hl:#fff4d6; --shadow:0 4px 16px rgba(15,118,110,.12); --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --primary:#2dd4bf; --primary-2:#14b8a6; --accent:#fbbf24;
+    --bg:#0b1716; --surface:#12211f; --surface-2:#183230;
+    --text:#e3f4f1; --muted:#9dbab5; --border:#2a4a46;
+    --good:#4ade80; --good-bg:#143321; --bad:#f87171; --bad-bg:#3a1a1a;
+    --hl:#3a2e0e; --shadow:0 4px 16px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:18px}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  line-height:1.6;overflow-x:hidden}
+.wrap{max-width:1160px;margin:0 auto;padding:16px}
+header h1{margin:.2em 0 .1em;font-size:clamp(1.5rem,4vw,2.3rem);color:var(--primary)}
+header p{margin:0 0 12px;color:var(--muted)}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px;border-bottom:2px solid var(--border);padding-bottom:8px}
+.tab{background:var(--surface);border:2px solid var(--border);border-radius:999px;padding:.5em 1.1em;font-weight:700}
+.tab[aria-selected="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+@media (prefers-color-scheme: dark){.tab[aria-selected="true"]{color:#06201d}}
+.panel[hidden]{display:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+h2{font-size:1.35rem;margin:.2em 0 .5em}
+h3{margin:.2em 0 .4em;font-size:1.12rem}
+.note{color:var(--muted);font-size:.9rem}
+.btn{background:var(--surface);border:2px solid var(--primary);color:var(--primary);border-radius:10px;padding:.4em .9em;font-weight:700}
+.btn.on,.btn[aria-pressed="true"]{background:var(--primary);color:#fff}
+@media (prefers-color-scheme: dark){.btn.on,.btn[aria-pressed="true"]{color:#06201d}}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* ---------- diagram ---------- */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.diagram{display:grid;gap:0}
+.layer{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;
+  background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);padding:10px}
+.layer .lname{font-weight:800;font-size:.9rem;color:var(--primary);line-height:1.3}
+.layer .lname small{display:block;color:var(--muted);font-weight:600;font-size:.75rem}
+.boxes{display:flex;flex-wrap:wrap;gap:8px}
+.box{position:relative;flex:1 1 130px;min-width:0;background:var(--surface-2);border:2px solid var(--border);
+  border-radius:10px;padding:6px 8px;text-align:center;font-size:.85rem;font-weight:700;line-height:1.3;
+  transition:opacity .3s,transform .3s,border-color .3s,background .3s}
+.box .em{display:block;font-size:1.4rem}
+.box small{display:block;font-weight:500;color:var(--muted);font-size:.7rem}
+button.box:hover{border-color:var(--primary-2)}
+.box.sel{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent)}
+.box .mv{display:none}
+.arrow{text-align:center;color:var(--primary-2);font-size:1.1rem;line-height:1;padding:3px 0;font-weight:900}
+.arrow span{font-size:.7rem;color:var(--muted);font-weight:600;margin-left:4px}
+.l-ext{border-style:dashed}
+/* MVP mode */
+.mvp .box.no{opacity:.28;filter:grayscale(1)}
+.mvp .box.rep{border-color:var(--accent);background:var(--hl)}
+.mvp .box.rep .mv{display:block;margin-top:3px;background:var(--accent);color:#3b2600;border-radius:6px;font-size:.68rem;padding:0 4px}
+.mvpcap{display:none;margin:0 0 10px;font-weight:800;background:var(--hl);border-left:6px solid var(--accent);padding:10px 14px;border-radius:10px}
+.mvp-on .mvpcap{display:block}
+/* scenario */
+.box.past{border-color:var(--primary-2);background:var(--good-bg)}
+.box.cur{border-color:var(--accent);background:var(--hl);transform:scale(1.06);box-shadow:0 0 0 4px var(--accent);z-index:2}
+.box .num{position:absolute;top:-10px;right:-6px;background:var(--primary);color:#fff;border-radius:999px;min-width:22px;height:22px;font-size:.7rem;line-height:22px;padding:0 5px}
+@media (prefers-color-scheme: dark){.box .num{color:#06201d}}
+.scen .box{opacity:.55}
+.scen .box.past,.scen .box.cur{opacity:1}
+.detail{position:sticky;top:10px}
+.detail dl{margin:0}
+.detail dt{font-weight:800;margin-top:10px;color:var(--primary)}
+.detail dd{margin:2px 0 0}
+.detail .big{font-size:2.2rem}
+.cap{font-size:1.05rem;min-height:5.5em}
+.cap b.step{display:inline-block;background:var(--accent);color:#3b2600;border-radius:8px;padding:0 .5em;margin-right:6px}
+.timer{margin-top:10px;background:var(--surface-2);border-radius:10px;padding:8px 12px;font-weight:700}
+.prog{height:8px;background:var(--surface-2);border-radius:6px;overflow:hidden;margin:8px 0}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-2));width:0;transition:width .3s}
+
+/* tab3 */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.cards .card{border-top:6px solid var(--primary-2)}
+.cards .em{font-size:2rem}
+.quote{background:var(--hl);border-left:6px solid var(--accent);padding:8px 12px;border-radius:8px;font-weight:700}
+.tbl{width:100%;border-collapse:collapse;margin-top:8px;font-size:.92rem}
+.tbl th,.tbl td{border:1px solid var(--border);padding:8px;text-align:left;vertical-align:top}
+.tbl thead th{background:var(--primary);color:#fff}
+@media (prefers-color-scheme: dark){.tbl thead th{color:#06201d}}
+.tbl tbody th{background:var(--surface-2)}
+.tscroll{overflow-x:auto}
+.quiz{display:grid;gap:14px}
+.q .opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.q .opt{background:var(--surface-2);border:2px solid var(--border);border-radius:10px;padding:.4em .9em}
+.q .opt.ok{background:var(--good-bg);border-color:var(--good)}
+.q .opt.ng{background:var(--bad-bg);border-color:var(--bad)}
+.fb{min-height:1.6em;margin-top:6px;font-weight:700}
+.fb.ok{color:var(--good)} .fb.ng{color:var(--bad)}
+.reading a{color:var(--primary)}
+footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
+.sec{margin-top:18px}
+
+@media (max-width:600px){
+  html{font-size:17px}
+  .layer{grid-template-columns:1fr;gap:6px;padding:8px}
+  .box{flex:1 1 calc(50% - 8px)}
+  .tbl{font-size:.82rem}
+  .tbl th,.tbl td{padding:5px}
+}
+@media (max-width:900px){
+  #p2 .detail{position:sticky;top:auto;bottom:0;z-index:5;padding:10px 14px;box-shadow:0 -4px 16px rgba(0,0,0,.18)}
+  #p2 .detail h3{font-size:1rem;margin:0}
+  #p2 .cap{min-height:3.2em;font-size:.95rem;margin:4px 0 8px}
+  #p2 .detail .note{display:none}
+  #p2 .btn{padding:.3em .7em}
+  .scen .box{scroll-margin-bottom:260px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  .box.cur{transform:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>📱 社群媒體背後的 SaaS 架構</h1>
+  <p>IG、Threads、YouTube、LINE、TikTok、FB 就像<b>一整座連鎖百貨集團</b>：自己的倉庫、物流車隊、上百個櫃位。我們的 MVP 則是<b>美食街裡的一個小攤位</b>。來看看差在哪！</p>
+</header>
+
+<div class="tabs" role="tablist" aria-label="教材分頁">
+  <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true">📱 社群媒體的 SaaS 架構圖</button>
+  <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">▶ 按下去發生什麼事？</button>
+  <button class="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">💰 免費的社群怎麼賺錢？</button>
+</div>
+
+<!-- ============ TAB 1 ============ -->
+<section class="panel" id="p1" role="tabpanel" aria-labelledby="t1" tabindex="0">
+  <div class="row" style="margin-bottom:10px">
+    <button class="btn" id="mvpBtn" aria-pressed="false">🔍 對照我們的 MVP</button>
+    <span class="note">👆 點任何一個方塊，看它的美食街比喻</span>
+  </div>
+  <div class="layout" id="l1">
+    <div>
+      <p class="mvpcap">💡 大公司要自己蓋幾十種服務；創業初期我們用 3 個 SaaS 積木就能跑起來（Netlify、Netlify Forms、GitHub，再加瀏覽器的 LocalStorage）。灰掉的 = MVP 先不需要。</p>
+      <div class="diagram" id="d1"></div>
+    </div>
+    <aside class="card detail" id="detail" aria-live="polite">
+      <div class="big">👈</div>
+      <h3>點一個方塊試試看</h3>
+      <p>每個方塊都會告訴你：美食街比喻、它在做什麼、你在 IG 上什麼時候碰到它，以及我們的 MVP 用什麼代替。</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="panel" id="p2" role="tabpanel" aria-labelledby="t2" tabindex="0" hidden>
+  <div class="row" role="group" aria-label="選擇情境" id="scenBtns"></div>
+  <div class="layout sec">
+    <div class="diagram scen" id="d2" aria-hidden="true"></div>
+    <aside class="card detail">
+      <h3 id="scTitle">選一個情境 👆</h3>
+      <div class="prog"><i id="prog"></i></div>
+      <p class="cap" id="cap" aria-live="polite">按上面的按鈕，看一個動作如何一路穿過整個架構。</p>
+      <div class="row">
+        <button class="btn" id="prev" disabled>◀ 上一步</button>
+        <button class="btn" id="next" disabled>下一步 ▶</button>
+        <button class="btn" id="play" disabled aria-pressed="false">⏯ 自動播放</button>
+      </div>
+      <p class="note">鍵盤：← → 切換步驟</p>
+      <div class="timer" id="timer" hidden></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ TAB 3 ============ -->
+<section class="panel" id="p3" role="tabpanel" aria-labelledby="t3" tabindex="0" hidden>
+  <h2>免費的 App，錢從哪裡來？</h2>
+  <div class="cards">
+    <div class="card"><div class="em">📢</div><h3>廣告</h3>
+      <p>你滑手機的<b>注意力</b>就是商品。平台依照你的興趣，把廣告放進動態牆，向廣告主收費。</p>
+      <p class="quote">“If you're not paying for it, you're the product.”<br>（沒付錢？那你就是商品。）</p></div>
+    <div class="card"><div class="em">⭐</div><h3>訂閱制</h3>
+      <p>付月費換更好的體驗或特權：YouTube Premium（無廣告）、Meta Verified（驗證標章）、X Premium、LINE 貼圖與付費方案。</p></div>
+    <div class="card"><div class="em">🛍️</div><h3>電商抽成</h3>
+      <p>在 App 裡直接逛街買東西，平台抽一部分：IG/FB 商店、TikTok Shop。美食街比喻：百貨公司向專櫃抽成。</p></div>
+    <div class="card"><div class="em">🏢</div><h3>企業方案</h3>
+      <p>賣工具給店家與公司：LINE 官方帳號（店家群發訊息）、LinkedIn Premium（招募與業務工具）。這就是典型的 B2B SaaS！</p></div>
+  </div>
+
+  <h2 class="sec">🏬 社群巨頭 vs 🍱 我們的 MVP</h2>
+  <div class="tscroll">
+  <table class="tbl">
+    <thead><tr><th scope="col">比較項目</th><th scope="col">社群巨頭（IG、YouTube…）</th><th scope="col">我們的 MVP</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">使用者數</th><td>全球數億～數十億人</td><td>同學、朋友，幾十～幾百人</td></tr>
+      <tr><th scope="row">工程師人數</th><td>數千～數萬人</td><td>你 1 人 + GitHub Copilot 🤖</td></tr>
+      <tr><th scope="row">伺服器</th><td>全球多座資料中心或大型雲端</td><td>Netlify 免費攤位</td></tr>
+      <tr><th scope="row">服務數量</th><td>幾十～上百種微服務</td><td>3 個 SaaS 積木</td></tr>
+      <tr><th scope="row">上線時間</th><td>數年持續開發</td><td>約 4 小時（一堂課）</td></tr>
+      <tr><th scope="row">成本</th><td>非常龐大（機房、電力、人力）</td><td>0 元起（免費方案）</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">以上為概略描述，不是精確數字。真實案例：Netflix 使用 AWS 雲端；Instagram 早期架在 AWS，後來搬進 Meta 自己的資料中心。</p>
+
+  <h2 class="sec">🧠 小測驗：考考你記住了沒</h2>
+  <div class="quiz" id="quiz"></div>
+
+  <div class="card sec reading">
+    <h3>📖 延伸閱讀（英文為主，有興趣再看）</h3>
+    <ul>
+      <li><a href="https://engineering.fb.com/" target="_blank" rel="noopener">Meta Engineering 工程部落格</a></li>
+      <li><a href="https://instagram-engineering.com/" target="_blank" rel="noopener">Instagram Engineering</a></li>
+      <li><a href="https://netflixtechblog.com/" target="_blank" rel="noopener">Netflix TechBlog</a></li>
+      <li><a href="https://github.com/donnemartin/system-design-primer" target="_blank" rel="noopener">System Design Primer（系統設計入門）</a></li>
+      <li><a href="https://developer.mozilla.org/zh-TW/docs/Glossary/CDN" target="_blank" rel="noopener">MDN：什麼是 CDN</a></li>
+    </ul>
+  </div>
+</section>
+
+<footer>VibeNTPU 第 1 週互動教材｜瀏覽器直接開，不需要網路</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+// [id, emoji, name, en, 美食街比喻, 在做什麼, IG 什麼時候碰到, MVP 用什麼代替, mvp:'rep'|'no', badge]
+var LAYERS=[
+ {n:"1 使用者端",s:"Client",arrow:"發出請求",c:[
+  ["app","📱","手機 App","iOS / Android","你手上的「點餐機」，App 本身就是櫃檯與菜單。","顯示畫面、接收你的點擊，再把請求送到雲端。","打開 IG App 的那一刻。","用 VS Code + Copilot 寫的網頁（HTML/CSS/JS）就是我們的前端。","rep","→ 網頁前端"],
+  ["web","💻","網頁版瀏覽器","Web","同一家店的另一個點餐入口。","在瀏覽器裡跑同一套服務，資料跟 App 共用。","用電腦開 instagram.com。","我們的 MVP 就是網頁版！手機電腦都能開。","rep","→ 網頁前端"]]},
+ {n:"2 邊緣",s:"Edge",arrow:"就近分流",c:[
+  ["cdn","🌏","CDN 內容傳遞網路","Content Delivery Network","各地的分店倉庫：熱門商品先放在離你最近的倉庫。","把照片、影片、網頁檔複製到世界各地的節點，就近送給你。","在台灣滑 IG，照片還是秒開。","Netlify 自帶 CDN，上傳網站後自動分送到各地。","rep","→ Netlify"],
+  ["lb","🚦","負載平衡","Load Balancer","百貨公司門口的引導員，把客人分到不同櫃台，不讓某一台塞爆。","把大量請求平均分給很多台伺服器。","跨年夜大家同時發文，App 還撐得住。","Netlify 幫我們處理，不用自己設定。","rep","→ Netlify"]]},
+ {n:"3 API 閘道",s:"API Gateway",arrow:"轉給對的櫃位",c:[
+  ["gw","🚪","API 閘道","API Gateway","統一服務窗口，先檢查會員證，再告訴你去哪一櫃。","驗證身分、限制流量、把請求轉給正確的微服務。","每次按讚、留言，都先經過它確認「真的是你」。","MVP 沒有這一層：網頁直接把表單送給 Netlify Forms。","no",""]]},
+ {n:"4 應用服務",s:"微服務：美食街分工的各個櫃位",arrow:"讀寫資料",c:[
+  ["auth","🔐","登入 / 帳號","Auth","會員服務台：辦卡、驗證會員。","註冊、登入、密碼、兩步驟驗證。","登入 IG、忘記密碼。","MVP 不做真正登入，用 LocalStorage 模擬「記住你是誰」。","rep","→ LocalStorage"],
+  ["post","📝","貼文","Posts","出餐櫃位：接單、把餐點做出來。","接收新貼文、文字與照片，存起來。","按下「分享」發文。","用 Netlify Forms 收下使用者送出的內容。","rep","→ Netlify Forms"],
+  ["like","❤️","按讚 / 留言","Likes & Comments","集點櫃位：客人蓋一個章就記一筆。","記錄誰對哪篇按讚、留言，並更新數字。","雙擊照片出現愛心。","可用 LocalStorage 在自己瀏覽器裡計數（示意）。","rep","→ LocalStorage"],
+  ["feed","📰","動態牆","Feed","今日推薦菜單：幫每位客人排好要看的菜色。","決定你打開 App 時看到哪些貼文、順序如何。","打開 App 往下滑。","MVP 直接寫死一頁內容，不需要。","no",""],
+  ["dm","💬","私訊","Direct Message","店內廣播／傳紙條服務。","一對一或群組即時訊息。","IG 私訊、LINE 聊天。","MVP 不需要。","no",""],
+  ["notif","🔔","通知","Notifications","叫號員：餐好了就通知你。","決定該通知誰、通知什麼。","「XXX 對你的貼文按讚」。","Netlify Forms 可以寄 Email 通知「有新訂單」給你（店主）。","rep","→ Forms 通知"],
+  ["search","🔍","搜尋","Search","服務台的查詢電腦。","從海量資料找出帳號、hashtag、地點。","搜尋 #台北美食。","MVP 內容很少，不需要。","no",""],
+  ["reco","🤖","推薦演算法","AI Recommendation","超會觀察的店長：記得你愛吃什麼、推薦新菜。","用 AI 分析你的行為，推薦可能喜歡的內容。","探索頁、Reels 越滑越停不下來。","沒有，MVP 不需要。","no",""],
+  ["ads","📢","廣告","Ads","百貨公司裡的廣告看板出租。","挑選要給你看的廣告、計算曝光與點擊。","動態牆裡的「贊助」貼文。","MVP 不需要。","no",""]]},
+ {n:"5 資料層",s:"Data",arrow:"跑在雲端機房上",c:[
+  ["udb","👤","使用者資料庫","User DB","會員名冊。","存帳號、暱稱、大頭貼網址等。","個人檔案頁。","Netlify Forms 收到的資料 + LocalStorage 模擬。","rep","→ Netlify Forms"],
+  ["graph","🕸️","社交關係圖","Social Graph","人脈地圖：誰是誰的常客、誰跟誰一起來。","記錄誰追蹤誰、誰是好友。","「你可能認識的人」。","MVP 不需要。","no",""],
+  ["pdb","🗂️","貼文資料庫","Posts DB","訂單總帳本。","存所有貼文、留言、按讚紀錄。","回去看三年前的貼文。","Netlify Forms 後台就是我們的「訂單總帳本」。","rep","→ Netlify Forms"],
+  ["cache","⚡","快取","Cache","常點的菜先備好，客人一點馬上出餐。","把常用資料放在超快的記憶體裡。","熱門貼文的讚數瞬間出現。","瀏覽器 LocalStorage／瀏覽器快取就是小小的快取。","rep","→ LocalStorage"],
+  ["obj","📦","物件儲存","Object Storage","照片影片大倉庫。","存放海量照片、影片檔案。","你所有的照片、限動、Reels。","不需要，用 emoji 代替圖片 😄","no",""],
+  ["mq","📬","訊息佇列","Message Queue","排隊叫號機：工作先抽號碼牌，後台慢慢做。","把不急的工作排隊，避免瞬間塞爆。","按讚後，通知晚一點點才跳出來。","MVP 不需要。","no",""]]},
+ {n:"6 基礎設施",s:"Infrastructure",arrow:"需要時呼叫外部積木",c:[
+  ["dc","🏭","資料中心 / 雲端","IaaS","百貨集團自己的土地與建築。","實體機房與伺服器：AWS、Google Cloud、Azure，或自建機房。","你看不到，但每個動作都跑在這裡。","Netlify 幫我們租好了，我們只要一個免費攤位。","rep","→ Netlify"],
+  ["ana","📊","數據分析平台","Analytics","營運總部的報表室。","分析使用行為，幫公司做決策。","新功能先給部分人試用（A/B 測試）。","MVP 不需要（頂多看 Netlify 的簡單數據）。","no",""],
+  ["cicd","🔄","程式碼倉庫 + 自動部署","CI/CD","總部保險箱 + 自動傳真機：新菜單一存檔就傳到各分店。","保存每一版程式碼，改好後自動測試、上線。","App 默默更新了新功能。","GitHub 存程式碼，推上去 Netlify 就自動更新網站。","rep","→ GitHub"]]},
+ {n:"7 外部 SaaS 積木",s:"別人做好的服務，付費接上",ext:1,c:[
+  ["push","📲","推播服務","Apple APNs / Google FCM","電信公司的簡訊中心：叫號要靠它送到你手機。","把通知送到手機鎖定畫面。","手機跳出「XXX 對你的貼文按讚」。","MVP 不需要推播。","no",""],
+  ["pay","💳","金流","Apple/Google Pay、信用卡","百貨公司門口的銀行刷卡機。","安全地處理付款。","買 LINE 貼圖、訂閱 Premium。","MVP 不收錢，不需要。","no",""],
+  ["mail","✉️","Email / SMS 簡訊","驗證碼","郵局與簡訊代發。","寄驗證碼、密碼重設信。","註冊時收到 6 位數驗證碼。","Netlify Forms 的 Email 通知可以寄信給你（店主）。","rep","→ Forms 通知"]]}
+];
+var MAP={};
+LAYERS.forEach(function(L){L.c.forEach(function(c){MAP[c[0]]=c;});});
+
+function build(el,interactive,pre){
+  var h="";
+  LAYERS.forEach(function(L,i){
+    h+='<div class="layer'+(L.ext?' l-ext':'')+'"><div class="lname">'+L.n+'<small>'+L.s+'</small></div><div class="boxes">';
+    L.c.forEach(function(c){
+      var tag=interactive?'button':'div';
+      h+='<'+tag+' class="box '+c[8]+'" data-id="'+c[0]+'" id="'+pre+c[0]+'"'+(interactive?' type="button" aria-label="'+c[2]+' '+c[3]+'"':'')+'><span class="em" aria-hidden="true">'+c[1]+'</span>'+c[2]+'<small>'+c[3]+'</small><span class="mv">'+c[9]+'</span></'+tag+'>';
+    });
+    h+='</div></div>';
+    if(L.arrow) h+='<div class="arrow" aria-hidden="true">▼<span>'+L.arrow+'</span></div>';
+  });
+  el.innerHTML=h;
+}
+var d1=document.getElementById("d1"),d2=document.getElementById("d2"),det=document.getElementById("detail");
+build(d1,true,"a-");build(d2,false,"b-");
+
+d1.addEventListener("click",function(e){
+  var b=e.target.closest(".box");if(!b)return;
+  d1.querySelectorAll(".box.sel").forEach(function(x){x.classList.remove("sel");});
+  b.classList.add("sel");
+  var c=MAP[b.dataset.id];
+  det.innerHTML='<div class="big" aria-hidden="true">'+c[1]+'</div><h3>'+c[2]+' <small class="note">'+c[3]+'</small></h3><dl>'+
+   '<dt>🏬 美食街比喻</dt><dd>'+c[4]+'</dd><dt>⚙️ 它在做什麼</dt><dd>'+c[5]+'</dd>'+
+   '<dt>📱 你在 IG 上什麼時候會碰到它</dt><dd>'+c[6]+'</dd><dt>🍱 我們的 MVP 用什麼代替</dt><dd>'+c[7]+'</dd></dl>';
+  if(window.innerWidth<900) det.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});
+});
+var mvpBtn=document.getElementById("mvpBtn"),l1=document.getElementById("l1");
+mvpBtn.addEventListener("click",function(){
+  var on=mvpBtn.getAttribute("aria-pressed")!=="true";
+  mvpBtn.setAttribute("aria-pressed",on);
+  d1.classList.toggle("mvp",on);l1.classList.toggle("mvp-on",on);
+});
+
+// ---------- tabs ----------
+var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+function selTab(t,focus){
+  tabs.forEach(function(x){var s=x===t;x.setAttribute("aria-selected",s);x.tabIndex=s?0:-1;
+    document.getElementById(x.getAttribute("aria-controls")).hidden=!s;});
+  if(focus)t.focus();
+  if(t.id!=="t2")stopPlay();
+}
+tabs.forEach(function(t,i){
+  t.addEventListener("click",function(){selTab(t);});
+  t.addEventListener("keydown",function(e){
+    var j=null;
+    if(e.key==="ArrowRight")j=(i+1)%tabs.length;
+    else if(e.key==="ArrowLeft")j=(i-1+tabs.length)%tabs.length;
+    else if(e.key==="Home")j=0;else if(e.key==="End")j=tabs.length-1;
+    if(j!==null){e.preventDefault();e.stopPropagation();selTab(tabs[j],true);}
+  });
+});
+
+// ---------- scenarios ----------
+var SC=[
+ {b:"❤️ 在 IG 按讚",t:"約 0.3 秒",s:[
+  [["app"],"你在 App 雙擊照片 ❤️，App 送出「我要按讚」的請求。"],
+  [["lb"],"負載平衡（門口引導員）把請求分給一台比較不忙的伺服器。"],
+  [["gw"],"API 閘道檢查會員證：確認真的是你本人登入。"],
+  [["like"],"按讚服務收到：「某某人對這篇貼文按讚」。"],
+  [["pdb","cache"],"寫入資料庫（永久記住）＋更新快取（讚數立刻 +1）。"],
+  [["mq"],"「通知朋友」這件事不急，先抽號碼牌放進訊息佇列。"],
+  [["notif"],"通知服務輪到號碼，決定要通知誰、寫什麼。"],
+  [["push"],"交給外部 SaaS 推播服務（Apple APNs / Google FCM）送出。"],
+  [["app"],"朋友手機跳出：「XXX 對你的貼文按讚」🎉"]]},
+ {b:"📸 發一則限時動態",t:"約 1～數秒（看照片大小與網速）",s:[
+  [["app"],"你拍好照片按「分享」，App 開始上傳照片。"],
+  [["gw"],"API 閘道確認身分後放行。"],
+  [["obj"],"照片存進物件儲存（照片影片大倉庫）。"],
+  [["obj"],"系統自動產生多種尺寸：小縮圖、手機版、高畫質版。"],
+  [["cdn"],"照片分送到 CDN，各地分店倉庫都有一份。"],
+  [["post","pdb"],"貼文服務把「誰、什麼時候、照片在哪」寫入資料庫。"],
+  [["feed","reco"],"動態牆與推薦服務決定這則限動要排給哪些朋友。"],
+  [["app"],"朋友打開 App，最上面出現你的限動圈圈 ⭕"]]},
+ {b:"📰 打開 App 滑動態",t:"約 0.5 秒",s:[
+  [["app"],"你打開 App，它向雲端要「我的動態牆」。"],
+  [["lb","gw"],"經過引導員與服務窗口，確認是你。"],
+  [["feed"],"動態牆服務開始幫你「排菜單」。"],
+  [["graph","reco","ads"],"同時問三個地方：你追蹤誰（社交關係圖）、你可能喜歡什麼（推薦 AI）、要插哪些廣告。"],
+  [["cache"],"常用結果從快取拿，不用每次重算，更快。"],
+  [["cdn"],"照片影片從離你最近的 CDN 節點載入。"],
+  [["app"],"畫面出現滿滿的貼文，你開始往下滑 👆"]]},
+ {b:"💬 傳 LINE 訊息",t:"約 0.2 秒",s:[
+  [["app"],"你輸入「晚餐吃什麼？」按下送出。"],
+  [["gw"],"API 閘道確認身分。"],
+  [["dm"],"私訊服務收下這則訊息。"],
+  [["mq"],"訊息放進訊息佇列排隊，保證不會弄丟、順序正確。"],
+  [["pdb"],"訊息存進資料庫，換手機也看得到。"],
+  [["push"],"推播服務把通知送出去。"],
+  [["app"],"對方手機「叮咚」一聲，看到你的訊息 📩"]]}
+];
+var cur=-1,step=0,timer=null;
+var sb=document.getElementById("scenBtns"),cap=document.getElementById("cap"),prog=document.getElementById("prog"),
+ prev=document.getElementById("prev"),next=document.getElementById("next"),play=document.getElementById("play"),
+ tEl=document.getElementById("timer"),scT=document.getElementById("scTitle");
+SC.forEach(function(s,i){
+  var b=document.createElement("button");b.className="btn";b.type="button";b.textContent=s.b;
+  b.setAttribute("aria-pressed","false");
+  b.addEventListener("click",function(){startSc(i);});sb.appendChild(b);
+});
+function startSc(i){
+  stopPlay();cur=i;step=0;
+  [].forEach.call(sb.children,function(b,j){b.setAttribute("aria-pressed",j===i);});
+  scT.textContent=SC[i].b;prev.disabled=next.disabled=play.disabled=false;render();
+}
+function render(){
+  var s=SC[cur],seen={};
+  d2.querySelectorAll(".box").forEach(function(b){b.classList.remove("past","cur");var n=b.querySelector(".num");if(n)n.remove();});
+  for(var k=0;k<=step;k++){
+    s.s[k][0].forEach(function(id){
+      var b=document.getElementById("b-"+id);
+      b.classList.add(k===step?"cur":"past");if(k===step)b.classList.remove("past");
+      var n=b.querySelector(".num");if(!n){n=document.createElement("span");n.className="num";b.appendChild(n);}
+      n.textContent=k+1;
+    });
+  }
+  cap.innerHTML='<b class="step">'+(step+1)+' / '+s.s.length+'</b>'+s.s[step][1];
+  prog.style.width=((step+1)/s.s.length*100)+"%";
+  prev.disabled=step===0;next.disabled=step===s.s.length-1;
+  var last=step===s.s.length-1;tEl.hidden=!last;
+  if(last)tEl.textContent="⏱️ 這一切大約在 "+s.t+" 內完成（約略示意）";
+  var c=document.getElementById("b-"+s.s[step][0][0]);
+  if(c&&document.getElementById("p2").hidden===false){
+    var r=c.getBoundingClientRect();
+    if(r.top<0||r.bottom>window.innerHeight)c.scrollIntoView({block:"center",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  }
+}
+function go(d){if(cur<0)return;var n=step+d;if(n<0||n>=SC[cur].s.length)return;step=n;render();}
+prev.addEventListener("click",function(){stopPlay();go(-1);});
+next.addEventListener("click",function(){stopPlay();go(1);});
+function stopPlay(){if(timer){clearInterval(timer);timer=null;}play.setAttribute("aria-pressed","false");play.textContent="⏯ 自動播放";}
+play.addEventListener("click",function(){
+  if(timer){stopPlay();return;}
+  if(step===SC[cur].s.length-1){step=0;render();}
+  play.setAttribute("aria-pressed","true");play.textContent="⏸ 暫停";
+  timer=setInterval(function(){if(step>=SC[cur].s.length-1){stopPlay();return;}go(1);},1800);
+});
+document.addEventListener("keydown",function(e){
+  if(document.getElementById("p2").hidden||cur<0)return;
+  if(e.target.closest&&e.target.closest("[role=tablist]"))return;
+  if(e.key==="ArrowRight"){e.preventDefault();stopPlay();go(1);}
+  else if(e.key==="ArrowLeft"){e.preventDefault();stopPlay();go(-1);}
+});
+
+// ---------- quiz ----------
+var Q=[
+ ["IG 照片為什麼在台灣也載得很快？",["因為手機很新","CDN 把照片放在離你近的節點","因為照片被刪掉了"],1,"答對了！CDN 就像各地的分店倉庫，照片就近送達 🌏","再想想：是誰把照片「複製到世界各地的分店倉庫」？"],
+ ["按讚後朋友收到通知，是哪個外部 SaaS 幫忙？",["推播服務（APNs / FCM）","金流服務","搜尋服務"],0,"完全正確！Apple APNs / Google FCM 把通知送到手機 📲","提示：它負責讓手機「跳出通知」。"],
+ ["我們的 MVP 用什麼取代了大公司的資料庫？",["自己蓋機房","推薦演算法","Netlify Forms"],2,"太棒了！Netlify Forms 就是我們的訂單代收中心 🍱","提示：它是我們美食街的「訂單代收中心」。"]
+];
+var qz=document.getElementById("quiz");
+Q.forEach(function(q,i){
+  var d=document.createElement("div");d.className="card q";
+  d.innerHTML='<h3>Q'+(i+1)+'. '+q[0]+'</h3><div class="opts" role="group" aria-label="Q'+(i+1)+' 選項"></div><div class="fb" aria-live="polite"></div>';
+  var o=d.querySelector(".opts"),fb=d.querySelector(".fb");
+  q[1].forEach(function(t,j){
+    var b=document.createElement("button");b.type="button";b.className="opt";b.textContent=t;
+    b.addEventListener("click",function(){
+      o.querySelectorAll(".opt").forEach(function(x){x.classList.remove("ok","ng");});
+      var ok=j===q[2];b.classList.add(ok?"ok":"ng");
+      fb.className="fb "+(ok?"ok":"ng");fb.textContent=ok?"✅ "+q[3]:"🤔 差一點！"+q[4];
+    });
+    o.appendChild(b);
+  });
+  qz.appendChild(d);
+});
+})();
+</script>
+</body>
+</html>

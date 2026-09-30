@@ -195,7 +195,7 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
     <h2>🧱 四塊積木，組成你的線上店面</h2>
     <p class="hint">👆 點任一塊積木看說明；按「▶ 播放資料流」或用 ← → 方向鍵一步步看資料怎麼跑。</p>
     <div class="diagram" id="diagram">
-      <div class="node person" data-n="you" style="grid-area:you"><span class="emo">🧑‍💼🤖</span><b>你（老闆）＋ AI</b><small>用 AI 產生程式碼</small></div>
+      <div class="node person" data-n="you" style="grid-area:you"><span class="emo">🧑‍💼🤖</span><b>你（老闆）＋ AI</b><small>VS Code ＋ Copilot</small></div>
       <button class="node block" data-n="fe" data-k="fe" style="grid-area:fe"><span class="emo">👨‍💻</span><b>前端 Frontend</b><small>裝潢・菜單・點餐櫃檯</small></button>
       <button class="node block" data-n="gh" data-k="gh" style="grid-area:gh"><span class="emo">🗄️</span><b>版本控制 GitHub</b><small>總部保險箱＋自動傳真機</small></button>
       <button class="node block" data-n="nl" data-k="nl" style="grid-area:nl"><span class="emo">☁️</span><b>雲端託管 Netlify</b><small>美食街免費攤位</small></button>
@@ -279,8 +279,8 @@ calc();
 
 /* ---------- Tab 2: blocks ---------- */
 var INFO={
-  fe:{t:'👨‍💻 前端 Frontend',a:'餐廳的裝潢、菜單、點餐櫃檯——客人一眼看到、親手操作的部分。',r:'HTML（骨架）＋ CSS（裝潢）＋ JavaScript（互動），存成 index.html',w:'第 1 週：請 AI 幫你生出 index.html；第 2 週加上 LocalStorage',o:'客人看得到、摸得到的，都是前端！'},
-  gh:{t:'🗄️ 版本控制 GitHub',a:'總部保險箱＋自動傳真機：設計圖安全存好，一改就立刻傳真給分店。',r:'Git 版本控制、GitHub 雲端程式碼倉庫（repository）',w:'第 1 週：上傳 index.html；第 2 週：搭配 CI/CD 自動部署',o:'改錯了也能回到上一版，永遠不怕弄丟。'},
+  fe:{t:'👨‍💻 前端 Frontend',a:'餐廳的裝潢、菜單、點餐櫃檯——客人一眼看到、親手操作的部分。',r:'HTML（骨架）＋ CSS（裝潢）＋ JavaScript（互動），存成 index.html',w:'第 1 週：在 VS Code 請 Copilot 幫你生出 index.html；第 2 週加上 LocalStorage',o:'客人看得到、摸得到的，都是前端！'},
+  gh:{t:'🗄️ 版本控制 GitHub',a:'總部保險箱＋自動傳真機：設計圖安全存好，一改就立刻傳真給分店。',r:'Git 版本控制、GitHub 雲端程式碼倉庫（repository）',w:'第 1 週：在 VS Code 用 Commit ＋ Sync 把 index.html 推送上來；第 2 週：搭配 CI/CD 自動部署',o:'改錯了也能回到上一版，永遠不怕弄丟。'},
   nl:{t:'☁️ 雲端託管 SaaS：Netlify',a:'百貨公司美食街的免費攤位：水電、保全、清潔都幫你搞定。',r:'Netlify 靜態網站託管，提供網址（https）、全球流量與 CDN',w:'第 1 週：部署上線拿到網址；第 2 週：GitHub 一更新就自動重新部署',o:'不用自己顧主機，專心把菜做好吃。'},
   forms:{t:'📦 後端即服務 BaaS：Netlify Forms',a:'訂單代收中心：客人留下的資料，有人幫你收好、整理好。',r:'Netlify Forms：在 <form> 加上 netlify 屬性，就能收表單資料',w:'第 2 週：做一個「早鳥名單」表單收集客戶',o:'不用自己蓋大廚房（資料庫），也能收名單！'},
   cust:{t:'👩‍🎓 客人瀏覽器',a:'走進美食街的客人。',r:'Chrome、Safari 等瀏覽器，輸入網址就能看到你的網站',w:'每一週：你的同學、朋友、家人都是客人！',o:'網站是做給客人用的，記得從客人的角度想。'}
@@ -300,9 +300,9 @@ nodes.forEach(function(n){if(n.dataset.k)n.addEventListener('click',function(){s
 
 /* ---------- Tab 2: flow ---------- */
 var STEPS=[
-  {s:'① AI 產生 index.html',c:'① 你請 AI 幫忙寫程式，產生店面設計圖 index.html 🤖✍️',n:['you','fe'],k:'fe'},
-  {s:'② 上傳 GitHub',c:'② 把 index.html 放進總部保險箱 GitHub 🗄️',n:['fe','gh'],k:'gh'},
-  {s:'③ 自動傳真給 Netlify',c:'③ GitHub 自動傳真給美食街攤位 Netlify（這就是 CI/CD）📠☁️',n:['gh','nl'],k:'nl'},
+  {s:'① Copilot 產生 index.html',c:'① 在 VS Code 請 Copilot 幫忙寫程式，產生店面設計圖 index.html 🤖✍️',n:['you','fe'],k:'fe'},
+  {s:'② Commit ＋ Sync',c:'② 在 VS Code 按 Commit 存檔，再按 Sync 推送到總部保險箱 GitHub 🗄️',n:['fe','gh'],k:'gh'},
+  {s:'③ GitHub 通知 Netlify',c:'③ GitHub 自動通知（傳真給）美食街攤位 Netlify（這就是 CI/CD）📠☁️',n:['gh','nl'],k:'nl'},
   {s:'④ 客人打開網址',c:'④ 客人打開網址，Netlify 端出你的店面給他看 👩‍🎓🌐',n:['nl','cust'],k:'cust'},
   {s:'⑤ 填早鳥名單',c:'⑤ 客人填寫早鳥名單，資料送到訂單代收中心 Netlify Forms 📦',n:['cust','forms'],k:'forms'},
   {s:'⑥ 老闆看名單',c:'⑥ 老闆（你！）登入後台查看名單，驗證點子有沒有人要 🎉',n:['forms','you'],k:'forms'}

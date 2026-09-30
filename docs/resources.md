@@ -20,6 +20,28 @@
 | [Stripe：SaaS 指標 MRR 解說](https://stripe.com/resources/more/what-is-monthly-recurring-revenue) | SaaS 最重要的營收指標 | 🔵 |
 | [a16z：16 Startup Metrics](https://a16z.com/16-startup-metrics/) | 投資人在看的新創指標 | 🔵 |
 
+## 1b. 🏛️ 網路服務的系統架構（社群媒體背後長怎樣？）
+
+| 資源 | 說明 | 難度 |
+| --- | --- | --- |
+| [社群媒體的 SaaS 架構圖（本課講義）](../lectures/wk01_1007_saas-storefront/social_media_architecture.md) | 按讚、發限動背後發生什麼事 | 🟢 |
+| [MDN：CDN（繁中）](https://developer.mozilla.org/zh-TW/docs/Glossary/CDN) | 為什麼照片在台灣也載得快 | 🟢 |
+| [Red Hat：什麼是微服務？](https://www.redhat.com/zh/topics/microservices/what-are-microservices) | 美食街櫃位分工 | 🟡 |
+| [System Design Primer（GitHub）](https://github.com/donnemartin/system-design-primer) | 大型系統設計入門，有很多架構圖 | 🔵 |
+| [Meta Engineering](https://engineering.fb.com/)・[Instagram Engineering](https://instagram-engineering.com/)・[Netflix TechBlog](https://netflixtechblog.com/) | 大公司工程師的真實分享 | 🔵 |
+
+## 1c. 🧰 VS Code 與 GitHub Copilot
+
+| 資源 | 說明 | 難度 |
+| --- | --- | --- |
+| [VS Code ＋ Copilot 入門（本課教學）](tutorials/vscode_copilot_starter.md) | 安裝到第一個網頁 | 🟢 |
+| [VS Code 入門影片](https://code.visualstudio.com/docs/getstarted/introvideos) | 官方短影片 | 🟢 |
+| [VS Code：設定 Copilot](https://code.visualstudio.com/docs/copilot/setup) | 官方設定說明 | 🟢 |
+| [VS Code：Copilot Chat](https://code.visualstudio.com/docs/copilot/chat/copilot-chat) | Ask／Agent 模式怎麼用 | 🟡 |
+| [VS Code：提示詞技巧](https://code.visualstudio.com/docs/copilot/chat/prompt-crafting) | 怎麼寫出好咒語 | 🟡 |
+| [GitHub Copilot 方案](https://github.com/features/copilot/plans) | 免費版與付費版比較 | 🟢 |
+| [GitHub Education](https://education.github.com/) | 學生驗證後可免費使用 Copilot Pro | 🟢 |
+
 ## 2. 🤖 Vibe Coding 與 AI 輔助開發
 
 | 資源 | 說明 | 難度 |
@@ -50,6 +72,8 @@
 
 | 資源 | 說明 | 難度 |
 | --- | --- | --- |
+| [Git 與 GitHub 入門（本課教學）](tutorials/git_intro.md) | 用 VS Code 按鈕學會 clone、commit、sync | 🟢 |
+| [VS Code：Git 入門](https://code.visualstudio.com/docs/sourcecontrol/intro-to-git) | 官方圖文教學 | 🟢 |
 | [GitHub Docs：Hello World（繁中）](https://docs.github.com/zh/get-started/start-your-journey/hello-world) | 官方入門教學 | 🟢 |
 | [GitHub Skills](https://skills.github.com/) | 在 GitHub 上一步步完成的互動課程 | 🟢 |
 | [GitHub Education 學生方案](https://education.github.com/pack) | 學生免費福利大禮包 | 🟢 |

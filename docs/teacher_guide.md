@@ -20,8 +20,12 @@
 - [ ] 老師自己用**全新帳號**從頭走一遍 [第 1 週步驟卡](../lectures/wk01_1007_saas-storefront/steps.md) 與 [第 2 週步驟卡](../lectures/wk02_1014_baas-cicd/steps.md)，確認 GitHub／Netlify 介面沒有大改版；若有，更新 [部署教學](tutorials/github_netlify_deploy.md) 的按鈕名稱。
 - [ ] 把 [samples/HIGH](../samples/HIGH/index.html) 部署成老師的 Demo 網站（Netlify Base directory 設 `samples/HIGH`），並**開啟 Form detection**，第 2 週現場展示後台名單。
 - [ ] 在投影電腦上先打開三支互動教材，確認能正常顯示：[foodcourt.html](../lectures/wk01_1007_saas-storefront/slides/foodcourt.html)、[prompt_builder.html](../lectures/wk01_1007_saas-storefront/slides/prompt_builder.html)、[data_flow.html](../lectures/wk02_1014_baas-cicd/slides/data_flow.html)。
-- [ ] 確認教室 Wi-Fi 能連上 github.com、app.netlify.com、AI 助理網站。
+- [ ] 確認教室 Wi-Fi 能連上 github.com、app.netlify.com，以及 VS Code 延伸模組市集與 GitHub Copilot 服務（先在教室實際用 Copilot Chat 問一句話測試）。
 - [ ] 準備**紅色、綠色便利貼**（每人各 2 張）。
+- [ ] 課前一週在群組提醒：安裝 VS Code、Git、登入 GitHub、啟用 Copilot（[before_class.md](tutorials/before_class.md)），並鼓勵申請 [GitHub Education](https://education.github.com/)（審核需數天，通過可免費用 Copilot Pro）。
+- [ ] 若使用電腦教室公用電腦：確認已安裝 VS Code 與 Git、是否開機還原；還原的話每次上課都要重新登入 GitHub 與設定 `git config`。
+- [ ] 投影用 VS Code 先放大字體（`editor.fontSize` ≥ 20、`window.zoomLevel` 1～2），並事先建好示範 repo 且接好 Netlify（開場魔術用）。
+- [ ] 留意 Copilot Free 每月次數上限；準備「網頁版 AI＋手動存檔」的備案流程（見 [第 1 週咒語集](../lectures/wk01_1007_saas-storefront/prompts.md#-沒有-copilot-時的備案)）。
 - [ ] 準備「救援用」的 `index.html`（可直接用 [samples/MEDIUM](../samples/MEDIUM/index.html)），給 AI 帳號出問題的學生使用，**不要讓任何人因為帳號問題卡住整堂課**。
 - [ ] 排好兩人一組（建議把「有信心的」和「比較緊張的」同學搭配）。
 
@@ -53,12 +57,16 @@
 
 ## ⚠️ 常見卡關點（依發生頻率排序）
 
-1. 檔名變成 `index.html.txt` → 教學生開啟「顯示副檔名」。
+1. Commit 時要求設定 `user.name`／`user.email` → 貼兩行 `git config`（[error_guide Q6](tutorials/error_guide.md)）。
+1. **只按 Commit 沒按 Sync**，以為網站會更新 → 反覆強調「Commit 在你電腦，Sync 才到 GitHub」。
+1. Copilot 在 **Ask** 模式，只回答不改檔 → 改選 **Agent**。
+1. VS Code 開錯資料夾（不是 clone 下來的 repo），原始檔控制面板沒有 Sync。
+1. Copilot 要求執行終端機指令 → 請學生按 Skip。
 2. Netlify Forms 沒開 **Form detection**，或開了沒重新部署（自 2023 年 4 月起預設關閉）。
 3. 用 Netlify Drop 部署（沒串 GitHub），第 2 週 CI/CD 無效 → 請學生重新 Import from Git。
 4. AI 用 JavaScript 動態產生表單，Netlify 掃描不到 → 請 AI 把 `<form>` 直接寫在 HTML 裡。
 5. 在 `file:///` 本機開啟測試表單，資料當然收不到。
-6. 第 2 週忘記先把舊的 `index.html` 貼給 AI，AI 重做了一個完全不同的網站。
+6. 第 2 週 Copilot 沒指定 `#index.html`，另外建了新檔 → 請它直接修改 `index.html`。
 7. GitHub 2FA 設定卡住 → 課前公告就提醒。
 
 完整排除步驟見 [卡關急救手冊](tutorials/error_guide.md)。

@@ -16,7 +16,7 @@ sequenceDiagram
     participant U as 👩‍🎓 同學
     participant Y as 🧑‍🍳 你
 
-    G->>N: 1. 你上傳新版 index.html，觸發部署
+    G->>N: 1. 你 Commit ＋ Sync 新版 index.html，觸發部署
     Note over N: 2. Netlify 掃描 HTML，<br/>發現 data-netlify="true"<br/>→ 自動幫這個表單開一個「收件箱」
     U->>N: 3. 同學填寫表單並送出
     Note over N: 4. 資料存進「waitlist」收件箱
@@ -70,14 +70,14 @@ sequenceDiagram
 
 ---
 
-## 步驟 3：上傳新版 `index.html` 觸發部署
+## 步驟 3：Commit ＋ Sync 觸發部署
 
-1. 到你的 GitHub repo，點 **Add file → Upload files**。
-2. 把新的 `index.html` 拖進去（**同檔名會自動覆蓋**舊檔）。
-3. 寫下 Commit 說明，例如 `新增早鳥名單表單`，按 **Commit changes**。
+1. Copilot 改完 `index.html` 後按 **Keep**。
+2. VS Code 左側 **原始檔控制** → 訊息框寫 `新增早鳥名單表單` → **✓ 提交（Commit）**。
+3. 按 **同步變更（Sync Changes）**。
 4. 回到 Netlify 的 **Deploys** 頁面，會看到一筆新的部署正在跑，等它變成 **Published**。
 
-> 💡 如果你是「先上傳、後開啟偵測」，到 Netlify 的 **Deploys** 頁面按 **Trigger deploy → Deploy site（或 Deploy project）** 手動重新部署一次即可。
+> 💡 如果你是「先 Sync、後開啟偵測」，到 Netlify 的 **Deploys** 頁面按 **Trigger deploy → Deploy site（或 Deploy project）** 手動重新部署一次即可。
 
 ---
 
