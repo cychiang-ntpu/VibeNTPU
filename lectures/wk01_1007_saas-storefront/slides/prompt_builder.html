@@ -69,34 +69,56 @@ pre{margin:0;background:var(--code-bg);color:var(--code-text);padding:14px;borde
 @media (prefers-color-scheme: dark){.toast{color:#042f2e}}
 footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28px}
 [hidden]{display:none!important}
+/* 使用說明與選讀 */
+.howto{max-width:1240px;margin:0 auto;padding:0 16px}
+.howto>div{background:var(--card);border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:12px;padding:10px 14px;text-align:left}
+.howto h2{font-size:1rem;margin:0 0 4px}
+.howto ol{margin:0;padding-left:1.5em}
+.howto li{margin:2px 0}
+details.more{margin:8px auto 0;max-width:46em;text-align:left;border:1px solid var(--border);border-radius:10px;padding:6px 10px;background:var(--card);font-size:.92rem}
+details.more summary{cursor:pointer;font-weight:700;color:var(--primary)}
+details.more p{margin:.4em 0 0}
+.helper{margin:0 0 6px;background:var(--chip);border-radius:8px;padding:8px 10px;font-size:.95rem}
 </style>
 </head>
 <body>
 <header>
   <h1>提示詞產生器</h1>
-  <p class="sub">依表單內容組合結構化的提示詞（prompt），複製後貼到 VS Code 的 Copilot Chat。提示詞越具體——角色、產品資訊、版面結構、技術限制——AI 產生的結果越貼近需求，也越容易驗證。</p>
+  <p class="sub">在左邊填幾格簡單的資料，右邊就會自動幫你組好一段完整的提示詞（給 AI 的指令），複製後貼到 VS Code 的 Copilot Chat 就能產生網頁。</p>
+  <details class="more"><summary>進階說明（選讀）</summary><p>本工具依表單內容組合結構化的提示詞（prompt）。提示詞越具體——角色、產品資訊、版面結構、技術限制——AI 產生的結果越貼近需求，也越容易驗證。</p></details>
   <div class="modes" role="group" aria-label="選擇模式">
     <button type="button" data-mode="w1" aria-pressed="true">第 1 週：產生首頁</button>
     <button type="button" data-mode="w2" aria-pressed="false">第 2 週：加入早鳥名單表單</button>
   </div>
 </header>
 
+<section class="howto" aria-labelledby="howtoT"><div>
+  <h2 id="howtoT">怎麼使用這一頁</h2>
+  <ol>
+    <li>在上方選「第 1 週：產生首頁」或「第 2 週：加入早鳥名單表單」。</li>
+    <li>在「1. 產品資訊」填表；不知道填什麼？按「隨機範例」看看，再改成你自己的點子。</li>
+    <li>填好後按右邊的「複製提示詞」。</li>
+    <li>照右邊最下方灰色框的步驟，貼到 VS Code 的 Copilot Chat（Agent 模式）送出。</li>
+  </ol>
+</div></section>
+
 <main>
 <section class="card" aria-labelledby="formTitle">
   <div class="row">
     <h2 id="formTitle">1. 產品資訊</h2>
     <div class="chips">
-      <button type="button" class="btn btn-accent" id="randBtn">填入範例</button>
+      <button type="button" class="btn btn-accent" id="randBtn">隨機範例</button>
       <button type="button" class="btn btn-ghost" id="resetBtn">清空</button>
     </div>
   </div>
+  <p class="helper">不知道填什麼？按「隨機範例」看看。每一格都可以留空，AI 會幫你想；填得越多，做出來的網頁越像你想要的。</p>
 
   <fieldset>
-    <legend>使用的 AI 助理</legend>
+    <legend>你用哪一個 AI 助理？ <span class="hint">本課程使用 GitHub Copilot</span></legend>
     <div class="chips">
       <label class="chip"><input type="radio" name="ai" value="Copilot">GitHub Copilot（VS Code）</label>
     </div>
-    <p class="hint" style="margin:8px 0 6px">無法使用 Copilot 時的替代方案：</p>
+    <p class="hint" style="margin:8px 0 6px">Copilot 不能用時，可以改選：</p>
     <div class="chips">
       <label class="chip"><input type="radio" name="ai" value="Claude">Claude</label>
       <label class="chip"><input type="radio" name="ai" value="ChatGPT">ChatGPT</label>
@@ -118,11 +140,11 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
       <input type="text" id="pitch" data-k="pitch" placeholder="例：幫北大學生 3 分鐘找到安心好房">
     </div>
     <div class="field">
-      <label for="audience">目標客群</label>
+      <label for="audience">目標客群 <span class="hint">誰會用它？</span></label>
       <input type="text" id="audience" data-k="audience" placeholder="例：第一次在外租屋的大學生">
     </div>
     <fieldset>
-      <legend>三個核心功能 <span class="hint">每格寫一個</span></legend>
+      <legend>三個主要功能 <span class="hint">它能幫使用者做哪三件事？每格寫一個</span></legend>
       <div class="feat">
         <input type="text" data-k="f1" aria-label="核心功能 1" placeholder="功能 1，例：地圖看房源">
         <input type="text" data-k="f2" aria-label="核心功能 2" placeholder="功能 2，例：學長姐真實評價">
@@ -130,11 +152,11 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
       </div>
     </fieldset>
     <div class="field">
-      <label for="pricing">收費方式</label>
+      <label for="pricing">收費方式 <span class="hint">免費也可以</span></label>
       <input type="text" id="pricing" data-k="pricing" placeholder="例：免費版 + 進階版每月 NT$49">
     </div>
     <fieldset>
-      <legend>視覺風格</legend>
+      <legend>視覺風格 <span class="hint">網頁整體看起來的感覺，選一個</span></legend>
       <div class="chips" data-group="style">
         <button type="button" class="chip" data-v="清新活潑">清新活潑</button>
         <button type="button" class="chip" data-v="沉穩專業">沉穩專業</button>
@@ -146,7 +168,7 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
       <input type="text" class="custom" data-k="styleCustom" aria-label="自訂風格" placeholder="描述你想要的風格，例：復古 90 年代像素風" hidden>
     </fieldset>
     <fieldset>
-      <legend>主色調</legend>
+      <legend>主要顏色 <span class="hint">選一個</span></legend>
       <div class="chips" data-group="color">
         <button type="button" class="chip" data-v="青綠色"><span class="dot" style="background:#14b8a6"></span>青綠</button>
         <button type="button" class="chip" data-v="莫蘭迪藍"><span class="dot" style="background:#7d93a8"></span>莫蘭迪藍</button>
@@ -158,14 +180,14 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
       <input type="text" class="custom" data-k="colorCustom" aria-label="自訂主色調" placeholder="例：抹茶綠配奶油白" hidden>
     </fieldset>
     <fieldset>
-      <legend>頁面區塊</legend>
+      <legend>頁面區塊 <span class="hint">網頁由上到下要有哪些段落，建議至少勾 3 個</span></legend>
       <div class="chips" id="secs"></div>
     </fieldset>
   </div>
 
   <div id="w2fields" hidden>
     <fieldset>
-      <legend>即將推出的 3 個功能 <span class="hint">會顯示在會員儀表板的「敬請期待」卡片</span></legend>
+      <legend>即將推出的 3 個功能 <span class="hint">訪客加入名單後，會在「敬請期待」卡片看到這三項</span></legend>
       <div class="feat">
         <input type="text" data-k="u1" aria-label="即將推出功能 1" placeholder="例：一鍵預約看房">
         <input type="text" data-k="u2" aria-label="即將推出功能 2" placeholder="例：室友配對">
@@ -176,10 +198,11 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
 </section>
 
 <section class="card out" aria-labelledby="outTitle">
-  <h2 id="outTitle">2. 產生的提示詞</h2>
+  <h2 id="outTitle">2. 自動產生的提示詞</h2>
+  <p class="hint" style="margin:-4px 0 10px">這段文字會跟著左邊的內容自動更新，不需要自己修改，直接按下方「複製提示詞」即可。</p>
   <div class="meter">
-    <div class="row" style="margin:0"><strong>提示詞完整度</strong><strong id="pct">0%</strong></div>
-    <div class="bar" role="progressbar" aria-label="提示詞完整度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+    <div class="row" style="margin:0"><strong>填寫進度</strong><strong id="pct">0%</strong></div>
+    <div class="bar" role="progressbar" aria-label="填寫進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
     <p id="meterMsg"></p>
   </div>
   <pre id="out" tabindex="0" aria-label="產生的提示詞"></pre>
@@ -208,6 +231,8 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     '倒數計時':'倒數計時（距離正式上線還有幾天幾時幾分幾秒，用 JavaScript 即時更新）',
     '頁尾':'頁尾（版權宣告與聯絡方式）'
   };
+  // 區塊勾選框上顯示的白話名稱（勾選值與提示詞內容不變）
+  var SEC_LABEL = {'主視覺+CTA':'主視覺與行動按鈕','痛點':'痛點（使用者的困擾）','FAQ':'常見問題 FAQ','倒數計時':'上線倒數計時'};
   var PRESETS = [
     {name:'三峽租屋雷達',pitch:'幫北大學生 3 分鐘找到安心又不踩雷的好房',audience:'第一次在三峽外宿的大學生',f1:'地圖一覽周邊房源與租金',f2:'學長姐真實租屋評價',f3:'新房源即時推播通知',pricing:'基本免費，進階版每月 NT$49',style:'清新活潑',color:'青綠色',u1:'一鍵預約看房',u2:'室友配對',u3:'租約條款檢查'},
     {name:'AI 塔羅牌訂閱',pitch:'每天早上一張 AI 解讀的塔羅牌，陪你溫柔開始一天',audience:'喜歡占卜、想要心靈小語的年輕人',f1:'每日一抽 + AI 白話解讀',f2:'感情／課業／工作主題牌陣',f3:'抽牌日記與心情統計',pricing:'月訂閱 NT$99，年訂閱 NT$990',style:'可愛療癒',color:'薰衣草紫',u1:'好友合盤',u2:'月亮週期提醒',u3:'專屬塔羅語音'},
@@ -254,7 +279,7 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
   SECS.forEach(function(x){
     var l = document.createElement('label'); l.className='chip';
     var i = document.createElement('input'); i.type='checkbox'; i.value=x[0];
-    l.appendChild(i); l.appendChild(document.createTextNode(x[0]));
+    l.appendChild(i); l.appendChild(document.createTextNode(SEC_LABEL[x[0]]||x[0]));
     secBox.appendChild(l);
   });
 
@@ -377,12 +402,12 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     }else{
       items = [
         [S.name,'填寫產品名稱。'],
-        [S.pitch,'以一句話說明產品為誰解決什麼問題，這是文案的核心。'],
-        [S.audience,'描述目標客群，AI 會據此調整用語與訴求。'],
-        [S.f1,'填寫第 1 個核心功能。'],[S.f2,'填寫第 2 個核心功能。'],[S.f3,'填寫第 3 個核心功能。'],
-        [S.pricing,'說明收費方式（免費亦可），價格區塊才有具體內容。'],
+        [S.pitch,'用一句話說明產品幫誰解決什麼問題。'],
+        [S.audience,'寫下誰會用它，AI 會照這群人的口吻來寫。'],
+        [S.f1,'填寫第 1 個主要功能。'],[S.f2,'填寫第 2 個主要功能。'],[S.f3,'填寫第 3 個主要功能。'],
+        [S.pricing,'寫下收費方式（免費也可以），價格區塊才會有內容。'],
         [S.style==='自訂'?S.styleCustom:S.style,'描述想要的視覺風格。'],
-        [S.color==='自訂'?S.colorCustom:S.color,'描述想要的主色調。'],
+        [S.color==='自訂'?S.colorCustom:S.color,'描述想要的主要顏色。'],
         [S.sections.length>=3?'ok':'','至少勾選 3 個頁面區塊。']
       ];
     }
@@ -390,9 +415,9 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     var pct = Math.round(done/items.length*100);
     var miss = items.filter(function(x){ return !(x[0]||'').trim(); });
     var msg;
-    if(pct===100) msg='所有欄位皆已填寫，可以複製提示詞。';
-    else if(pct===0) msg='請從產品名稱開始填寫，或點選「填入範例」參考完整內容。';
-    else msg='尚有 '+miss.length+' 項未填。下一步：'+miss[0][1];
+    if(pct===100) msg='全部填好了，可以按「複製提示詞」。';
+    else if(pct===0) msg='請從產品名稱開始填。不知道填什麼？按「隨機範例」看看。';
+    else msg='還有 '+miss.length+' 項沒填（也可以直接複製）。下一步：'+miss[0][1];
     return {pct:pct,msg:msg};
   }
 
@@ -430,7 +455,7 @@ footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28p
     var i; do{ i=Math.floor(Math.random()*PRESETS.length); }while(i===lastPreset && PRESETS.length>1);
     lastPreset=i; var p=PRESETS[i];
     for(var k in p) S[k]=p[k];
-    syncUI(); toast('已填入範例：'+p.name+'（可自由修改）');
+    syncUI(); toast('已填入隨機範例：'+p.name+'（可以自由修改）');
   });
   $('#resetBtn').addEventListener('click', function(){
     if(!confirm('確定要清空所有欄位嗎？')) return;

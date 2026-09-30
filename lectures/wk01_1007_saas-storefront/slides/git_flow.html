@@ -140,6 +140,27 @@ kbd{border:1px solid var(--border);border-bottom-width:3px;border-radius:6px;pad
 .opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
 .fb{margin-top:6px}
 .score{font-size:1.2rem;font-weight:800;color:var(--primary)}
+/* 使用說明、下一步提示與選讀 */
+.howto{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:12px;padding:10px 14px;margin:4px 0 14px}
+.howto h2{font-size:1rem;margin:0 0 4px}
+.howto ol{margin:0;padding-left:1.5em}
+.howto li{margin:2px 0}
+.lead{font-size:1.02rem}
+.plain{font-weight:600;margin:.2em 0 .5em}
+details.more{margin-top:8px;border:1px solid var(--border);border-radius:10px;padding:5px 10px;background:var(--surface-2);font-size:.88rem;font-weight:400;color:var(--text)}
+details.more summary{cursor:pointer;font-weight:700;color:var(--primary)}
+details.more[open] summary{margin-bottom:6px}
+details.more p{margin:.3em 0}
+.zone details.more{margin-top:0;font-size:.8rem;line-height:1.45}
+.guide{position:sticky;top:0;z-index:20;border:2px solid var(--accent);background:var(--warn-bg);border-radius:12px;padding:8px 14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.gsteps{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px;padding:0}
+.gsteps li{border:1.5px solid var(--border);border-radius:999px;padding:1px 10px;font-size:.82rem;background:var(--surface);color:var(--muted)}
+.gsteps li.done{border-color:var(--good);color:var(--good);font-weight:700}
+.gsteps li.cur{border-color:var(--accent);background:var(--accent);color:#2b1a00;font-weight:800}
+.next{margin:0;font-size:1.05rem;font-weight:800}
+.next-target{outline:3px solid var(--accent)!important;outline-offset:2px;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.6)}50%{box-shadow:0 0 0 7px rgba(245,158,11,0)}}
+@media (max-width:600px){.gsteps li{font-size:.75rem;padding:0 8px}.next{font-size:.95rem}}
 footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -150,8 +171,18 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
 <div class="wrap">
 <header>
   <h1>Git 版本控制流程模擬器</h1>
-  <p>Git 是分散式版本控制系統（distributed version control system）：每位開發者的電腦都保有完整的版本歷史，並透過遠端儲存庫（remote repository，本課程使用 GitHub）交換變更。本頁模擬 VS Code「原始檔控制」面板的操作，呈現檔案如何從<b>工作區</b>經<b>暫存區</b>成為<b>本機提交（commit）</b>，再推送至 GitHub，並觸發 Netlify 自動部署。</p>
+  <p class="lead">Git 幫你把網站的每一次修改存成「版本」，就像文件的存檔點，隨時可以回到以前的樣子。這一頁讓你不用真的動檔案，就能練習 VS Code 裡「改檔案 → 存版本 → 上傳到 GitHub → 網站自動更新」的整個流程。</p>
+  <details class="more"><summary>進階說明（選讀）</summary><p>Git 是分散式版本控制系統（distributed version control system）：每位開發者的電腦都保有完整的版本歷史，並透過遠端儲存庫（remote repository，本課程使用 GitHub）交換變更。本頁模擬 VS Code「原始檔控制」面板的操作，呈現檔案如何從<b>工作區</b>經<b>暫存區</b>成為<b>本機提交（commit）</b>，再推送至 GitHub，並觸發 Netlify 自動部署。</p></details>
 </header>
+<section class="howto" aria-labelledby="howtoT">
+  <h2 id="howtoT">怎麼使用這一頁</h2>
+  <ol>
+    <li>在「1. 流程模擬器」照著黃色框的「下一步請按」提示操作：修改 → Stage → Commit → Sync。</li>
+    <li>按完 Sync 後，看最右邊（手機在最下面）的「5. Netlify 網站」自動更新。</li>
+    <li>想多練習：按「模擬：隊友在 GitHub 網頁上修改 README」再按 Pull；或點一個舊版本試試「還原」。</li>
+    <li>點「2. VS Code 介面與資料模型」對照真正的 VS Code 畫面，最後做「3. 測驗」。</li>
+  </ol>
+</section>
 
 <div class="tabs" role="tablist" aria-label="教材分頁">
   <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true">1. 流程模擬器</button>
@@ -162,12 +193,19 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
 <!-- ============ TAB 1 ============ -->
 <section class="panel" id="p1" role="tabpanel" aria-labelledby="t1">
   <div class="statusbar" aria-label="模擬 VS Code 狀態列"><span>⎇ main</span><span id="stChanges"></span><span id="stSync"></span></div>
-  <div class="msg" id="msg" role="status" aria-live="polite">請從左側開始：點選「請 Copilot 修改」，模擬以 AI 助理修改網頁。</div>
+  <div class="guide" id="guide">
+    <ol class="gsteps" aria-label="練習進度">
+      <li data-g="0">1. 修改</li><li data-g="1">2. Stage 暫存</li><li data-g="2">3. Commit 存版本</li><li data-g="3">4. Sync 上傳</li>
+    </ol>
+    <p class="next" id="nextHint" aria-live="polite">下一步請按：「請 Copilot 修改」</p>
+  </div>
+  <div class="msg" id="msg" role="status" aria-live="polite">請照上面黃色框的提示，從「請 Copilot 修改」開始。</div>
 
   <div class="zones">
     <div class="zone" id="zW">
       <h2>1. 工作區 Working Tree</h2>
-      <p class="desc">本機專案資料夾中的實際檔案。所有編輯都先發生在這裡，Git 會比對它與最近一次提交的差異。</p>
+      <p class="desc">就是你電腦裡的專案資料夾，所有修改都先發生在這裡。</p>
+      <details class="more"><summary>進階說明（選讀）</summary><p>本機專案資料夾中的實際檔案。所有編輯都先發生在這裡，Git 會比對它與最近一次提交的差異。</p></details>
       <div id="wFiles"></div>
       <div id="wMini"></div>
       <button class="btn" id="bCopilot" aria-expanded="false" aria-controls="copChoices">請 Copilot 修改</button>
@@ -181,7 +219,8 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
 
     <div class="zone" id="zS">
       <h2>2. 暫存區 Staging Area</h2>
-      <p class="desc">又稱索引（index），用來挑選「下一次提交要包含哪些變更」，讓一次提交只記錄一件相關的修改。</p>
+      <p class="desc">準備存檔的清單：先把想存的修改放進來，再一起存成一個版本。</p>
+      <details class="more"><summary>進階說明（選讀）</summary><p>又稱索引（index），用來挑選「下一次提交要包含哪些變更」，讓一次提交只記錄一件相關的修改。</p></details>
       <div id="sFiles"></div>
       <label for="cmsg" class="small">提交訊息（commit message）：說明改了什麼</label>
       <input id="cmsg" type="text" placeholder="例如：把按鈕改成橘色" autocomplete="off">
@@ -190,14 +229,16 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
 
     <div class="zone" id="zL">
       <h2>3. 本機儲存庫 Local Repository</h2>
-      <p class="desc">提交歷史。每個 commit 以雜湊值（hash）識別，並記錄其父提交（parent），串成一條版本鏈。點選任一提交可檢視內容。<code>origin/main</code> 標示本機所知的遠端最新位置（remote-tracking branch）。</p>
+      <p class="desc">你電腦裡存好的每一個版本；點任一版本可以查看或還原。</p>
+      <details class="more"><summary>進階說明（選讀）</summary><p>提交歷史。每個 commit 以雜湊值（hash）識別，並記錄其父提交（parent），串成一條版本鏈。點選任一提交可檢視內容。<code>origin/main</code> 標示本機所知的遠端最新位置（remote-tracking branch）。</p></details>
       <ol class="timeline" id="lTimeline"></ol>
       <button class="btn" id="bSync">Sync（同步變更）</button>
     </div>
 
     <div class="zone" id="zR">
       <h2>4. 遠端儲存庫 GitHub</h2>
-      <p class="desc">託管於 GitHub 的遠端儲存庫（remote，預設名稱 origin），作為團隊共用的版本來源。收到新提交時，會以 webhook 通知 Netlify。</p>
+      <p class="desc">放在網路上的版本備份，也是和隊友共用的地方。</p>
+      <details class="more"><summary>進階說明（選讀）</summary><p>託管於 GitHub 的遠端儲存庫（remote，預設名稱 origin），作為團隊共用的版本來源。收到新提交時，會以 webhook 通知 Netlify。</p></details>
       <ol class="timeline" id="rTimeline"></ol>
       <button class="btn alt" id="bMate">模擬：隊友在 GitHub 網頁上修改 README</button>
       <button class="btn" id="bPull">Pull（從 GitHub 取回）</button>
@@ -205,13 +246,14 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
 
     <div class="zone" id="zN">
       <h2>5. Netlify 網站</h2>
-      <p class="desc">與 GitHub repo 連結的託管服務。偵測到新提交後自動建置並部署，即持續部署（CD）。</p>
+      <p class="desc">你真正上線的網站；GitHub 一有新版本，它就自動更新。</p>
+      <details class="more"><summary>進階說明（選讀）</summary><p>與 GitHub repo 連結的託管服務。偵測到新提交後自動建置並部署，即持續部署（CD）。</p></details>
       <div id="nMini"></div>
       <div id="nDeploy" hidden>
         <div class="small" id="nDeployTxt">收到通知，部署中…</div>
         <div class="progress" role="progressbar" aria-label="部署進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="nBar"></i></div>
       </div>
-      <div class="caption" id="nCap" hidden>部署完成：未操作 Netlify，網站即依最新提交自動更新（持續部署）。</div>
+      <div class="caption" id="nCap" hidden>更新完成：你沒有動 Netlify，網站就自動換成最新版本了（自動部署）。</div>
     </div>
   </div>
 
@@ -221,8 +263,9 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
       <div id="pvMini"></div>
       <div>
         <p id="pvInfo"></p>
-        <p class="small"><b>檢視（checkout）</b>：將工作區暫時切換到該提交的內容，檢視後可回到最新狀態。<br>
-        <b>還原（revert）</b>：不刪除任何既有提交，而是<b>新增一個提交</b>來抵銷之後的變更，使內容回到該版本。由於歷史保持完整，已推送到 GitHub 的提交也能安全還原，這是團隊協作時的建議做法。</p>
+        <p class="plain">左邊是這個版本當時的樣子。按「還原成這一版」會新增一個版本，把網站改回這個樣子，以前的版本都會留著。</p>
+        <details class="more"><summary>進階說明（選讀）</summary><p class="small"><b>檢視（checkout）</b>：將工作區暫時切換到該提交的內容，檢視後可回到最新狀態。<br>
+        <b>還原（revert）</b>：不刪除任何既有提交，而是<b>新增一個提交</b>來抵銷之後的變更，使內容回到該版本。由於歷史保持完整，已推送到 GitHub 的提交也能安全還原，這是團隊協作時的建議做法。</p></details>
         <div class="row" style="display:flex;flex-wrap:wrap;gap:8px">
           <button class="btn amber" id="bRevert">還原成這一版（新增一個提交）</button>
           <button class="btn alt" id="bClosePv">回到現在</button>
@@ -231,13 +274,13 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
     </div>
   </div>
 
-  <p class="small" style="margin-top:14px">建議操作順序：修改 → Stage → Commit → Sync，觀察最右側網站自動更新。接著模擬隊友修改 README → Pull，以及點選提交並還原。
+  <p class="small" style="margin-top:14px">練習順序：修改 → Stage → Commit → Sync，看最右邊的網站自動更新。接著可以試試「隊友修改 README → Pull」，以及點一個舊版本「還原」。
     <button class="btn alt" id="bReset" style="font-size:.8rem;padding:2px 8px;margin-left:6px">重新開始</button></p>
 </section>
 
 <!-- ============ TAB 2 ============ -->
 <section class="panel" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
-  <p>下圖為 VS Code「原始檔控制」面板的示意圖。點選<b>編號</b>查看說明。快捷鍵：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>（Mac：<kbd>⌃</kbd><kbd>⇧</kbd><kbd>G</kbd>）直接打開這個面板。</p>
+  <p>下圖是 VS Code「原始檔控制」面板的樣子。點圖上的<b>黃色編號</b>，右邊（手機在下方）會說明那個按鈕是做什麼的。快捷鍵：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>（Mac：<kbd>⌃</kbd><kbd>⇧</kbd><kbd>G</kbd>）直接打開這個面板。</p>
   <div class="vsgrid">
     <div class="vs" aria-label="VS Code 原始檔控制面板示意圖">
       <div class="main">
@@ -263,12 +306,14 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
     </div>
     <div class="card explain" id="explain" aria-live="polite">
       <h3>介面說明</h3>
-      <p>每個編號對應 VS Code 中實際出現的按鈕或標記。建議逐一檢視，並在自己的 VS Code 中找到對應位置。</p>
+      <p>請點左圖任一個黃色編號。建議一個一個看，並在自己的 VS Code 裡找到同樣的位置。</p>
     </div>
   </div>
 
   <div class="card model">
     <h2 style="font-size:1.2rem;margin-top:0">2.1 Git 的資料模型</h2>
+    <p class="plain">Git 把每一次存檔記成一個「提交（commit）」，一個接一個串起來，所以隨時可以看到或回到任何一個舊版本。</p>
+    <details class="more"><summary>進階說明（選讀）</summary>
     <dl>
       <dt>提交 commit</dt><dd>專案在某一時間點的完整快照（snapshot），連同作者、時間、提交訊息，以及<b>父提交（parent）</b>的識別碼。除第一個提交外，每個提交都指向其父提交，因此歷史形成一條可回溯的鏈。</dd>
       <dt>雜湊值 hash</dt><dd>Git 依提交內容（含父提交）計算出的 40 位十六進位識別碼（傳統為 SHA-1），介面通常只顯示前 7 碼。內容只要有任何改變，雜湊值就不同，因此可用來確認歷史未被竄改。</dd>
@@ -277,6 +322,7 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
       <dt>遠端追蹤分支</dt><dd>如 <code>origin/main</code>，記錄「上次與遠端通訊時，遠端 main 的位置」。它只在 fetch、pull、push 時更新；VS Code 顯示的 ↑（ahead）與 ↓（behind）即為本機 <code>main</code> 與 <code>origin/main</code> 相差的提交數。</dd>
       <dt>Sync</dt><dd>VS Code 的「同步變更」依序執行 pull（取回並合併遠端提交）與 push（上傳本機提交）。若兩邊修改同一段內容，會產生合併衝突（merge conflict），需人工決定保留哪個版本。</dd>
     </dl>
+    </details>
   </div>
 
   <h2 style="font-size:1.2rem;margin-top:24px">2.2 VS Code 按鈕與 Git 指令對照</h2>
@@ -298,7 +344,7 @@ footer{margin:24px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
 
 <!-- ============ TAB 3 ============ -->
 <section class="panel" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
-  <p>共 5 題，每題作答後顯示解析。</p>
+  <p>共 5 題，每題選完會顯示一句話解析。</p>
   <div id="quiz"></div>
   <div class="card" id="scoreBox" aria-live="polite"><span class="score" id="score">得分：0 / 5</span> <span id="party"></span>
     <button class="btn alt" id="bQuizReset" style="margin-left:8px;font-size:.85rem;padding:3px 10px">重新作答</button></div>
@@ -391,8 +437,34 @@ function render(){
   if(b)sync.push('GitHub 上有 '+b+' 個尚未取回的提交 ↓'+b);
   $('stSync').textContent=sync.length?sync.join('；'):'已與 GitHub 同步 0↓ 0↑';
   $('bSync').textContent='Sync（同步變更）'+(a||b?' '+b+'↓ '+a+'↑':'');
+  updateGuide();
 }
-function say(html,kind){var m=$('msg');m.className='msg'+(kind?' '+kind:'');m.innerHTML=html}
+/* 下一步提示：依目前狀態告訴學生該按哪個按鈕，並把該按鈕框起來 */
+function updateGuide(){
+  if(!S)return;
+  var w=workChanges().length,st=stagedChanges().length,a=ahead(),b=behind(),cur,txt,target;
+  var choicesOpen=!$('copChoices').hidden;
+  if(S.deploying){cur=4;txt='Netlify 正在更新網站，請看最右邊（手機在最下面）的「5. Netlify 網站」。';target=null;}
+  else if(choicesOpen){cur=0;txt='下一步請按：選一個修改項目，例如「改按鈕顏色」';target='copChoices';}
+  else if(w){cur=1;txt='下一步請按：「Stage（檔案旁的 +）」，把修改放進準備存檔的清單';target='bStage';}
+  else if(st){cur=2;
+    if(!$('cmsg').value.trim()){txt='下一步請：在「提交訊息」框輸入一句說明（例如：把按鈕改成橘色），再按「Commit」';target='cmsg';}
+    else{txt='下一步請按：「Commit（輸入訊息後提交）」，存成一個新版本';target='bCommit';}}
+  else if(a){cur=3;txt='下一步請按：「Sync（同步變更）」，把新版本上傳到 GitHub';target='bSync';}
+  else if(b){cur=4;txt='下一步請按：「Pull（從 GitHub 取回）」，把隊友的修改拿回你的電腦';target='bPull';}
+  else if(S.local.length<2){cur=0;txt='下一步請按：「請 Copilot 修改」';target='bCopilot';}
+  else{cur=4;txt='完成一輪了，網站已經自動更新。可以再按「請 Copilot 修改」練習一次，或試試「模擬：隊友在 GitHub 網頁上修改 README」、點一個舊版本「還原」。';target=null;}
+  [].forEach.call(document.querySelectorAll('.gsteps li'),function(li){
+    var g=+li.dataset.g;li.classList.toggle('done',g<cur);li.classList.toggle('cur',g===cur);
+    if(g===cur)li.setAttribute('aria-current','step');else li.removeAttribute('aria-current');
+  });
+  $('nextHint').textContent=txt;
+  [].forEach.call(document.querySelectorAll('.next-target'),function(x){x.classList.remove('next-target')});
+  if(target)$(target).classList.add('next-target');
+}
+/* 訊息：先放一句白話，技術細節放進「進階說明（選讀）」 */
+function say(html,kind,adv){var m=$('msg');m.className='msg'+(kind?' '+kind:'');
+  m.innerHTML=html+(adv?'<details class="more"><summary>進階說明（選讀）</summary><p>'+adv+'</p></details>':'');}
 function flash(id){var z=$(id);z.classList.add('flash');setTimeout(function(){z.classList.remove('flash')},900)}
 function fly(from,to,label,cb){
   if(reduce){cb();return}
@@ -408,7 +480,8 @@ function fly(from,to,label,cb){
 /* ---------- Actions ---------- */
 $('bCopilot').addEventListener('click',function(){
   var c=$('copChoices');c.hidden=!c.hidden;this.setAttribute('aria-expanded',!c.hidden);
-  if(!c.hidden)say('請選擇修改內容。實際操作時，是在 Copilot Chat 以文字描述需求，由 Agent 模式直接修改檔案。');
+  if(!c.hidden)say('請選一個要修改的地方。實際上課時，你會在 Copilot Chat 用文字說明想改什麼，Copilot 會直接幫你改檔案。');
+  updateGuide();
 });
 [].forEach.call(document.querySelectorAll('#copChoices .btn'),function(b){
   b.addEventListener('click',function(){
@@ -418,29 +491,29 @@ $('bCopilot').addEventListener('click',function(){
     else{if(p.s>=SECS.length){p.s=0;txt='移除所有區塊';}else{p.s++;txt='加上「'+SECS[p.s-1]+'」區塊';}}
     $('copChoices').hidden=true;$('bCopilot').setAttribute('aria-expanded','false');
     render();flash('zW');
-    say('Copilot 已將'+txt+'。檔案旁出現 <span class="badge M">M</span>（Modified，已修改）：Git 偵測到工作區與最近一次提交不同。此時只有<b>本機檔案</b>改變，網站不受影響。下一步：Stage。');
+    say('Copilot 已將'+txt+'。這只改了<b>你電腦裡的檔案</b>，網站還沒有變。',null,'檔案旁出現 <span class="badge M">M</span>（Modified，已修改）：Git 偵測到工作區與最近一次提交不同。');
     $('cmsg').placeholder='例如：'+txt.replace('標題改成','把標題改成').replace(/^按鈕改成/,'把按鈕改成');
   });
 });
 function doStage(){S.index=clone(S.working);render();flash('zS');}
 $('bStage').addEventListener('click',function(){
-  if(!workChanges().length){say('目前沒有可暫存的變更。請先點選「請 Copilot 修改」。','bad');return}
-  fly('zW','zS','git add',function(){doStage();say('變更已加入暫存區（git add）。請輸入提交訊息，再點選 Commit。','good');$('cmsg').focus();});
+  if(!workChanges().length){say('目前沒有可以放進暫存區的修改。請先按「請 Copilot 修改」。','bad');return}
+  fly('zW','zS','git add',function(){doStage();say('已把修改放進「暫存區」（準備存檔的清單）。接著在提交訊息框寫一句說明，再按 Commit。','good','此動作對應指令 <code>git add</code>，將檔案目前的內容加入暫存區（index）。');$('cmsg').focus();});
 });
 function doCommit(msg){
   var c={h:hash(),p:head().h,m:msg,time:now(),content:clone(S.index)};
   S.local.push(c);$('cmsg').value='';render();flash('zL');
-  var tip=/^(update|aaa+|test|123|改|修改|asdf|\.+)$/i.test(msg.trim())?'<br>建議：提交訊息應具體描述變更內容，例如「把按鈕改成橘色」，日後追溯歷史時才能辨識。':'';
-  say('已建立提交 <code>'+c.h+'</code>「'+esc(msg)+'」，其父提交為 <code>'+c.p+'</code>。此提交目前只存在<b>本機儲存庫</b>，main 領先 origin/main，網站不會改變。下一步：Sync，將提交推送至 GitHub。'+tip,'good');
+  var tip=/^(update|aaa+|test|123|改|修改|asdf|\.+)$/i.test(msg.trim())?'<br>建議：說明要寫清楚改了什麼，例如「把按鈕改成橘色」，以後回頭找才看得懂。':'';
+  say('已存成一個新版本「'+esc(msg)+'」。這個版本目前<b>只在你的電腦裡</b>，網站還不會變。'+tip,'good','已建立提交 <code>'+c.h+'</code>，其父提交為 <code>'+c.p+'</code>。此提交只存在本機儲存庫，main 領先 origin/main，須 push（Sync）後遠端才會更新。');
 }
 $('bCommit').addEventListener('click',function(){
   var msg=$('cmsg').value.trim(),s=stagedChanges(),w=workChanges();
-  if(!s.length&&!w.length){say('沒有可提交的變更。請先修改檔案。','bad');return}
-  if(!msg){say('請輸入提交訊息，說明本次變更，例如「把按鈕改成橘色」。','bad');$('cmsg').focus();return}
+  if(!s.length&&!w.length){say('目前沒有修改可以存成版本。請先按「請 Copilot 修改」。','bad');return}
+  if(!msg){say('請先在提交訊息框寫一句說明，例如「把按鈕改成橘色」。','bad');$('cmsg').focus();return}
   if(!s.length){
-    say('暫存區為空。此時 VS Code 會詢問是否將所有變更一併暫存並提交；選擇「是」即可。<div class="row"><button class="btn" id="bYes">是（全部暫存並 Commit）</button><button class="btn alt" id="bNo">取消</button></div>','bad');
+    say('暫存區是空的。這時 VS Code 會問你要不要把所有修改一起存成新版本，選「是」就可以。<div class="row"><button class="btn" id="bYes">是（全部暫存並 Commit）</button><button class="btn alt" id="bNo">取消</button></div>','bad');
     $('bYes').addEventListener('click',function(){doStage();doCommit(msg)});
-    $('bNo').addEventListener('click',function(){say('已取消。也可以先 Stage 再 Commit。')});
+    $('bNo').addEventListener('click',function(){say('已取消。你也可以先按 Stage，再按 Commit。')});
     $('bYes').focus();return;
   }
   doCommit(msg);
@@ -457,45 +530,45 @@ function pullCore(){
   return inc.length;
 }
 function deploy(){
-  S.deploying=true;$('nDeploy').hidden=false;
+  S.deploying=true;$('nDeploy').hidden=false;updateGuide();
   if(innerWidth<=1020)setTimeout(function(){$('zN').scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'})},300);$('nCap').hidden=true;var bar=$('nBar'),pg=bar.parentNode,t=0;
   $('nDeployTxt').textContent='GitHub 以 webhook 通知 Netlify：建置與部署中…';
   var iv=setInterval(function(){t+=10;bar.style.width=t+'%';pg.setAttribute('aria-valuenow',t);
     if(t>=100){clearInterval(iv);S.deploying=false;
       S.site=clone(S.remote[S.remote.length-1].content.page);render();flash('zN');
       $('nDeploy').hidden=true;bar.style.width='0';$('nCap').hidden=false;
-      say('Netlify 部署完成，網站已更新為 GitHub 上的最新提交。整個過程未手動操作 Netlify，這就是<b>持續部署（Continuous Deployment, CD）</b>。','good');
+      say('Netlify 已經把網站換成最新版本。你完全沒有動 Netlify，網站就自己更新了，這就是「自動部署」。','good','這就是<b>持續部署（Continuous Deployment, CD）</b>：Netlify 監看 GitHub 上的 repo，偵測到新提交後自動建置並部署。');
     }},250);
 }
 $('bSync').addEventListener('click',function(){
-  if(S.deploying){say('Netlify 仍在部署中，請稍候。');return}
+  if(S.deploying){say('Netlify 還在更新網站，請稍等一下。');return}
   var a=ahead(),b=behind();
   if(!a&&!b){
     var n=workChanges().length+stagedChanges().length;
-    say(n?'目前沒有需要同步的提交。請先 Commit（尚有 '+n+' 個變更未提交）。注意：Sync 只傳送提交，不會傳送未提交的檔案變更。':'目前沒有需要同步的提交。請先 Commit。','bad');return}
+    say(n?'目前沒有新版本可以上傳。你還有 '+n+' 個修改沒有存成版本，請先按 Commit。Sync 只會送出已經 Commit 的版本。':'目前沒有新版本可以上傳。請先修改並按 Commit。','bad');return}
   var pulled=b?pullCore():0;
   if(pulled)render();
-  if(!a){say('Sync 會先 pull 再 push：已從 GitHub 取回 '+pulled+' 個提交；本機沒有需要推送的提交。','good');return}
+  if(!a){say('已從 GitHub 拿回 '+pulled+' 個新版本；你這邊沒有要上傳的版本。','good','Sync 會先 pull（取回）再 push（上傳）。');return}
   fly('zL','zR','git push',function(){
-    S.remote=clone(S.local);S.track=head().h;render();flash('zR');
-    say((pulled?'已先取回隊友的提交，再':'已')+'將 '+a+' 個提交推送至 GitHub，origin/main 隨之更新。GitHub 正以 webhook 通知 Netlify，請觀察最右側。');
+    S.remote=clone(S.local);S.track=head().h;S.deploying=true;render();flash('zR');
+    say((pulled?'已先拿回隊友的版本，再':'已')+'把 '+a+' 個版本上傳到 GitHub。GitHub 正在通知 Netlify 更新網站，請看最右邊。',null,(pulled?'Sync 先 pull 取回遠端提交，再 push。':'')+'push 後 origin/main 隨之更新；GitHub 以 webhook 通知 Netlify 建置並部署。');
     fly('zR','zN','webhook',deploy);
   });
 });
 $('bMate').addEventListener('click',function(){
-  if(S.deploying){say('請待 Netlify 部署完成後再試。');return}
+  if(S.deploying){say('請等 Netlify 更新完網站後再試。');return}
   var h=S.remote[S.remote.length-1],c=clone(h);
   c.p=h.h;c.h=hash();c.m='隊友：更新 README 說明';c.time=now();c.mate=true;
   c.content.readme=h.content.readme+'\n營業時間：週一到週五 11:00–14:00';
   S.remote.push(c);render();flash('zR');
-  say('隊友在 GitHub 網頁上修改 README.md，遠端多了一個提交。本機的 origin/main 仍指向舊位置，直到 fetch 或 pull 才會得知此變更；狀態列顯示 <b>↓1</b>。請點選 Pull 取回。（遠端的新提交同樣會觸發 Netlify 重新部署。）');
+  say('隊友在 GitHub 網頁上改了 README，所以 GitHub 上多了一個你電腦裡沒有的版本（狀態列顯示 <b>↓1</b>）。請按 Pull 把它拿回來。',null,'遠端多了一個提交。本機的 origin/main 仍指向舊位置，直到 fetch 或 pull 才會得知此變更。遠端的新提交同樣會觸發 Netlify 重新部署。');
   deploy();
 });
 $('bPull').addEventListener('click',function(){
-  if(!behind()){say('本機已包含 GitHub 上的所有提交，無需 Pull。可先點選「模擬：隊友在 GitHub 網頁上修改 README」。','bad');return}
+  if(!behind()){say('你的電腦已經有 GitHub 上的所有版本，不需要 Pull。可以先按「模擬：隊友在 GitHub 網頁上修改 README」。','bad');return}
   fly('zR','zL','git pull',function(){
     var n=pullCore();S.track=S.remote[S.remote.length-1].h;render();flash('zL');flash('zW');
-    say('Pull 完成：取回 '+n+' 個提交並合併，本機 README.md 已更新，origin/main 也移到最新位置。<br>建議：<b>每次開始工作前先 Pull</b>，可降低與隊友修改衝突的機會。','good');
+    say('已把隊友的版本拿回你的電腦，README.md 也更新了。建議：<b>每次開始工作前先按一次 Pull</b>，比較不會和隊友的修改撞在一起。','good','Pull 完成：取回 '+n+' 個提交並合併，origin/main 也移到最新位置。');
   });
 });
 /* history / revert */
@@ -507,47 +580,49 @@ $('lTimeline').addEventListener('click',function(e){
   $('pvTitle').textContent='檢視提交 '+c.h;
   $('pvMini').innerHTML=mini(c.content.page,'提交 '+c.h+' 的內容',c!==head());
   var isHead=c===head();
-  $('pvInfo').innerHTML='「'+esc(c.m)+'」（'+c.time+'）<br>父提交：'+(c.p?'<code>'+c.p+'</code>':'無（初始提交）')+(isHead?'<br>此為目前 HEAD 所在的最新提交。':'<br>此為較早的版本。若之後的修改造成問題，可還原至此版本。');
+  $('pvInfo').innerHTML='「'+esc(c.m)+'」（'+c.time+'）<br>上一個版本：'+(c.p?'<code>'+c.p+'</code>':'無（這是第一個版本）')+(isHead?'<br>這是目前最新的版本。':'<br>這是比較早的版本。如果後來的修改出了問題，可以還原成這一版。');
   $('bRevert').disabled=isHead;
   $('preview').scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
-  say('正在檢視提交 <code>'+c.h+'</code>，內容顯示於下方。');
+  say('正在查看版本 <code>'+c.h+'</code>，內容顯示在下方。');
 });
 $('bClosePv').addEventListener('click',function(){S.sel=null;$('preview').hidden=true;render();say('已回到最新狀態。')});
 $('bRevert').addEventListener('click',function(){
   var c=S.local.filter(function(x){return x.h===S.sel})[0];if(!c)return;
-  if(workChanges().length||stagedChanges().length){say('尚有未提交的變更。請先 Commit，再執行還原，以免遺失修改。','bad');return}
+  if(workChanges().length||stagedChanges().length){say('你還有修改沒有存成版本。請先按 Commit，再還原，免得修改不見。','bad');return}
   var content={page:clone(c.content.page),readme:head().content.readme};
-  if(eq(content,head().content)){say('此版本內容與目前相同，無需還原。','bad');return}
+  if(eq(content,head().content)){say('這個版本和現在一模一樣，不需要還原。','bad');return}
   var r={h:hash(),p:head().h,m:'Revert：還原至「'+c.m+'」',time:now(),content:content};
   S.local.push(r);S.working=clone(content);S.index=clone(content);S.sel=null;$('preview').hidden=true;render();flash('zL');
-  say('還原完成：新增提交 <code>'+r.h+'</code>，既有提交全部保留。此提交仍需 Sync 推送至 GitHub，網站才會隨之還原。','good');
+  say('已還原：新增了一個「還原」版本，以前的版本都還在。記得按 Sync，網站才會跟著改回來。','good','新增提交 <code>'+r.h+'</code>（revert），以新增提交的方式抵銷變更，不改寫既有歷史。');
 });
-$('bReset').addEventListener('click',function(){reset();say('已重新開始。請先點選「請 Copilot 修改」。')});
+$('bReset').addEventListener('click',function(){reset();say('已重新開始。請照黃色框的提示，先按「請 Copilot 修改」。')});
+$('cmsg').addEventListener('input',updateGuide);
 reset();
 
 /* ---------- Tab 2 callouts ---------- */
 var CO={
- 1:['1. 原始檔控制圖示','左側活動列中呈分支形狀的圖示即為「原始檔控制」；有變更時會顯示數字。點選它，或按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>（Mac：<kbd>⌃</kbd><kbd>⇧</kbd><kbd>G</kbd>）即可開啟此面板。'],
- 2:['2. 變更清單與 M／U 標記','列出工作區中與最近一次提交不同的檔案。<span class="badge M">M</span>＝Modified（已追蹤且被修改）；<span class="badge U">U</span>＝Untracked（Git 尚未追蹤的新檔案）。點選檔名可開啟差異比較（diff）：紅色為刪除、綠色為新增。'],
- 3:['3. ＋ 暫存（Stage）','游標移到檔名上會出現 <b>＋</b>，點選即執行 <code>git add</code>，將該檔案目前的內容加入暫存區。「變更」標題旁的 ＋ 可一次暫存全部檔案。'],
- 4:['4. 提交訊息輸入框','以一句話描述本次變更的目的，例如「把 CTA 按鈕改成橘色」。具體的訊息讓日後追溯歷史、找出問題來源更有效率；避免只寫「update」或無意義字元。'],
- 5:['5. Commit 按鈕','以暫存區內容建立新提交，產生新的雜湊值並指向目前的最新提交作為父提交。若未先 Stage，VS Code 會詢問是否全部暫存。提交只存在本機，網站不會因此改變。'],
- 6:['6. 同步變更 Sync Changes','提交後按鈕顯示「同步變更 1↑」。<b>↑</b> 為本機領先 origin/main 的提交數（待推送）；<b>↓</b> 為遠端有而本機尚未取回的提交數。點選後先 pull 再 push；推送成功後 Netlify 自動部署。'],
- 7:['7. 狀態列的同步資訊','底部狀態列左側 ⎇ main 為目前分支，旁邊顯示 ↓／↑ 同步狀態，點選亦可同步。若顯示雲朵圖示，表示此分支尚未發佈到遠端，點選即可發佈（publish branch）。']
+ 1:['左邊一排圖示中，形狀像樹枝分岔的那個就是「原始檔控制」，點它就會打開這個面板。','1. 原始檔控制圖示','左側活動列中呈分支形狀的圖示即為「原始檔控制」；有變更時會顯示數字。點選它，或按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>（Mac：<kbd>⌃</kbd><kbd>⇧</kbd><kbd>G</kbd>）即可開啟此面板。'],
+ 2:['這裡列出你改過的檔案；M 代表「改過的檔案」，U 代表「新增的檔案」。','2. 變更清單與 M／U 標記','列出工作區中與最近一次提交不同的檔案。<span class="badge M">M</span>＝Modified（已追蹤且被修改）；<span class="badge U">U</span>＝Untracked（Git 尚未追蹤的新檔案）。點選檔名可開啟差異比較（diff）：紅色為刪除、綠色為新增。'],
+ 3:['滑鼠移到檔名上會出現 +，按下去就是把這個檔案放進「準備存檔」的清單（Stage）。','3. ＋ 暫存（Stage）','游標移到檔名上會出現 <b>＋</b>，點選即執行 <code>git add</code>，將該檔案目前的內容加入暫存區。「變更」標題旁的 ＋ 可一次暫存全部檔案。'],
+ 4:['在這個框裡用一句話寫下你改了什麼，例如「把按鈕改成橘色」。','4. 提交訊息輸入框','以一句話描述本次變更的目的，例如「把 CTA 按鈕改成橘色」。具體的訊息讓日後追溯歷史、找出問題來源更有效率；避免只寫「update」或無意義字元。'],
+ 5:['按 Commit，就把準備好的修改存成一個新版本；這個版本只在你的電腦裡。','5. Commit 按鈕','以暫存區內容建立新提交，產生新的雜湊值並指向目前的最新提交作為父提交。若未先 Stage，VS Code 會詢問是否全部暫存。提交只存在本機，網站不會因此改變。'],
+ 6:['按「同步變更（Sync Changes）」，把新版本上傳到 GitHub，Netlify 就會自動更新網站。','6. 同步變更 Sync Changes','提交後按鈕顯示「同步變更 1↑」。<b>↑</b> 為本機領先 origin/main 的提交數（待推送）；<b>↓</b> 為遠端有而本機尚未取回的提交數。點選後先 pull 再 push；推送成功後 Netlify 自動部署。'],
+ 7:['最下面藍色的狀態列會顯示還有幾個版本沒上傳（↑）或沒拿回來（↓）。','7. 狀態列的同步資訊','底部狀態列左側 ⎇ main 為目前分支，旁邊顯示 ↓／↑ 同步狀態，點選亦可同步。若顯示雲朵圖示，表示此分支尚未發佈到遠端，點選即可發佈（publish branch）。']
 };
 var cos=[].slice.call(document.querySelectorAll('.co'));
 cos.forEach(function(b){b.addEventListener('click',function(){
   cos.forEach(function(x){x.setAttribute('aria-pressed',x===b)});
-  var d=CO[b.dataset.k];$('explain').innerHTML='<h3>'+d[0]+'</h3><p>'+d[1]+'</p>';
+  var d=CO[b.dataset.k];$('explain').innerHTML='<h3>'+d[1]+'</h3><p class="plain">'+d[0]+'</p><details class="more"><summary>進階說明（選讀）</summary><p>'+d[2]+'</p></details>';
 })});
 
 /* ---------- Tab 3 quiz ---------- */
+// [題目, 選項, 正確答案索引, 進階說明（選讀）, 一句話解析]
 var QZ=[
- ['關於 commit，下列敘述何者正確？',['commit 是專案在某一時間點的快照，並記錄其父提交','commit 會自動把檔案上傳到 GitHub','commit 會刪除先前的版本以節省空間'],0,'每個提交保存完整快照與中繼資料，並以父提交連成歷史鏈；它只存在本機，須 push 才會上傳。'],
- ['在 VS Code 完成 Commit 後，Netlify 上的網站會更新嗎？',['會，立即更新','不會，須以 Sync（push）將提交送到 GitHub 後才會觸發部署','須重新開機才會更新'],1,'Commit 只寫入本機儲存庫；Netlify 監看的是 GitHub 上的 repo，因此必須 push 後才會觸發持續部署。'],
- ['VS Code 狀態列顯示「0↓ 2↑」代表什麼？',['GitHub 上有 2 個本機尚未取回的提交','本機 main 領先 origin/main 2 個提交，尚未推送','有 2 個檔案尚未暫存'],1,'↑ 表示本機領先遠端追蹤分支的提交數（待推送），↓ 表示遠端有而本機尚未取回的提交數。'],
- ['下列哪一個是較好的 commit 訊息？',['update','把 CTA 按鈕改成橘色','aaa'],1,'好的提交訊息具體說明「改了什麼」，讓自己與協作者在瀏覽歷史時能快速辨識每次變更的目的。'],
- ['已推送到 GitHub 的版本出現錯誤，建議的處理方式為何？',['刪除整個 repo 重新建立','以 revert 新增一個抵銷變更的提交，再 Sync','刪除本機資料夾即可'],1,'revert 以新增提交的方式回復內容，不改寫既有歷史，因此不會與已取得舊歷史的協作者產生衝突。']
+ ['關於「提交（Commit）」，下列哪一句正確？',['Commit 是把專案現在的樣子存成一個版本，並記住它的上一個版本','Commit 會自動把檔案上傳到 GitHub','Commit 會刪掉以前的版本來節省空間'],0,'每個提交保存完整快照與中繼資料，並以父提交連成歷史鏈；它只存在本機，須 push 才會上傳。','Commit 只是在你的電腦裡存一個版本，要按 Sync 才會上傳。'],
+ ['在 VS Code 按完 Commit 後，Netlify 上的網站會馬上更新嗎？',['會，馬上更新','不會，要再按 Sync 把版本送到 GitHub，網站才會更新','要重新開機才會更新'],1,'Commit 只寫入本機儲存庫；Netlify 監看的是 GitHub 上的 repo，因此必須 push 後才會觸發持續部署。','Netlify 只看 GitHub，所以要先 Sync 到 GitHub，網站才會更新。'],
+ ['VS Code 狀態列顯示「0↓ 2↑」是什麼意思？',['GitHub 上有 2 個版本你還沒拿回來','你的電腦有 2 個版本還沒上傳到 GitHub','有 2 個檔案還沒放進暫存區'],1,'↑ 表示本機領先遠端追蹤分支的提交數（待推送），↓ 表示遠端有而本機尚未取回的提交數。','↑ 是「還沒上傳」的版本數，↓ 是「還沒拿回來」的版本數。'],
+ ['下列哪一個是比較好的 Commit 說明？',['update','把 CTA 按鈕改成橘色','aaa'],1,'好的提交訊息具體說明「改了什麼」，讓自己與協作者在瀏覽歷史時能快速辨識每次變更的目的。','好的說明寫清楚「改了什麼」，以後回頭找才看得懂。'],
+ ['已經上傳到 GitHub 的版本有錯，建議怎麼處理？',['把整個 repo 刪掉重建','用「還原（revert）」新增一個把錯誤改回來的版本，再按 Sync','把電腦裡的資料夾刪掉就好'],1,'revert 以新增提交的方式回復內容，不改寫既有歷史，因此不會與已取得舊歷史的協作者產生衝突。','還原會新增一個版本把錯誤改回來，以前的紀錄都還在，比較安全。']
 ];
 var answered;
 function buildQuiz(){
@@ -566,11 +641,12 @@ $('quiz').addEventListener('click',function(e){
   [].forEach.call(document.querySelectorAll('.opt[data-q="'+i+'"]'),function(x){
     var k=+x.dataset.o;if(k===q[2])x.classList.add('right');else if(k===j)x.classList.add('wrong');x.setAttribute('aria-disabled','true');
   });
-  $('fb'+i).textContent=answered[i]?'正確。'+q[3]:'不正確。正確答案是「'+q[1][q[2]]+'」。'+q[3];
+  $('fb'+i).textContent=answered[i]?'正確。'+q[4]:'不正確。正確答案是「'+q[1][q[2]]+'」。'+q[4];
+  var more=document.createElement('details');more.className='more';more.innerHTML='<summary>進階說明（選讀）</summary><p></p>';more.querySelector('p').textContent=q[3];$('fb'+i).appendChild(more);
   $('fb'+i).style.color=answered[i]?'var(--good)':'var(--bad)';
   var sc=0,n=0;for(var k in answered){n++;if(answered[k])sc++}
   $('score').textContent='得分：'+sc+' / 5';
-  if(n===5)$('party').textContent=sc>=4?'　已掌握 Git 基本流程。':'　建議回到「1. 流程模擬器」重新操作一次 Commit、Sync、Pull 與還原，再作答。';
+  if(n===5)$('party').textContent=sc>=4?'　已掌握 Git 基本流程。':'　建議回到「1. 流程模擬器」照提示再做一次 Commit、Sync、Pull 與還原，然後重新作答。';
 });
 $('bQuizReset').addEventListener('click',buildQuiz);
 buildQuiz();

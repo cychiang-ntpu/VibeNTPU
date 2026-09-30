@@ -111,6 +111,18 @@ button.node:hover{border-color:var(--primary-2)}
 .fb.try{background:var(--surface-2);border-left:6px solid var(--accent)}
 .result{text-align:center;padding:10px}
 .result .big{font-size:2.6rem;font-weight:900;color:var(--primary)}
+/* 使用說明與選讀 */
+.howto{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:12px;padding:10px 14px;margin:4px 0 14px}
+.howto h2{font-size:1rem;margin:0 0 4px}
+.howto ol{margin:0;padding-left:1.5em}
+.howto li{margin:2px 0}
+.lead{font-size:1.05rem}
+.plain{font-weight:600;margin:.2em 0 .5em}
+details.more{margin-top:10px;border:1px solid var(--border);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:.92rem;font-weight:400}
+details.more summary{cursor:pointer;font-weight:700;color:var(--primary)}
+details.more[open] summary{margin-bottom:6px}
+details.more p{margin:.3em 0}
+.plist{padding-left:1.2em;margin:.3em 0}
 footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -122,8 +134,18 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
 <div class="wrap">
 <header>
   <h1>SaaS 與現代網站架構</h1>
-  <p>本頁比較「自建基礎設施」與「採用雲端服務」兩種建站方式，並說明本課程使用的四項服務——前端、GitHub、Netlify、Netlify Forms——如何分工，以及一筆資料從撰寫程式到使用者送出表單所經過的路徑。</p>
+  <p class="lead">做一個網站，可以「自己蓋」也可以「租現成的」。這一頁比較兩種做法要花多少錢，並用動畫說明我們這門課用到的四個服務怎麼分工。</p>
+  <details class="more"><summary>進階說明（選讀）</summary><p>本頁比較「自建基礎設施」與「採用雲端服務」兩種建站方式，並說明本課程使用的四項服務——前端、GitHub、Netlify、Netlify Forms——如何分工，以及一筆資料從撰寫程式到使用者送出表單所經過的路徑。</p></details>
 </header>
+<section class="howto" aria-labelledby="howtoT">
+  <h2 id="howtoT">怎麼使用這一頁</h2>
+  <ol>
+    <li>在「1. 自建與雲端服務」拖動「驗證期間」拉桿，比較兩種做法各要花多少錢。</li>
+    <li>點「2. 服務分工與資料流」，按「播放資料流」，看網站從寫好到有人填表單的 6 個步驟。</li>
+    <li>點圖中任一方塊，下方會出現白話說明。</li>
+    <li>點「3. 架構理解測驗」，做完 5 題（答對 4 題即完成檢核點 1）。</li>
+  </ol>
+</section>
 <div class="tabs" role="tablist" aria-label="教材分頁">
   <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true">1. 自建與雲端服務</button>
   <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">2. 服務分工與資料流</button>
@@ -132,10 +154,12 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
 
 <!-- TAB 1 -->
 <section class="panel" id="p1" role="tabpanel" aria-labelledby="t1">
-  <p>類比：傳統建站如同在偏遠山區買地自建餐廳，水電、保全、廚房都要自己處理；採用雲端服務則像進駐百貨公司美食街，基礎設施由商場提供，店家只負責菜色與服務。以下直接對照其技術內涵。</p>
+  <p class="lead">自己架網站，就像在山上買地自己蓋餐廳，水電、保全、廚房都要自己來；租用雲端服務，就像進駐百貨公司美食街，商場把這些都準備好，你只要專心做菜。</p>
   <div class="grid2">
     <div class="card side mtn">
       <h3>1.1 自建基礎設施（on-premises）</h3>
+      <p class="plain">自己買伺服器（一直開著、專門放網站的電腦），並自己負責維修、備份和資安。</p>
+      <details class="more"><summary>進階說明（選讀）</summary>
       <ul>
         <li>採購並設定<strong>伺服器</strong>、網路與電力</li>
         <li>自行建置<strong>防火牆</strong>、憑證（HTTPS）與資安更新</li>
@@ -143,9 +167,18 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
         <li>全年無休的<strong>維運（operations）</strong>與故障處理</li>
       </ul>
       <p>前期投入高、建置時間長，且容量須預先規劃；若需求不如預期，已投入的硬體與人力成本難以回收（沉沒成本）。</p>
+      </details>
     </div>
     <div class="card side fc">
       <h3>1.2 採用雲端服務（SaaS／PaaS／BaaS）</h3>
+      <p class="plain">直接租用別人已經準備好的線上服務，大部分在剛起步時都免費。本課程用到四個：</p>
+      <ul class="plist">
+        <li><strong>前端</strong>：訪客看到的網頁畫面</li>
+        <li><strong>GitHub</strong>：放在網路上、會記住每次修改的專案資料夾</li>
+        <li><strong>Netlify</strong>：把網站放上網路，給你一個網址</li>
+        <li><strong>Netlify Forms</strong>：幫你收下訪客填寫的表單</li>
+      </ul>
+      <details class="more"><summary>進階說明（選讀）</summary>
       <ul>
         <li><strong>前端</strong>：HTML、CSS、JavaScript 組成的使用者介面</li>
         <li><strong>GitHub</strong>：版本控制與程式碼託管</li>
@@ -153,6 +186,7 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
         <li><strong>Netlify Forms</strong>：後端即服務（BaaS），代為接收表單資料</li>
       </ul>
       <p>基礎設施由供應商負責，依用量計價，免費方案即可驗證想法。取捨是功能受限於平台、資料存放於第三方，且長期可能產生供應商鎖定（vendor lock-in）。</p>
+      </details>
     </div>
   </div>
   <div class="card" style="margin-top:16px">
@@ -177,10 +211,14 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
       </div>
     </div>
     <div class="punch" id="punch" aria-live="polite"></div>
-    <p class="note">以上皆為<strong>課堂示意數字</strong>，非真實報價。自建假設：開辦費 NT$30,000＋工程師 1 人 × NT$50,000／月＋主機 NT$3,000／月；雲端假設：GitHub、Netlify 免費方案 NT$0（另可選用 AI 訂閱 NT$0–650／月）。實務上雲端服務的費用會隨流量與功能需求增加，免費方案亦有用量上限。</p>
+    <p class="note">以上是<strong>課堂示意數字</strong>，不是真實報價。重點是：先用免費的雲端服務試試看，花費幾乎是零。</p>
+    <details class="more"><summary>進階說明（選讀）</summary><p>自建假設：開辦費 NT$30,000＋工程師 1 人 × NT$50,000／月＋主機 NT$3,000／月；雲端假設：GitHub、Netlify 免費方案 NT$0（另可選用 AI 訂閱 NT$0–650／月）。實務上雲端服務的費用會隨流量與功能需求增加，免費方案亦有用量上限。</p></details>
   </div>
   <div class="card saas">
     <h2>1.4 軟體即服務（Software as a Service, SaaS）與買斷授權</h2>
+    <p class="plain">SaaS（軟體即服務）就是不用買斷、按月付費、打開瀏覽器或 App 就能用的軟體，例如 Netflix、Spotify、Canva。</p>
+    <div class="row" style="margin-top:6px"><span class="chip">Netflix</span><span class="chip">Spotify</span><span class="chip">Canva</span></div>
+    <details class="more"><summary>進階說明（選讀）</summary>
     <p>過去軟體多以光碟或安裝檔<strong>一次買斷</strong>，安裝在使用者自己的電腦上，更新需另行購買或下載。SaaS 則將軟體集中執行於供應商的雲端，使用者透過瀏覽器或 App 存取，<strong>按期訂閱</strong>。</p>
     <div class="tscroll"><table class="tbl">
       <thead><tr><th scope="col">面向</th><th scope="col">買斷授權</th><th scope="col">SaaS 訂閱</th></tr></thead>
@@ -191,8 +229,9 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
         <tr><th scope="row">多租戶</th><td>無</td><td>同一套系統服務眾多客戶（multi-tenancy）</td></tr>
       </tbody>
     </table></div>
-    <div class="row" style="margin-top:10px"><span class="chip">Netflix</span><span class="chip">Spotify</span><span class="chip">Canva</span></div>
-    <p class="punch">重點：程式只需部署一次在雲端，即可同時服務全球使用者，邊際成本低，這是 SaaS 具規模經濟的原因。</p>
+    <p>程式只需部署一次在雲端，即可同時服務全球使用者，邊際成本低，這是 SaaS 具規模經濟的原因。</p>
+    </details>
+    <p class="punch">重點：軟體放在雲端一次，全世界的人都能同時使用，所以多一位使用者幾乎不會增加成本。</p>
   </div>
 </section>
 
@@ -200,7 +239,7 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
 <section class="panel" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
   <div class="card">
     <h2>2.1 四項服務如何組成線上產品</h2>
-    <p class="hint">點選任一元件查看說明；點選「播放資料流」或使用 ← → 方向鍵逐步檢視。</p>
+    <p class="hint">按「播放資料流」自動播放，或按「下一步」一步一步看。點任一方塊可看它的說明。</p>
     <div class="diagram" id="diagram">
       <div class="node person" data-n="you" style="grid-area:you"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6 1.2 0 2.3.3 3.2.9"/><rect x="13" y="12" width="8" height="6" rx="1"/><path d="M12 20h10"/></svg><b>開發者＋AI 助理</b><small>VS Code＋GitHub Copilot</small></div>
       <button class="node block" data-n="fe" data-k="fe" style="grid-area:fe"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8l-4 4 4 4"/><path d="M16 8l4 4-4 4"/><path d="M13.5 5l-3 14"/></svg><b>前端 Frontend</b><small>HTML／CSS／JavaScript</small></button>
@@ -219,8 +258,10 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
     <ol class="steps" id="steps"></ol>
   </div>
   <div class="card info" id="info" aria-live="polite">
-    <h3 id="infoT">元件說明</h3>
-    <dl id="infoD"><dt>說明</dt><dd>每個元件包含：技術定義、運作方式、本課程使用時機，以及限制與取捨。</dd></dl>
+    <h3 id="infoT">方塊說明</h3>
+    <p class="plain" id="infoP">點上面任一方塊，這裡會用一句話告訴你它是什麼，以及本課程什麼時候會用到。</p>
+    <dl id="infoD"></dl>
+    <details class="more" id="infoMore" hidden><summary>進階說明（選讀）</summary><dl id="infoAdv"></dl></details>
   </div>
 </section>
 
@@ -228,7 +269,7 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
 <section class="panel" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
   <div class="card" id="quiz">
     <h2>3. 架構理解測驗</h2>
-    <p class="hint">共 5 題，答對 4 題以上（80%）即達成「檢核點 1 架構理解」。每題作答後會顯示解析。</p>
+    <p class="hint">共 5 題，答對 4 題以上（80%）就完成「檢核點 1 架構理解」。每題選完會顯示一句話解析。</p>
     <div id="qBody"></div>
   </div>
 </section>
@@ -284,33 +325,39 @@ calc();
 
 /* ---------- Tab 2: blocks ---------- */
 var INFO={
-  fe:{t:'前端 Frontend',a:'在使用者瀏覽器中執行、負責呈現畫面與處理互動的程式。由 HTML（結構）、CSS（樣式）、JavaScript（行為）組成，本課程寫在單一 index.html 中。',r:'瀏覽器下載 HTML 後解析為文件物件模型（DOM），套用 CSS 排版，再執行 JavaScript 回應點擊、送出表單等事件。',w:'第 1 週以 Copilot 產生形象首頁；第 2 週加入表單串接與 LocalStorage。',o:'前端程式碼會完整下載到使用者端，任何人都能檢視原始碼，因此不可在其中放入密碼或金鑰。'},
-  gh:{t:'版本控制 GitHub',a:'Git 是分散式版本控制系統，記錄每次變更（commit）；GitHub 是託管 Git 儲存庫（repository）的雲端平台。',r:'每個 commit 保存專案快照與說明，並以雜湊值識別；透過 push（VS Code 的 Sync）將本機的 commit 上傳至 GitHub。',w:'第 1 週：Clone、Commit、Sync；第 2 週：每次推送自動觸發 Netlify 部署。',o:'可隨時回復到任一版本，並清楚追溯每次修改；公開 repo 的內容所有人可見，須留意不要上傳個人資料。'},
-  nl:{t:'雲端託管 Netlify',a:'提供靜態網站託管的平台即服務（Platform as a Service, PaaS），自動配發網址、HTTPS 憑證，並經由 CDN 對外提供網站。',r:'連結 GitHub repo 後，Netlify 會在每次推送時取得最新程式碼並重新部署，此即持續部署（Continuous Deployment, CD）。',w:'第 1 週部署上線取得網址；第 2 週驗證 Commit＋Sync 後自動更新。',o:'免費方案有頻寬、建置時間與表單數量等額度限制；適合靜態網站，需要伺服器運算時須另外使用 Functions 等服務。'},
-  forms:{t:'後端即服務 BaaS：Netlify Forms',a:'由平台代為提供後端功能（Backend as a Service）。Netlify Forms 可在不撰寫伺服器程式的情況下接收並保存表單資料。',r:'部署時 Netlify 掃描 HTML，辨識帶有 data-netlify="true" 的 <form> 並註冊；使用者送出時，瀏覽器以 HTTP POST 將欄位資料傳至 Netlify，資料出現在後台 Forms 頁面。',w:'第 2 週建立早鳥名單表單，收集潛在使用者資料。',o:'免費方案每月表單送出數量有上限；資料存放於第三方平台，蒐集個人資料時應告知用途（參考個人資料保護法）。'},
-  cust:{t:'使用者瀏覽器',a:'使用者用來存取網站的用戶端（client），例如 Chrome、Safari、Edge。',r:'輸入網址後，瀏覽器透過 DNS 取得伺服器位址，以 HTTPS 下載網頁並在本機繪製；LocalStorage 等本機儲存也位於此處。',w:'每一週：同學、朋友與目標使用者皆以瀏覽器使用你的網站。',o:'不同瀏覽器與螢幕尺寸的顯示結果可能不同，須在桌機與手機實測。'}
+  fe:{p:'前端就是訪客在瀏覽器裡看到、可以點的網頁畫面，像餐廳的門面和菜單。',t:'前端 Frontend',a:'在使用者瀏覽器中執行、負責呈現畫面與處理互動的程式。由 HTML（結構）、CSS（樣式）、JavaScript（行為）組成，本課程寫在單一 index.html 中。',r:'瀏覽器下載 HTML 後解析為文件物件模型（DOM），套用 CSS 排版，再執行 JavaScript 回應點擊、送出表單等事件。',w:'第 1 週以 Copilot 產生形象首頁；第 2 週加入表單串接與 LocalStorage。',o:'前端程式碼會完整下載到使用者端，任何人都能檢視原始碼，因此不可在其中放入密碼或金鑰。'},
+  gh:{p:'GitHub 是放在網路上的專案資料夾，會記住你每一次修改，像一本可以隨時翻回舊版本的筆記本。',t:'版本控制 GitHub',a:'Git 是分散式版本控制系統，記錄每次變更（commit）；GitHub 是託管 Git 儲存庫（repository）的雲端平台。',r:'每個 commit 保存專案快照與說明，並以雜湊值識別；透過 push（VS Code 的 Sync）將本機的 commit 上傳至 GitHub。',w:'第 1 週：Clone、Commit、Sync；第 2 週：每次推送自動觸發 Netlify 部署。',o:'可隨時回復到任一版本，並清楚追溯每次修改；公開 repo 的內容所有人可見，須留意不要上傳個人資料。'},
+  nl:{p:'Netlify 幫你把網站放上網路並給你一個網址；你每次更新，它都會自動換成新版。',t:'雲端託管 Netlify',a:'提供靜態網站託管的平台即服務（Platform as a Service, PaaS），自動配發網址、HTTPS 憑證，並經由 CDN 對外提供網站。',r:'連結 GitHub repo 後，Netlify 會在每次推送時取得最新程式碼並重新部署，此即持續部署（Continuous Deployment, CD）。',w:'第 1 週部署上線取得網址；第 2 週驗證 Commit＋Sync 後自動更新。',o:'免費方案有頻寬、建置時間與表單數量等額度限制；適合靜態網站，需要伺服器運算時須另外使用 Functions 等服務。'},
+  forms:{p:'Netlify Forms 幫你收下訪客填寫的表單資料，不用自己寫後端程式，像店門口代收報名表的櫃檯。',t:'後端即服務 BaaS：Netlify Forms',a:'由平台代為提供後端功能（Backend as a Service）。Netlify Forms 可在不撰寫伺服器程式的情況下接收並保存表單資料。',r:'部署時 Netlify 掃描 HTML，辨識帶有 data-netlify="true" 的 <form> 並註冊；使用者送出時，瀏覽器以 HTTP POST 將欄位資料傳至 Netlify，資料出現在後台 Forms 頁面。',w:'第 2 週建立早鳥名單表單，收集潛在使用者資料。',o:'免費方案每月表單送出數量有上限；資料存放於第三方平台，蒐集個人資料時應告知用途（參考個人資料保護法）。'},
+  cust:{p:'使用者瀏覽器就是訪客用來打開網站的程式，例如 Chrome、Safari、Edge。',t:'使用者瀏覽器',a:'使用者用來存取網站的用戶端（client），例如 Chrome、Safari、Edge。',r:'輸入網址後，瀏覽器透過 DNS 取得伺服器位址，以 HTTPS 下載網頁並在本機繪製；LocalStorage 等本機儲存也位於此處。',w:'每一週：同學、朋友與目標使用者皆以瀏覽器使用你的網站。',o:'不同瀏覽器與螢幕尺寸的顯示結果可能不同，須在桌機與手機實測。'}
 };
 var nodes=$$('#diagram .node');
 function show(k){
   var d=INFO[k]; if(!d)return;
   nodes.forEach(function(n){n.classList.toggle('sel',n.dataset.k===k);});
   $('#infoT').textContent=d.t;
-  var dl=$('#infoD'); dl.innerHTML='';
-  [['技術定義',d.a],['運作方式',d.r],['本課程使用時機',d.w],['限制與取捨',d.o]].forEach(function(p){
-    var dt=document.createElement('dt'),dd=document.createElement('dd');
-    dt.textContent=p[0];dd.textContent=p[1];dl.appendChild(dt);dl.appendChild(dd);
-  });
+  $('#infoP').textContent=d.p;
+  function fill(dl,rows){
+    dl.innerHTML='';
+    rows.forEach(function(p){
+      var dt=document.createElement('dt'),dd=document.createElement('dd');
+      dt.textContent=p[0];dd.textContent=p[1];dl.appendChild(dt);dl.appendChild(dd);
+    });
+  }
+  fill($('#infoD'),[['本課程什麼時候用到',d.w]]);
+  fill($('#infoAdv'),[['技術定義',d.a],['運作方式',d.r],['限制與取捨',d.o]]);
+  $('#infoMore').hidden=false;
 }
 nodes.forEach(function(n){if(n.dataset.k)n.addEventListener('click',function(){stopPlay();show(n.dataset.k);});});
 
 /* ---------- Tab 2: flow ---------- */
 var STEPS=[
-  {s:'1. 產生 index.html',c:'1. 開發者在 VS Code 以 Copilot 協助撰寫程式，產生 index.html（前端）。',n:['you','fe'],k:'fe'},
-  {s:'2. Commit 與 Sync',c:'2. 在 VS Code 以 Commit 建立版本紀錄，再以 Sync（push）上傳至 GitHub repository。',n:['fe','gh'],k:'gh'},
-  {s:'3. 觸發自動部署',c:'3. GitHub 以 webhook 通知 Netlify；Netlify 取得最新程式碼並重新部署，此即持續部署（CD）。',n:['gh','nl'],k:'nl'},
-  {s:'4. 使用者開啟網址',c:'4. 使用者瀏覽器以 HTTPS 向 Netlify 請求網頁，由最近的 CDN 節點回應 index.html。',n:['nl','cust'],k:'cust'},
-  {s:'5. 送出早鳥名單',c:'5. 使用者填寫表單，瀏覽器以 HTTP POST 將欄位資料送至 Netlify Forms。',n:['cust','forms'],k:'forms'},
-  {s:'6. 檢視收集結果',c:'6. 開發者登入 Netlify 後台 Forms 頁面檢視資料，據以判斷想法是否具有需求。',n:['forms','you'],k:'forms'}
+  {s:'1. 產生 index.html',c:'1. 你在 VS Code 請 Copilot 幫忙寫網頁，得到一個 index.html 檔案，也就是網站的畫面。',x:'開發者在 VS Code 以 Copilot 協助撰寫程式，產生 index.html（前端）。',n:['you','fe'],k:'fe'},
+  {s:'2. Commit 與 Sync',c:'2. 你在 VS Code 按「提交（Commit）」存一個版本，再按「同步變更（Sync Changes）」把它存到 GitHub。',x:'在 VS Code 以 Commit 建立版本紀錄，再以 Sync（push）上傳至 GitHub repository。',n:['fe','gh'],k:'gh'},
+  {s:'3. 觸發自動部署',c:'3. GitHub 自動通知 Netlify；Netlify 拿到新版本，自動把網站更新上線。',x:'GitHub 以 webhook 通知 Netlify；Netlify 取得最新程式碼並重新部署，此即持續部署（CD）。',n:['gh','nl'],k:'nl'},
+  {s:'4. 使用者開啟網址',c:'4. 訪客打開你的網址，Netlify 從離他最近的地方把網頁送過去。',x:'使用者瀏覽器以 HTTPS 向 Netlify 請求網頁，由最近的 CDN 節點回應 index.html。',n:['nl','cust'],k:'cust'},
+  {s:'5. 送出早鳥名單',c:'5. 訪客填寫早鳥名單並按下送出，資料就送到 Netlify Forms。',x:'使用者填寫表單，瀏覽器以 HTTP POST 將欄位資料送至 Netlify Forms。',n:['cust','forms'],k:'forms'},
+  {s:'6. 檢視收集結果',c:'6. 你登入 Netlify 後台查看收到的名單，判斷大家是不是真的想要這個產品。',x:'開發者登入 Netlify 後台 Forms 頁面檢視資料，據以判斷想法是否具有需求。',n:['forms','you'],k:'forms'}
 ];
 var ol=$('#steps');
 STEPS.forEach(function(s){var li=document.createElement('li');li.textContent=s.s;ol.appendChild(li);});
@@ -319,7 +366,8 @@ function render(){
   var s=STEPS[cur];
   nodes.forEach(function(n){n.classList.toggle('on',!!s&&s.n.indexOf(n.dataset.n)>-1);});
   $$('#steps li').forEach(function(li,i){li.className=i===cur?'cur':(i<cur?'done':'');});
-  $('#caption').textContent=s?s.c:'點選「播放資料流」開始。';
+  var cap=$('#caption');cap.textContent=s?s.c:'點選「播放資料流」開始。';
+  if(s&&s.x){var more=document.createElement('details');more.className='more';more.innerHTML='<summary>進階說明（選讀）</summary><p></p>';more.querySelector('p').textContent=s.x;cap.appendChild(more);}
   if(s)show(s.k);
   $('#prev').disabled=cur<=0;
   $('#next').disabled=cur>=STEPS.length-1;
@@ -350,15 +398,15 @@ render();
 
 /* ---------- Tab 3: quiz ---------- */
 var Q=[
-  {q:'Spotify 屬於「買斷授權」還是「SaaS」？',o:['買斷授權：一次付費即永久擁有','SaaS：按期訂閱，軟體執行於供應商雲端','兩者皆非'],a:1,
+  {q:'Spotify 屬於「買斷授權」還是「SaaS」？',o:['買斷授權：付一次錢就永遠擁有','SaaS：按月付費，軟體放在對方的雲端','兩者都不是'],a:1,p:'Spotify 按月付費、打開 App 就能用，軟體放在他們的雲端，所以是 SaaS。',
    e:'Spotify 以月費訂閱，內容與程式由供應商在雲端維護，使用者透過 App 或瀏覽器存取，符合 SaaS 的特徵。'},
-  {q:'下列何者屬於「前端」的職責？',o:['在伺服器保存所有使用者資料','在瀏覽器中呈現畫面並處理使用者互動','為網站申請網域名稱'],a:1,
+  {q:'下列哪一件事是「前端」負責的？',o:['在伺服器保存所有使用者的資料','在瀏覽器裡顯示畫面，並回應使用者的點擊','幫網站申請網址'],a:1,p:'前端就是訪客看到、可以點的畫面；保存資料是後端的工作。',
    e:'前端是在使用者瀏覽器中執行的 HTML、CSS、JavaScript，負責畫面與互動；資料保存屬於後端或 BaaS 的職責。'},
-  {q:'在本課程的流程中，GitHub 的主要功能是什麼？',o:['保存程式碼的每一個版本，並在推送後觸發 Netlify 部署','向使用者收款','代替瀏覽器顯示網頁'],a:0,
+  {q:'在這門課的流程中，GitHub 主要做什麼？',o:['保存程式的每一個版本，並在你同步後讓 Netlify 自動更新網站','向使用者收款','代替瀏覽器顯示網頁'],a:0,p:'GitHub 保存每一版程式；你每次同步，Netlify 就會自動更新網站。',
    e:'GitHub 託管 Git repository，保存每一次 commit；Netlify 與 repo 連結後，每次推送都會自動重新部署。'},
-  {q:'新創初期為何通常不優先自建基礎設施？',o:['法律禁止自建伺服器','前期成本與建置時間高，在需求未經驗證前風險過大','自建伺服器無法連上網際網路'],a:1,
+  {q:'新創公司剛起步時，為什麼通常不自己買伺服器、自己架網站？',o:['法律禁止自己架伺服器','一開始要花很多錢和時間，還不確定有沒有人要用，風險太大','自己架的伺服器連不上網路'],a:1,p:'還沒確定有人要用之前，先租便宜的雲端服務試試看比較划算。',
    e:'初期的首要目標是以低成本快速驗證需求。自建需要大量前期投入且難以回收；雲端服務依用量計價，可在確認需求後再擴充。'},
-  {q:'Netlify 與 Netlify Forms 的分工為何？',o:['兩者功能完全相同','Netlify 負責託管與部署網站；Netlify Forms 負責接收表單資料','Netlify Forms 負責託管網站；Netlify 負責接收表單'],a:1,
+  {q:'Netlify 和 Netlify Forms 怎麼分工？',o:['兩者功能完全一樣','Netlify 負責把網站放上網路；Netlify Forms 負責收表單資料','Netlify Forms 負責把網站放上網路；Netlify 負責收表單資料'],a:1,p:'Netlify 負責讓網站上線，Netlify Forms 負責收表單，兩個搭配使用。',
    e:'Netlify 提供網址、HTTPS、CDN 與自動部署（PaaS）；Netlify Forms 是其附加的 BaaS 功能，接收帶有 data-netlify 屬性的表單所送出的資料。'}
 ];
 var qi=0,score=0,body=$('#qBody');
@@ -381,7 +429,8 @@ function answer(i){
   btns.forEach(function(b,j){b.disabled=true;if(j===d.a)b.classList.add('right');else if(j===i)b.classList.add('wrong');});
   var fb=$('#fb');
   fb.innerHTML='<div class="fb '+(ok?'good':'try')+'"></div>';
-  fb.firstChild.textContent=(ok?'正確。':'不正確。正確答案是 '+String.fromCharCode(65+d.a)+'。')+d.e;
+  fb.firstChild.textContent=(ok?'正確。':'不正確。正確答案是 '+String.fromCharCode(65+d.a)+'。')+d.p;
+  var more=document.createElement('details');more.className='more';more.innerHTML='<summary>進階說明（選讀）</summary><p></p>';more.querySelector('p').textContent=d.e;fb.firstChild.appendChild(more);
   var nb=document.createElement('button');
   nb.className='btn';nb.textContent=qi<Q.length-1?'下一題':'查看結果';
   nb.addEventListener('click',function(){qi++;renderQ();var h=$('#qq')||$('#resTitle');if(h){h.tabIndex=-1;h.focus();}});
@@ -389,7 +438,7 @@ function answer(i){
 }
 function renderEnd(){
   var pass=score>=Math.ceil(Q.length*0.8);
-  var msg=pass?'已達 80%，完成「檢核點 1 架構理解」。':'未達 80%。建議回到「2. 服務分工與資料流」複習各元件的職責後再作答。';
+  var msg=pass?'已達 80%，完成「檢核點 1 架構理解」。':'未達 80%。請回到「2. 服務分工與資料流」再播放一次資料流，然後重新作答。';
   body.innerHTML='<div class="result"><div class="qprog"><div style="width:100%"></div></div><h3 id="resTitle">測驗結果</h3><div class="big">'+score+' / '+Q.length+'</div><p>'+msg+'</p></div>';
   var r=document.createElement('button');r.className='btn';r.textContent='重新作答';
   r.addEventListener('click',function(){qi=0;score=0;renderQ();});

@@ -90,6 +90,17 @@ code{background:var(--soft);padding:0 .3em;border-radius:6px;font-size:.9em;word
 .badge{font-size:.78rem;border-radius:999px;padding:0 .6em;background:var(--line)}
 .badge.pub{background:var(--pri2);color:#062522;font-weight:700}
 footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
+/* 使用說明與選讀 */
+.howto{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:12px;padding:10px 14px;margin:4px 0 12px}
+.howto h2{font-size:1rem;margin:0 0 4px}
+.howto ol{margin:0;padding-left:1.5em}
+.howto li{margin:2px 0}
+.lead{font-size:1.05rem}
+.plain{font-weight:600;margin:.2em 0 .5em}
+details.more{margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--soft);font-size:.9rem;font-weight:400;color:var(--ink)}
+details.more summary{cursor:pointer;font-weight:700;color:var(--pri)}
+details.more[open] summary{margin-bottom:6px}
+details.more p{margin:.3em 0}
 [hidden]{display:none!important}
 @media (max-width:1000px){.pipe{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:760px){
@@ -111,8 +122,18 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
 <div class="wrap">
 <header>
   <h1>資料如何流動：BaaS、LocalStorage 與 CI/CD</h1>
-  <p class="sub">第 2 週：表單資料如何以 HTTP POST 送到後端即服務（Backend as a Service, BaaS）、伺服器端資料與瀏覽器 LocalStorage 的差異，以及程式碼變更如何經由持續整合／持續部署（CI/CD）自動上線。</p>
+  <p class="sub lead">第 2 週：訪客填的表單資料會跑去哪裡？「存在網路上」和「存在自己的瀏覽器」有什麼不同？你改完網站後，它又是怎麼自動更新的？這一頁用動畫一步一步給你看。</p>
+  <details class="more"><summary>進階說明（選讀）</summary><p>本頁說明表單資料如何以 HTTP POST 送到後端即服務（Backend as a Service, BaaS）、伺服器端資料與瀏覽器 LocalStorage 的差異，以及程式碼變更如何經由持續整合／持續部署（CI/CD）自動上線。</p></details>
 </header>
+<section class="howto" aria-labelledby="howtoT">
+  <h2 id="howtoT">怎麼使用這一頁</h2>
+  <ol>
+    <li>在「1. 表單資料的去向」先選「沒有後端」送出表單，再切到「使用 BaaS」送一次，比較資料跑去哪裡。</li>
+    <li>按「重新整理網頁」和「換一台裝置」，看哪些資料還在。</li>
+    <li>點「2. 雲端資料庫與 LocalStorage」，做完 6 題分類練習。</li>
+    <li>點「3. 持續部署 CI/CD」，選一個按鈕顏色後按「Commit＋Sync」，看網站自動更新。</li>
+  </ol>
+</section>
 <div class="tabs" role="tablist" aria-label="教材分頁">
   <button role="tab" id="t1" aria-controls="p1" aria-selected="true">1. 表單資料的去向</button>
   <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">2. 雲端資料庫與 LocalStorage</button>
@@ -152,16 +173,18 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
       </div>
     </div>
     <div class="panels">
-      <div class="void" id="void"><b>沒有後端</b><br><span class="sub" style="font-size:.9rem">瀏覽器送出的 POST 請求沒有伺服器程式接收，資料不會被保存</span></div>
+      <div class="void" id="void"><b>沒有後端</b><br><span class="sub" style="font-size:.9rem">送出的資料沒有人接收，所以不會被存下來</span></div>
       <div class="card panel" id="pNet">
         <h3>Netlify 後台 Forms（伺服器端）</h3>
-        <p class="sub" style="font-size:.85rem">資料保存在 Netlify 的伺服器上，網站擁有者可在後台檢視與匯出；與使用者使用哪一台裝置無關。</p>
+        <p class="plain" style="font-size:.92rem">資料存在 Netlify 的伺服器上，你（網站主人）在後台看得到每個人的報名，不管他們用哪一台裝置。</p>
+        <details class="more"><summary>進階說明（選讀）</summary><p>資料保存在 Netlify 的伺服器上，網站擁有者可在後台檢視與匯出；與使用者使用哪一台裝置無關。</p></details>
         <ul class="list" id="netList"></ul>
         <p class="empty" id="netEmpty">（目前還沒有任何報名）</p>
       </div>
       <div class="card panel" id="pLocal">
         <h3>此裝置瀏覽器的 LocalStorage（用戶端）</h3>
-        <p class="sub" style="font-size:.85rem">以鍵值對（key–value）保存在這台裝置、這個瀏覽器中，並依網站來源（origin）隔離，不會傳送到伺服器。</p>
+        <p class="plain" style="font-size:.92rem">資料只存在「這台裝置的這個瀏覽器」裡，像顧客自己帶回家的集點卡，你在後台看不到。</p>
+        <details class="more"><summary>進階說明（選讀）</summary><p>以鍵值對（key–value）保存在這台裝置、這個瀏覽器中，並依網站來源（origin）隔離，不會傳送到伺服器。</p></details>
         <div id="localBox"></div>
       </div>
     </div>
@@ -174,6 +197,7 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
   <div class="cmp">
     <div class="card">
       <h2>2.1 伺服器端資料（雲端資料庫、Netlify Forms）</h2>
+      <p class="plain">資料存在網路上的伺服器，像店家櫃檯的會員登記簿：店家看得到每個人的資料。</p>
       <ul>
         <li>資料保存在<b>伺服器</b>，由服務提供者負責備份與存取控制</li>
         <li>網站擁有者可檢視<b>所有使用者</b>的資料</li>
@@ -183,6 +207,7 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
     </div>
     <div class="card">
       <h2>2.2 用戶端資料（LocalStorage）</h2>
+      <p class="plain">資料只存在使用者自己的瀏覽器，像顧客自己帶回家的集點卡：店家看不到。</p>
       <ul>
         <li>資料保存在<b>使用者自己的瀏覽器</b>，不會隨請求傳到伺服器</li>
         <li>網站擁有者<b>無法</b>從後台看到</li>
@@ -193,7 +218,9 @@ footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
   </div>
   <div class="card" style="margin-top:14px">
   <div class="card tech">
-    <h2>2.3 技術細節：資料是怎麼送出與保存的</h2>
+    <h2>2.3 資料是怎麼送出與保存的</h2>
+    <p class="plain">簡單說：表單資料會被「寄」到 Netlify 保存；LocalStorage 只記在自己的瀏覽器裡，而且使用者自己就能改，所以不能拿來放密碼。</p>
+    <details class="more"><summary>進階說明（選讀）</summary>
     <p><b>表單送出（HTTP POST）。</b>使用者按下送出時，瀏覽器將每個具有 <code>name</code> 屬性的欄位編碼為 <code>application/x-www-form-urlencoded</code> 格式，以 HTTP POST 請求傳給伺服器。Netlify 在部署時已辨識帶有 <code>data-netlify="true"</code> 的表單，因此能接收並保存這筆資料；若沒有任何後端，請求無處可去，資料即遺失。</p>
     <pre class="req">POST / HTTP/1.1
 Host: your-site.netlify.app
@@ -212,10 +239,11 @@ form-name=waitlist&amp;name=%E5%B0%8F%E6%98%8E&amp;email=ming%40example.com</pre
       </tbody>
     </table></div>
     <p class="sub" style="font-size:.88rem">因此，本課程以 LocalStorage「模擬」會員狀態僅作為示範：它能記住「此瀏覽器的使用者曾填過表單」，但不能證明身分。正式的會員系統需由伺服器驗證身分（例如密碼搭配工作階段 session 或權杖 token）。</p>
+    </details>
   </div>
   <div class="card" style="margin-top:14px">
     <h2>2.4 分類練習：資料應存放在哪裡？</h2>
-    <p class="sub">依情境選擇「伺服器端」或「LocalStorage」，作答後顯示解析。</p>
+    <p class="sub">每一題選「伺服器端」或「LocalStorage」，選完會顯示一句話解析。</p>
     <div class="game" id="game"></div>
     <div class="row" style="margin-top:12px;justify-content:space-between">
       <span class="score" id="score" role="status" aria-live="polite">得分：0 / 6</span>
@@ -227,7 +255,8 @@ form-name=waitlist&amp;name=%E5%B0%8F%E6%98%8E&amp;email=ming%40example.com</pre
 
 <!-- TAB 3 -->
 <section id="p3" role="tabpanel" aria-labelledby="t3" hidden>
-  <p><b>持續整合（Continuous Integration, CI）</b>指每次變更都合併到共用的程式碼庫並自動檢查；<b>持續部署（Continuous Deployment, CD）</b>指通過檢查的版本自動發布上線。本課程中，GitHub 保存程式碼，Netlify 與 repo 連結；每次 push 後，GitHub 以 webhook 通知 Netlify 建置並部署新版本，全程不需手動上傳。</p>
+  <p class="lead">CI/CD 的意思是：你改好網站、按下同步之後，網站就會<b>自動</b>更新上線，不用自己再上傳一次。下面用改按鈕顏色來示範這 6 個步驟。</p>
+  <details class="more"><summary>進階說明（選讀）</summary><p><b>持續整合（Continuous Integration, CI）</b>指每次變更都合併到共用的程式碼庫並自動檢查；<b>持續部署（Continuous Deployment, CD）</b>指通過檢查的版本自動發布上線。本課程中，GitHub 保存程式碼，Netlify 與 repo 連結；每次 push 後，GitHub 以 webhook 通知 Netlify 建置並部署新版本，全程不需手動上傳。</p></details>
   <ol class="pipe" id="pipe">
     <li class="step"><span class="ic">1</span><span>Copilot 修改程式</span></li>
     <li class="step"><span class="ic">2</span><span>Commit（本機提交）</span></li>
@@ -255,15 +284,16 @@ form-name=waitlist&amp;name=%E5%B0%8F%E6%98%8E&amp;email=ming%40example.com</pre
         <button class="btn-pri" id="bPush">Commit＋Sync</button>
         <button id="bRoll">回復上一版</button>
       </div>
-      <p class="sub" id="status3" role="status" aria-live="polite">選擇顏色後，點選「Commit＋Sync」。</p>
+      <div class="sub" id="status3" role="status" aria-live="polite">先點一個顏色圓點，再按「Commit＋Sync」。</div>
       <h3 style="margin-top:10px">Netlify Deploys（部署紀錄）</h3>
       <ul class="list log" id="log"></ul>
     </div>
   </div>
   <div class="msg key" style="margin-top:16px">
-    <b>為什麼大型網站頻繁更新，卻不需要停機維護？</b><br>
-    Netlify 採用<b>原子部署（atomic deploy）</b>：新版本在獨立環境中完整建置，全部成功後才一次切換流量；建置期間舊版照常服務，使用者不會看到「一半新、一半舊」的網站。每次部署都保留為不可變的快照（immutable deploy），因此<b>回復（rollback）</b>只需將先前的部署重新發布，不必重新建置。大型平台亦以類似概念搭配藍綠部署、灰度發布（canary release）等策略降低風險。<br>
-    <b>取捨：</b>自動部署讓錯誤也會被自動發布，因此實務上會在部署前加入自動化測試（CI）；本課程的 GitHub Actions 自我檢核即為一例。
+    <b>為什麼大型網站常常更新，卻不用關站維修？</b><br>
+    因為新版會先在旁邊準備好，全部完成才一次換上；出問題時也能馬上換回舊版。
+    <details class="more"><summary>進階說明（選讀）</summary><p>Netlify 採用<b>原子部署（atomic deploy）</b>：新版本在獨立環境中完整建置，全部成功後才一次切換流量；建置期間舊版照常服務，使用者不會看到「一半新、一半舊」的網站。每次部署都保留為不可變的快照（immutable deploy），因此<b>回復（rollback）</b>只需將先前的部署重新發布，不必重新建置。大型平台亦以類似概念搭配藍綠部署、灰度發布（canary release）等策略降低風險。<br>
+    <b>取捨：</b>自動部署讓錯誤也會被自動發布，因此實務上會在部署前加入自動化測試（CI）；本課程的 GitHub Actions 自我檢核即為一例。</p></details>
   </div>
 </section>
 </div>
@@ -306,7 +336,7 @@ function fly(from,to,label,vanish){
 /* Tab 1 state (simulation only, in-memory) */
 var S={mode:'none',net:[],local:null,device:1,busy:false};
 var msg1=$('msg1');
-function say(html,key){msg1.className='msg'+(key?' key':'');msg1.innerHTML=html}
+function say(html,key,adv){msg1.className='msg'+(key?' key':'');msg1.innerHTML=html+(adv?'<details class="more"><summary>進階說明（選讀）</summary><p>'+adv+'</p></details>':'')}
 function renderNet(fresh){
   var ul=$('netList');ul.innerHTML='';
   S.net.forEach(function(r,i){var li=el('li',null,fresh&&i===S.net.length-1?'new':'');li.appendChild(el('b',r.name));li.appendChild(el('span',r.email));li.appendChild(el('span',r.time+'（裝置 #'+r.dev+'）','sub'));ul.appendChild(li)});
@@ -328,8 +358,8 @@ function renderMode(){
   $('void').hidden=S.mode!=='none';
 }
 function render(){renderNet();renderLocal();renderPhone();renderMode()}
-$('mNone').onclick=function(){S.mode='none';renderMode();say('目前頁面只有前端，沒有任何後端接收資料。請試著送出表單，觀察資料的去向。')};
-$('mBaas').onclick=function(){S.mode='baas';renderMode();say('加上 <code>data-netlify="true"</code> 後，Netlify 在部署時會註冊此表單，並接收之後送出的 POST 請求。這就是 BaaS：不需自行撰寫與維護伺服器程式。')};
+$('mNone').onclick=function(){S.mode='none';renderMode();say('現在網頁只有畫面，沒有後端（負責接收和保存資料的服務）。請試著送出表單，看看資料跑去哪裡。')};
+$('mBaas').onclick=function(){S.mode='baas';renderMode();say('現在表單加上了 Netlify 的設定，Netlify 會幫你收下送出的資料，你不用自己寫伺服器程式。這種「租用現成後端」的服務就叫 BaaS。',false,'加上 <code>data-netlify="true"</code> 後，Netlify 在部署時會註冊此表單，並接收之後送出的 POST 請求。BaaS（Backend as a Service）：不需自行撰寫與維護伺服器程式。')};
 $('form').addEventListener('submit',function(e){
   e.preventDefault();if(S.busy)return;
   var name=$('fName').value.trim(),email=$('fMail').value.trim();
@@ -338,7 +368,7 @@ $('form').addEventListener('submit',function(e){
   if(S.mode==='none'){
     fly($('fGo'),$('void'),'POST /',true).then(function(){
       $('form').reset();
-      say('<b>資料沒有被保存。</b>前端只負責呈現與收集輸入；瀏覽器雖然送出了 HTTP POST 請求，但沒有伺服器程式接收，資料隨即遺失。請切換到「使用 BaaS」再試一次。');
+      say('<b>資料沒有被保存。</b>網頁雖然把資料送出去了，但沒有人接收，資料就不見了。請切換到「使用 BaaS」再試一次。',false,'前端只負責呈現與收集輸入；瀏覽器雖然送出了 HTTP POST 請求，但沒有伺服器程式接收，資料隨即遺失。');
       S.busy=false;$('fGo').disabled=false;
     });
   }else{
@@ -347,7 +377,7 @@ $('form').addEventListener('submit',function(e){
       return fly($('fGo'),$('pLocal'),'setItem()');
     }).then(function(){
       S.local={name:name};$('form').reset();renderLocal();renderPhone();
-      say('瀏覽器以 <b>HTTP POST</b> 將資料送到 <b>Netlify Forms</b>，網站擁有者可在後台看到；同時頁面腳本呼叫 <code>localStorage.setItem()</code>，在<b>此裝置的瀏覽器</b>記下名稱。<br>接著請試試「重新整理網頁」與「換一台裝置」，比較兩處資料的差異。類比：Netlify 後台如同櫃檯的會員登記簿，LocalStorage 如同顧客自己帶回家的集點卡。');
+      say('資料同時存到兩個地方：<b>Netlify 後台</b>（你看得到所有人的報名）和<b>這台裝置的瀏覽器</b>（記住「這個人填過了」）。接著請按「重新整理網頁」與「換一台裝置」，比較兩邊的資料。',false,'瀏覽器以 <b>HTTP POST</b> 將資料送到 <b>Netlify Forms</b>，網站擁有者可在後台看到；同時頁面腳本呼叫 <code>localStorage.setItem()</code>，在此裝置的瀏覽器記下名稱。類比：Netlify 後台如同櫃檯的會員登記簿，LocalStorage 如同顧客自己帶回家的集點卡。');
       S.busy=false;$('fGo').disabled=false;
       if(innerWidth<=760&&!RM)$('pNet').scrollIntoView({behavior:'smooth',block:'start'});
     });
@@ -357,31 +387,32 @@ $('bRefresh').onclick=function(){
   if(S.busy)return;
   var s=$('screen');s.style.opacity='.2';
   wait(300).then(function(){s.style.opacity='';renderPhone();
-    if(S.local)say('重新整理後仍顯示「歡迎回來，'+S.local.name+'」：頁面載入時以 <code>localStorage.getItem()</code> 讀到先前的資料。LocalStorage 沒有到期時間，關閉瀏覽器後依然保留（sessionStorage 則會在分頁關閉時清除）。');
-    else say('重新整理完成。此裝置的 LocalStorage 沒有資料，因此顯示表單。');
+    if(S.local)say('重新整理後仍顯示「歡迎回來，'+S.local.name+'」，因為這個瀏覽器還記得你的名字。',false,'頁面載入時以 <code>localStorage.getItem()</code> 讀到先前的資料。LocalStorage 沒有到期時間，關閉瀏覽器後依然保留（sessionStorage 則會在分頁關閉時清除）。');
+    else say('重新整理完成。這台裝置的瀏覽器沒有記住任何資料，所以顯示表單。');
   });
 };
 $('bDevice').onclick=function(){
   if(S.busy)return;
   S.device++;S.local=null;render();$('form').reset();
-  say('<b>切換到裝置 #'+S.device+'：LocalStorage 是空的，但 Netlify 後台的名單仍在。</b><br>LocalStorage 依來源（origin）存在於各別裝置、各別瀏覽器中，彼此不共用；伺服器端資料則集中保存，不受使用者裝置影響。若要「換裝置仍能辨識使用者」，必須由伺服器驗證身分，也就是實作登入系統。',true);
+  say('<b>換到裝置 #'+S.device+'：這台裝置的瀏覽器是空的，但 Netlify 後台的名單還在。</b>瀏覽器記住的資料不會跟著你換裝置。',true,'LocalStorage 依來源（origin）存在於各別裝置、各別瀏覽器中，彼此不共用；伺服器端資料則集中保存，不受使用者裝置影響。若要「換裝置仍能辨識使用者」，必須由伺服器驗證身分，也就是實作登入系統。');
 };
 $('bLogout').onclick=function(){
   if(S.busy)return;
   S.local=null;renderLocal();renderPhone();
-  say('已登出：以 <code>localStorage.removeItem()</code> 刪除此裝置的資料。伺服器端的名單不受影響。');
+  say('已登出：刪掉這台裝置瀏覽器記住的名字。Netlify 後台的名單不受影響。',false,'以 <code>localStorage.removeItem()</code> 刪除此裝置的資料。');
 };
 render();
-say('請先在「沒有後端」模式下填寫並送出表單，觀察資料的去向。');
+say('請先在「沒有後端」模式下填寫並送出表單，看看資料跑去哪裡。');
 
 /* Tab 2 game */
+// [情境, 正確答案, 進階說明（選讀）, 一句話解析]
 var Q=[
- ['收集早鳥名單','cloud','網站擁有者必須看到所有人的資料，因此須保存在伺服器端。'],
- ['記住深色模式偏好','local','只影響這台裝置顯示方式的設定，存在 LocalStorage 即可，也不必傳到伺服器。'],
- ['會員訂單紀錄','cloud','訂單涉及交易與權益，必須可跨裝置查詢、可由商家管理，並有備份與存取控制。'],
- ['記住此瀏覽器已填過表單','local','只是避免同一瀏覽器重複顯示表單；名單本身仍保存在伺服器端。'],
- ['跨裝置同步','cloud','LocalStorage 無法跨裝置共用，跨裝置同步必須依賴伺服器端資料與身分驗證。'],
- ['購物車暫存（尚未結帳）','local','尚未結帳的暫存清單可先放在瀏覽器；結帳時再送到伺服器成為正式訂單。若需跨裝置保留購物車，則改存伺服器端。']
+ ['收集早鳥名單','cloud','網站擁有者必須看到所有人的資料，因此須保存在伺服器端。','你要看到所有人的報名，所以要存在伺服器端。'],
+ ['記住深色模式偏好','local','只影響這台裝置顯示方式的設定，存在 LocalStorage 即可，也不必傳到伺服器。','這只影響這台裝置怎麼顯示，存在瀏覽器就好。'],
+ ['會員訂單紀錄','cloud','訂單涉及交易與權益，必須可跨裝置查詢、可由商家管理，並有備份與存取控制。','訂單很重要，換裝置也要查得到，所以要存在伺服器端。'],
+ ['記住此瀏覽器已填過表單','local','只是避免同一瀏覽器重複顯示表單；名單本身仍保存在伺服器端。','只是讓這個瀏覽器不要一直跳出表單，存在瀏覽器就好。'],
+ ['在手機和電腦上看到同一份資料（跨裝置同步）','cloud','LocalStorage 無法跨裝置共用，跨裝置同步必須依賴伺服器端資料與身分驗證。','瀏覽器裡的資料不會跟著換裝置，所以要存在伺服器端。'],
+ ['購物車暫存（尚未結帳）','local','尚未結帳的暫存清單可先放在瀏覽器；結帳時再送到伺服器成為正式訂單。若需跨裝置保留購物車，則改存伺服器端。','還沒結帳的購物車先放在瀏覽器就好，結帳時再送到伺服器。']
 ];
 var ans={};
 function drawGame(){
@@ -395,12 +426,13 @@ function drawGame(){
       b.onclick=function(){ans[i]=o[0];drawGame();var nb=$('game').children[i];if(nb)nb.querySelector('.fb').focus()};
       r.appendChild(b)});
     d.appendChild(r);
-    if(i in ans){var ok=ans[i]===q[1];var fb=el('div',(ok?'正確。':'不正確。正確答案是「'+(q[1]==='cloud'?'伺服器端':'LocalStorage')+'」。')+q[2],'fb '+(ok?'ok':'no'));fb.tabIndex=-1;d.appendChild(fb)}
+    if(i in ans){var ok=ans[i]===q[1];var fb=el('div',(ok?'正確。':'不正確。正確答案是「'+(q[1]==='cloud'?'伺服器端':'LocalStorage')+'」。')+q[3],'fb '+(ok?'ok':'no'));fb.tabIndex=-1;
+      var more=el('details',null,'more');more.appendChild(el('summary','進階說明（選讀）'));more.appendChild(el('p',q[2]));fb.appendChild(more);d.appendChild(fb)}
     else d.appendChild(el('div','','fb'));
     g.appendChild(d)});
   var n=Object.keys(ans).length,s=Object.keys(ans).filter(function(k){return ans[k]===Q[k][1]}).length;
   $('score').textContent='得分：'+s+' / '+Q.length;
-  $('cheer').textContent=n<Q.length?'':'判斷原則：需要由網站擁有者檢視、跨裝置取得或具交易意義的資料 → 伺服器端；只與單一裝置的使用體驗有關、遺失也無妨的狀態 → LocalStorage。';
+  $('cheer').textContent=n<Q.length?'':'判斷方法：網站主人需要看到、換裝置也要能用、或跟交易有關的資料 → 伺服器端；只跟這台裝置的使用感受有關、不見了也沒關係的資料 → LocalStorage。';
 }
 $('gReset').onclick=function(){ans={};drawGame()};
 drawGame();
@@ -414,24 +446,27 @@ function drawLog(){var ul=$('log');ul.innerHTML='';
   for(var i=deploys.length-1;i>=0;i--){var d=deploys[i],li=el('li');li.appendChild(el('span',d.time+'　'+d.msg));li.appendChild(el('span',i===cur?'Published':'Old','badge'+(i===cur?' pub':'')));ul.appendChild(li)}
   $('bRoll').disabled=running||cur===0;$('bPush').disabled=running;}
 var steps=[].slice.call(document.querySelectorAll('.step'));
+/* 狀態說明：v 為 [白話說明, 進階說明（選讀）] */
+function st3(v){var box=$('status3');box.textContent='';box.appendChild(el('span',v[0]));
+  if(v[1]){var more=el('details',null,'more');more.appendChild(el('summary','進階說明（選讀）'));more.appendChild(el('p',v[1]));box.appendChild(more)}}
 function setStep(n){steps.forEach(function(s,i){s.classList.toggle('on',i===n);s.classList.toggle('done',i<n)})}
 $('bPush').onclick=function(){
   if(running)return;running=true;drawLog();
-  var k=COLORS[pick],msg='把按鈕改成'+k[0]+'色',st=$('status3'),bar=$('progBar');bar.style.width='0';
-  setStep(0);st.textContent='1. VS Code 中的 Copilot 正在修改 index.html（工作區）。';
-  wait(900).then(function(){setStep(1);st.textContent='2. Commit：於「原始檔控制」輸入「'+msg+'」，建立本機提交（尚未離開你的電腦）。';return wait(1000)})
-  .then(function(){setStep(2);st.textContent='3. Sync Changes：將提交 push 至 GitHub，遠端 main 分支更新。';return wait(1000)})
-  .then(function(){setStep(3);st.textContent='4. GitHub 以 webhook（HTTP 回呼）通知 Netlify：main 分支有新提交。';return wait(1000)})
-  .then(function(){setStep(4);st.textContent='5. Netlify 取得最新程式碼並在獨立環境建置新版本；此期間舊版照常服務。';
+  var k=COLORS[pick],msg='把按鈕改成'+k[0]+'色',bar=$('progBar');bar.style.width='0';
+  setStep(0);st3(['1. Copilot 正在幫你修改 index.html（還在你的電腦裡）。','VS Code 中的 Copilot 正在修改工作區中的 index.html。']);
+  wait(900).then(function(){setStep(1);st3(['2. 你按下「提交（Commit）」並寫下「'+msg+'」，存成一個版本（還在你的電腦裡）。','Commit：於「原始檔控制」輸入提交訊息，建立本機提交。']);return wait(1000)})
+  .then(function(){setStep(2);st3(['3. 你按下「同步變更（Sync Changes）」，把這個版本上傳到 GitHub。','Sync Changes：將提交 push 至 GitHub，遠端 main 分支更新。']);return wait(1000)})
+  .then(function(){setStep(3);st3(['4. GitHub 自動通知 Netlify：「有新版本了」。','GitHub 以 webhook（HTTP 回呼）通知 Netlify：main 分支有新提交。']);return wait(1000)})
+  .then(function(){setStep(4);st3(['5. Netlify 在背景準備新版網站；準備好之前，訪客看到的仍是舊版。','Netlify 取得最新程式碼並在獨立環境建置新版本；此期間舊版照常服務。']);
     var p=0;return new Promise(function(r){var t=setInterval(function(){p+=RM?100:5;bar.style.width=Math.min(p,100)+'%';if(p>=100){clearInterval(t);r()}},120)})})
   .then(function(){deploys.push({color:k[1],name:k[0],msg:msg,time:now()});cur=deploys.length-1;
-    setStep(5);drawLive();st.textContent='6. 部署完成（Published）：流量一次切換到新版本，使用者重新整理即取得新版。';return wait(1200)})
+    setStep(5);drawLive();st3(['6. 新版上線了，訪客重新整理就會看到新的按鈕顏色。','部署完成（Published）：流量一次切換到新版本，使用者重新整理即取得新版。']);return wait(1200)})
   .then(function(){setStep(6);running=false;drawLog()});
 };
 $('bRoll').onclick=function(){
   if(running||cur===0)return;cur--;var d=deploys[cur];
   drawLive();drawLog();setStep(-1);
-  $('status3').textContent='已回復至 v'+(cur+1)+'（'+d.msg+'）：直接重新發布先前保存的部署快照，不需重新建置。注意：這只回復網站，GitHub 上的程式碼仍須另以 revert 修正。';
+  st3(['已回到 v'+(cur+1)+'（'+d.msg+'），網站馬上換回舊版，不用重新準備。','直接重新發布先前保存的部署快照，不需重新建置。注意：這只回復網站，GitHub 上的程式碼仍須另以 revert 修正。']);
 };
 drawChips();drawLive();drawLog();
 })();

@@ -114,6 +114,18 @@ button.box:hover{border-color:var(--primary-2)}
 .reading a{color:var(--primary)}
 footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
 .sec{margin-top:18px}
+/* 使用說明與選讀 */
+.howto{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:12px;padding:10px 14px;margin:4px 0 14px}
+.howto h2{font-size:1rem;margin:0 0 4px}
+.howto ol{margin:0;padding-left:1.5em}
+.howto li{margin:2px 0}
+.lead{font-size:1.05rem}
+.plain{font-weight:600;margin:.2em 0 .5em}
+details.more{margin-top:10px;border:1px solid var(--border);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:.92rem}
+details.more summary{cursor:pointer;font-weight:700;color:var(--primary)}
+details.more[open] summary{margin-bottom:6px}
+details.more p{margin:.3em 0}
+.fb details.more,.cap details.more{color:var(--text);font-weight:400;font-size:.88rem}
 
 @media (max-width:600px){
   html{font-size:17px}
@@ -140,8 +152,21 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
 <div class="wrap">
 <header>
   <h1>社群媒體背後的 SaaS 架構</h1>
-  <p>Instagram、YouTube、LINE、TikTok 等大型平台由數十至上百個分工明確的服務組成，採用<b>分層架構</b>與<b>微服務（microservices）</b>設計，以支撐數億使用者同時操作。若以美食街類比，大型平台相當於自建倉儲與物流的連鎖百貨集團，而我們的最小可行產品（Minimum Viable Product, MVP）只是美食街中的一個攤位。本頁逐層說明各元件的技術定義、運作方式與取捨，並對照 MVP 以哪些現成服務取代。</p>
+  <p class="lead">Instagram、YouTube 這類社群平台，背後是很多個小服務分工合作，就像一座大百貨公司裡有很多櫃位。這一頁讓你看看每個櫃位在做什麼，再對照我們自己的小網站（MVP，最小可行產品＝先做出最簡單、能拿給人試用的版本）只需要其中哪幾個。</p>
+  <details class="more"><summary>進階說明（選讀）</summary>
+    <p>Instagram、YouTube、LINE、TikTok 等大型平台由數十至上百個分工明確的服務組成，採用<b>分層架構</b>與<b>微服務（microservices）</b>設計，以支撐數億使用者同時操作。若以美食街類比，大型平台相當於自建倉儲與物流的連鎖百貨集團，而我們的最小可行產品（Minimum Viable Product, MVP）只是美食街中的一個攤位。本頁逐層說明各元件的技術定義、運作方式與取捨，並對照 MVP 以哪些現成服務取代。</p>
+  </details>
 </header>
+
+<section class="howto" aria-labelledby="howtoT">
+  <h2 id="howtoT">怎麼使用這一頁</h2>
+  <ol>
+    <li>點上方「1. 分層架構圖」，再點任一方塊，旁邊（手機在下方）會出現白話說明。</li>
+    <li>按「對照 MVP 架構」，看我們的小網站只需要哪幾個方塊。</li>
+    <li>點「2. 請求流程演示」，選「按讚」後按「自動播放」，看按一個讚時資料經過哪些方塊。</li>
+    <li>點「3. 商業模式與測驗」，做完 5 題小測驗（答對 4 題即完成檢核點 1）。</li>
+  </ol>
+</section>
 
 <div class="tabs" role="tablist" aria-label="教材分頁">
   <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true">1. 分層架構圖</button>
@@ -153,16 +178,18 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
 <section class="panel" id="p1" role="tabpanel" aria-labelledby="t1" tabindex="0">
   <div class="row" style="margin-bottom:10px">
     <button class="btn" id="mvpBtn" aria-pressed="false">對照 MVP 架構</button>
-    <span class="note">點選任一元件，右側會顯示技術定義、運作方式與 MVP 的對應。</span>
+    <span class="note">點任一方塊，旁邊會出現白話說明。</span>
   </div>
   <div class="layout" id="l1">
     <div>
-      <p class="mvpcap"><b>MVP 對照：</b>大型平台自行建置數十種服務；新創初期以三項現成服務即可運作——Netlify（託管、CDN、部署）、Netlify Forms（資料收集）、GitHub（版本控制），再加上瀏覽器內建的 LocalStorage。淡化的元件表示 MVP 階段暫不需要；標示的元件則註明由哪項服務取代。這正是軟體即服務（Software as a Service, SaaS）的價值：以租用取代自建，把有限資源集中在驗證產品需求。</p>
+      <div class="mvpcap"><b>MVP 對照：</b>我們的小網站不用自己蓋這麼多服務，只要租用 Netlify、Netlify Forms、GitHub 三個現成服務，再加上瀏覽器內建的 LocalStorage 就能運作；變淡的方塊代表現在還用不到。
+        <details class="more"><summary>進階說明（選讀）</summary><p>大型平台自行建置數十種服務；新創初期以三項現成服務即可運作——Netlify（託管、CDN、部署）、Netlify Forms（資料收集）、GitHub（版本控制），再加上瀏覽器內建的 LocalStorage。淡化的元件表示 MVP 階段暫不需要；標示的元件則註明由哪項服務取代。這正是軟體即服務（Software as a Service, SaaS）的價值：以租用取代自建，把有限資源集中在驗證產品需求。</p></details>
+      </div>
       <div class="diagram" id="d1"></div>
     </div>
     <aside class="card detail" id="detail" aria-live="polite">
-      <h3>元件說明</h3>
-      <p>請點選左側任一元件。說明包含：技術定義、運作方式與取捨、在社群平台中的實例，以及 MVP 以何種服務取代。</p>
+      <h3>方塊說明</h3>
+      <p>請點左側任一方塊。這裡會先用一句話說明它是什麼，再告訴你我們的小網站用什麼代替。想看更深入的內容，可以展開「進階說明（選讀）」。</p>
     </aside>
   </div>
 </section>
@@ -175,7 +202,7 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
     <aside class="card detail">
       <h3 id="scTitle">請選擇情境</h3>
       <div class="prog"><i id="prog"></i></div>
-      <p class="cap" id="cap" aria-live="polite">點選上方情境，逐步觀察一次使用者操作如何依序經過各層元件。</p>
+      <div class="cap" id="cap" aria-live="polite">先點上方一個情境（例如「按讚」），再按「下一步」或「自動播放」。亮起來的方塊就是資料目前走到的地方。</div>
       <div class="row">
         <button class="btn" id="prev" disabled>← 上一步</button>
         <button class="btn" id="next" disabled>下一步 →</button>
@@ -190,17 +217,26 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
 <!-- ============ TAB 3 ============ -->
 <section class="panel" id="p3" role="tabpanel" aria-labelledby="t3" tabindex="0" hidden>
   <h2>3.1 免費服務的營收來源</h2>
-  <p>社群平台多採「免費增值（freemium）」與雙邊市場（two-sided market）模式：一邊免費吸引使用者，另一邊向廣告主、商家或付費會員收費。使用者越多，對付費方的價值越高，形成網路效應（network effect）。</p>
-  <div class="cards">
+  <p class="lead">社群平台對一般使用者免費，錢主要從廣告主、商家或付費會員那裡賺，就像免費入場的市集向攤商收租金。</p>
+  <details class="more"><summary>進階說明（選讀）</summary><p>社群平台多採「免費增值（freemium）」與雙邊市場（two-sided market）模式：一邊免費吸引使用者，另一邊向廣告主、商家或付費會員收費。使用者越多，對付費方的價值越高，形成網路效應（network effect）。</p></details>
+  <div class="cards sec">
     <div class="card"><div class="em">ADS</div><h3>廣告</h3>
+      <p class="plain">平台依照你的興趣放廣告，再向廣告主收錢，例如動態牆中標示「贊助」的貼文。</p>
+      <details class="more"><summary>進階說明（選讀）</summary>
       <p>平台販售的是使用者的<b>注意力</b>與精準投放能力：依興趣與行為資料挑選廣告，按曝光（CPM）或點擊（CPC）向廣告主計費。取捨在於個人資料蒐集與隱私保護之間的張力，相關法規（例如歐盟 GDPR）持續限縮追蹤範圍。</p>
-      <p class="quote">"If you're not paying for it, you're the product."<br>常見的網路評論：若未付費，使用者的注意力與資料即為被販售的商品。</p></div>
+      <p class="quote">"If you're not paying for it, you're the product."<br>常見的網路評論：若未付費，使用者的注意力與資料即為被販售的商品。</p></details></div>
     <div class="card"><div class="em">SUB</div><h3>訂閱制</h3>
-      <p>以月費換取更好的體驗或特權，例如 YouTube Premium（無廣告）、Meta Verified（驗證標章）、X Premium、LINE 付費方案。訂閱帶來可預測的經常性收入（recurring revenue），是 SaaS 最核心的收費模式。</p></div>
+      <p class="plain">每月付一筆錢換更好的體驗，例如 YouTube Premium 付費後就沒有廣告。</p>
+      <details class="more"><summary>進階說明（選讀）</summary>
+      <p>以月費換取更好的體驗或特權，例如 YouTube Premium（無廣告）、Meta Verified（驗證標章）、X Premium、LINE 付費方案。訂閱帶來可預測的經常性收入（recurring revenue），是 SaaS 最核心的收費模式。</p></details></div>
     <div class="card"><div class="em">SHOP</div><h3>電商抽成</h3>
-      <p>使用者在平台內直接購物，平台向商家收取手續費，例如 Instagram／Facebook 商店、TikTok Shop。優點是縮短「看到商品」到「完成購買」的路徑；平台需同時承擔金流、物流與消費糾紛處理。</p></div>
+      <p class="plain">使用者直接在平台上買東西，平台向賣家抽手續費，例如 Instagram 商店、TikTok Shop。</p>
+      <details class="more"><summary>進階說明（選讀）</summary>
+      <p>使用者在平台內直接購物，平台向商家收取手續費，例如 Instagram／Facebook 商店、TikTok Shop。優點是縮短「看到商品」到「完成購買」的路徑；平台需同時承擔金流、物流與消費糾紛處理。</p></details></div>
     <div class="card"><div class="em">B2B</div><h3>企業方案</h3>
-      <p>向店家與企業銷售工具，例如 LINE 官方帳號（訊息群發與顧客管理）、LinkedIn Premium（招募與業務工具）。此為典型的企業對企業（Business to Business, B2B）SaaS。</p></div>
+      <p class="plain">把好用的工具賣給店家和公司，例如店家用 LINE 官方帳號一次發訊息給所有顧客。</p>
+      <details class="more"><summary>進階說明（選讀）</summary>
+      <p>向店家與企業銷售工具，例如 LINE 官方帳號（訊息群發與顧客管理）、LinkedIn Premium（招募與業務工具）。此為典型的企業對企業（Business to Business, B2B）SaaS。</p></details></div>
   </div>
 
   <h2 class="sec">3.2 大型平台與 MVP 的比較</h2>
@@ -217,10 +253,11 @@ footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
     </tbody>
   </table>
   </div>
-  <p class="note">以上為概略描述，並非精確數字。公開案例：Netflix 的串流服務大量使用 AWS 雲端；Instagram 早期架設於 AWS，被 Facebook 收購後遷移至 Facebook（現 Meta）自有的資料中心。這說明「租用雲端」與「自建機房」的選擇會隨規模而改變。</p>
+  <p class="note">以上是大概的比較，不是精確數字。重點是：小團隊先租用現成服務，就能用很低的成本把網站做出來。</p>
+  <details class="more"><summary>進階說明（選讀）</summary><p>公開案例：Netflix 的串流服務大量使用 AWS 雲端；Instagram 早期架設於 AWS，被 Facebook 收購後遷移至 Facebook（現 Meta）自有的資料中心。這說明「租用雲端」與「自建機房」的選擇會隨規模而改變。</p></details>
 
   <h2 class="sec">3.3 架構理解測驗</h2>
-  <p class="note">共 5 題，答對 4 題以上（80%）即達成「檢核點 1 架構理解」。每題可重新作答，系統以第一次作答計分。</p>
+  <p class="note">共 5 題，答對 4 題以上（80%）就完成「檢核點 1 架構理解」。答錯可以再選一次，但分數以第一次選的答案為準。</p>
   <div class="quiz" id="quiz"></div>
 
   <div class="card sec reading">
@@ -250,7 +287,7 @@ var LAYERS=[
   ["cdn","CDN","內容傳遞網路","Content Delivery Network","各地的分店倉庫。","由分散在各地的邊緣節點（edge server）組成的網路，快取圖片、影片、HTML 等靜態內容，讓使用者從距離最近的節點取得資料。","第一次請求時節點向來源伺服器（origin）取檔並快取，之後同地區的請求直接由節點回應，降低延遲與來源伺服器負載。取捨：內容更新後需等待快取失效（TTL）或主動清除，否則使用者可能看到舊版本。","在臺灣瀏覽海外帳號的照片，仍能快速載入。","Netlify 內建 CDN，部署後網站自動分送至各地節點。","rep","Netlify"],
   ["lb","LB","負載平衡器","Load Balancer","門口的引導員。","將大量連入請求分配給多台後端伺服器的元件，避免單一伺服器過載，並在某台故障時自動繞過。","常見分配策略有輪詢（round robin）、最少連線數等，並透過健康檢查（health check）排除異常主機。它讓系統能以「增加機器」的方式水平擴展（horizontal scaling）。","重大節日大量使用者同時發文，服務仍可運作。","由 Netlify 平台代為處理，不需自行設定。","rep","Netlify"]]},
  {n:"3 API 閘道",s:"API Gateway",arrow:"轉送至對應服務",c:[
-  ["gw","API","API 閘道","API Gateway","統一服務窗口，先查驗會員證。","所有外部 API 請求的單一入口，集中處理身分驗證、流量限制（rate limiting）、路由（routing）與記錄。","閘道檢查請求所附的存取權杖（access token），確認身分後依網址路徑轉送給對應的微服務。集中管理的好處是各服務不必重複實作驗證；代價是閘道本身必須高可用，否則成為單點故障。","每次按讚、留言，都先經過身分確認。","MVP 沒有這一層：網頁直接以 HTTP POST 將表單送至 Netlify Forms。","no",""]]},
+  ["gw","API","API 閘道","API Gateway","統一服務窗口，先查驗會員證。","所有外部 API 請求的單一入口，集中處理身分驗證、流量限制（rate limiting）、路由（routing）與記錄。","閘道檢查請求所附的存取權杖（access token），確認身分後依網址路徑轉送給對應的微服務。集中管理的好處是各服務不必重複實作驗證；代價是閘道本身必須高可用，否則成為單點故障。","每次按讚、留言，都先經過身分確認。","我們的網站沒有這一層：網頁上的表單直接把資料送到 Netlify Forms。","no",""]]},
  {n:"4 應用服務",s:"Microservices",arrow:"讀寫資料",c:[
   ["auth","AUTH","身分驗證","Authentication","會員服務台。","處理註冊、登入、密碼雜湊、兩步驟驗證（2FA）與工作階段（session）管理的服務。","登入成功後伺服器簽發權杖（例如 JWT）或 session cookie，之後的請求附上它即可證明身分。密碼須以雜湊（hash）加鹽儲存，不可保存明文。","登入、忘記密碼、收到登入驗證碼。","MVP 不實作真正的登入，以 LocalStorage 在瀏覽器中模擬「記得使用者」。注意：這不具安全性。","rep","LocalStorage"],
   ["post","POST","貼文服務","Posts Service","出餐櫃位。","接收新貼文的文字、標記與媒體檔案參照，驗證內容後寫入資料庫的服務。","媒體檔案通常另存於物件儲存，貼文資料只記錄檔案位址（URL）。發文後會觸發後續非同步工作，例如轉檔、內容審查、通知。","點選「分享」發布貼文。","以 Netlify Forms 接收使用者送出的內容。","rep","Netlify Forms"],
@@ -277,6 +314,35 @@ var LAYERS=[
   ["pay","PAY","金流","Payment Gateway","銀行刷卡機。","代為處理信用卡、行動支付等付款流程的第三方服務。","金流業者負責卡號保管、詐欺偵測與法規遵循（例如 PCI DSS），商家不需自行保存卡號，大幅降低資安風險。","購買貼圖、訂閱付費方案。","MVP 不收費，不需要。","no",""],
   ["mail","MAIL","Email／簡訊","Email / SMS API","郵局與簡訊代發。","透過 API 代為寄送交易型 Email 與簡訊的服務。","自行架設郵件伺服器容易被判定為垃圾郵件，因此多數產品使用專業寄送服務以確保送達率。","註冊時收到 6 位數驗證碼。","Netlify Forms 的 Email 通知可寄信給網站擁有者。","rep","Forms 通知"]]}
 ];
+// 每個元件先用一句白話說明（含日常例子），技術內容放在「進階說明（選讀）」
+var PLAIN={
+ app:"手機 App 就是你手機上的 Instagram 圖示，像餐廳的點餐機：你在這裡操作，它把需求送到後面的廚房。",
+ web:"網頁版就是用瀏覽器打開 instagram.com，像同一家店的另一個點餐入口，後面的廚房是同一個。",
+ cdn:"CDN 是分散在各地的「分店倉庫」，先放好照片和影片的副本，讓你從最近的地方拿，所以載入比較快。",
+ lb:"負載平衡器像門口的引導員，把大量客人平均分到不同櫃檯，避免某一個櫃檯塞爆。",
+ gw:"API 閘道像百貨公司的服務窗口，每個請求都要先在這裡確認身分，才會被送到對的櫃位。",
+ auth:"身分驗證負責註冊和登入，像會員服務台確認「你真的是你」。",
+ post:"貼文服務負責收下你發的貼文並存起來，像出餐櫃位接單。",
+ like:"按讚與留言服務記下「誰對哪一則貼文按讚或留言」，像集點櫃位每次互動就記一筆。",
+ feed:"動態牆服務決定你打開 App 時先看到哪些貼文，像幫每位客人排好今日推薦菜單。",
+ dm:"私訊服務負責你和朋友之間的聊天訊息，要快、不能漏、順序也不能亂。",
+ notif:"通知服務決定什麼時候通知你、用什麼方式通知，像叫號員。",
+ search:"搜尋服務讓你輸入關鍵字就找到帳號或主題標籤，像服務台的查詢電腦。",
+ reco:"推薦系統依照你平常看什麼，猜你可能還喜歡什麼，像熟悉你口味的店長。",
+ ads:"廣告系統決定要給你看哪一則廣告，並向廣告主收錢，像出租廣告看板。",
+ udb:"使用者資料庫存放每個人的帳號、暱稱、大頭貼等資料，像會員名冊。",
+ graph:"社交關係圖記錄誰追蹤誰、誰和誰是朋友，像一張人際關係地圖。",
+ pdb:"內容資料庫存放所有貼文、留言和互動紀錄，像記下每一筆訂單的總帳本。",
+ cache:"快取是把常用的資料先放在拿得最快的地方，像熱門餐點先備好，客人一點就能出餐。",
+ obj:"物件儲存專門存放大量照片和影片，像一座很大的倉庫。",
+ mq:"訊息佇列讓不急的工作先排隊、稍後再處理，像號碼牌與排隊機。",
+ dc:"資料中心與雲端是所有伺服器（處理請求的電腦）實際放置的地方，像百貨公司的土地和建築。",
+ ana:"數據分析平台收集大家怎麼使用產品，幫公司決定下一步要做什麼，像營運總部的報表室。",
+ cicd:"版本控制與自動部署負責保存每一版程式，並在改好後自動更新網站，像總部的保險箱加上自動配送。",
+ push:"推播服務是 Apple 和 Google 提供的服務，負責把通知送到你手機的鎖定畫面。",
+ pay:"金流服務代為處理刷卡、行動支付等付款，像店家的刷卡機。",
+ mail:"Email／簡訊服務代為寄出驗證碼或通知信，像幫你寄信的郵局。"
+};
 var MAP={};
 LAYERS.forEach(function(L){L.c.forEach(function(c){MAP[c[0]]=c;});});
 
@@ -301,10 +367,12 @@ d1.addEventListener("click",function(e){
   d1.querySelectorAll(".box.sel").forEach(function(x){x.classList.remove("sel");});
   b.classList.add("sel");
   var c=MAP[b.dataset.id];
-  det.innerHTML='<div class="big" aria-hidden="true">'+c[1]+'</div><h3>'+c[2]+' <small class="note">'+c[3]+'</small></h3><dl>'+
+  det.innerHTML='<div class="big" aria-hidden="true">'+c[1]+'</div><h3>'+c[2]+' <small class="note">'+c[3]+'</small></h3>'+
+   '<p class="plain">'+PLAIN[c[0]]+'</p><dl>'+
+   '<dt>你在哪裡會碰到</dt><dd>'+c[7]+'</dd><dt>我們的小網站（MVP）用什麼代替</dt><dd>'+c[8]+'</dd></dl>'+
+   '<details class="more"><summary>進階說明（選讀）</summary><dl>'+
    '<dt>技術定義</dt><dd>'+c[5]+'</dd><dt>運作方式與取捨</dt><dd>'+c[6]+'</dd>'+
-   '<dt>在社群平台中的實例</dt><dd>'+c[7]+'</dd><dt>MVP 的對應</dt><dd>'+c[8]+'</dd>'+
-   '<dt>類比</dt><dd class="an">'+c[4]+'</dd></dl>';
+   '<dt>類比</dt><dd class="an">'+c[4]+'</dd></dl></details>';
   if(window.innerWidth<900) det.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});
 });
 var mvpBtn=document.getElementById("mvpBtn"),l1=document.getElementById("l1");
@@ -334,42 +402,43 @@ tabs.forEach(function(t,i){
 });
 
 // ---------- scenarios ----------
+// 每一步：[亮起的元件, 白話說明, 技術說明（選讀，可留空）]
 var SC=[
  {b:"按讚",t:"約 0.3 秒",s:[
-  [["app"],"使用者在 App 雙擊照片，App 以 HTTPS 送出按讚請求（附帶存取權杖）。"],
-  [["lb"],"負載平衡器將請求分配給目前負載較低的伺服器。"],
-  [["gw"],"API 閘道驗證權杖，確認請求來自已登入的本人，並檢查是否超過流量限制。"],
-  [["like"],"請求被轉送至按讚服務，記錄「使用者 A 對貼文 B 按讚」。"],
-  [["pdb","cache"],"寫入資料庫以永久保存，同時更新快取，讓讚數立即反映。"],
-  [["mq"],"通知作者不需即時完成，因此放入訊息佇列，待背景程序非同步處理。"],
-  [["notif"],"通知服務取出工作，依作者的通知設定決定是否發送及合併內容。"],
-  [["push"],"交由外部推播服務（Apple APNs／Google FCM）送達作者的裝置。"],
-  [["app"],"作者的手機顯示「某人對你的貼文按讚」通知。"]]},
+  [["app"],"你在 App 上點兩下照片按讚，App 把「我按讚了」這個訊息送出去。","使用者在 App 雙擊照片，App 以 HTTPS 送出按讚請求（附帶存取權杖）。"],
+  [["lb"],"門口的引導員把這個請求交給目前比較不忙的伺服器（處理請求的電腦）。","負載平衡器將請求分配給目前負載較低的伺服器。"],
+  [["gw"],"服務窗口先確認「真的是你本人」，才讓請求往裡面走。","API 閘道驗證權杖，確認請求來自已登入的本人，並檢查是否超過流量限制。"],
+  [["like"],"按讚服務記下一筆：誰對哪一張照片按了讚。","請求被轉送至按讚服務，記錄「使用者 A 對貼文 B 按讚」。"],
+  [["pdb","cache"],"這筆紀錄存進資料庫長期保存，同時更新讚數，讓大家馬上看到新數字。","寫入資料庫以永久保存，同時更新快取，讓讚數立即反映。"],
+  [["mq"],"「通知作者」這件事不急，先放進排隊區，等一下再處理。","通知作者不需即時完成，因此放入訊息佇列，待背景程序非同步處理。"],
+  [["notif"],"通知服務決定要不要通知作者、怎麼通知（例如把好幾個讚合併成一則）。","通知服務取出工作，依作者的通知設定決定是否發送及合併內容。"],
+  [["push"],"通知交給 Apple 或 Google 的推播服務，由它們送到作者的手機。","交由外部推播服務（Apple APNs／Google FCM）送達作者的裝置。"],
+  [["app"],"作者的手機跳出「某人對你的貼文按讚」。",""]]},
  {b:"發布限時動態",t:"約 1～數秒（看照片大小與網速）",s:[
-  [["app"],"使用者點選「分享」，App 開始上傳照片。"],
-  [["gw"],"API 閘道驗證身分後放行。"],
-  [["obj"],"原始照片存入物件儲存。"],
-  [["obj"],"背景程序自動產生縮圖、手機版與高畫質版等多種尺寸與格式。"],
-  [["cdn"],"各版本照片經由 CDN 對外提供，由邊緣節點快取。"],
-  [["post","pdb"],"貼文服務將作者、時間、照片位址等中繼資料（metadata）寫入資料庫。"],
-  [["feed","reco"],"動態牆與推薦系統決定這則限時動態要優先顯示給哪些追蹤者。"],
-  [["app"],"追蹤者開啟 App 時，頁面上方出現這則限時動態。"]]},
+  [["app"],"你按下「分享」，App 開始上傳照片。",""],
+  [["gw"],"服務窗口確認是你本人後放行。","API 閘道驗證身分後放行。"],
+  [["obj"],"原始照片存進專門放照片和影片的大倉庫。","原始照片存入物件儲存。"],
+  [["obj"],"系統自動把照片做成大、中、小幾種尺寸，給不同的手機和電腦使用。","背景程序自動產生縮圖、手機版與高畫質版等多種尺寸與格式。"],
+  [["cdn"],"照片被複製到各地的分店倉庫，讓大家從最近的地方快速載入。","各版本照片經由 CDN 對外提供，由邊緣節點快取。"],
+  [["post","pdb"],"貼文服務記下是誰發的、什麼時候發的、照片放在哪裡。","貼文服務將作者、時間、照片位址等中繼資料（metadata）寫入資料庫。"],
+  [["feed","reco"],"系統決定這則限時動態要先給哪些朋友看。","動態牆與推薦系統決定這則限時動態要優先顯示給哪些追蹤者。"],
+  [["app"],"朋友打開 App 時，就在最上方看到你的限時動態。",""]]},
  {b:"載入動態牆",t:"約 0.5 秒",s:[
-  [["app"],"使用者開啟 App，App 向伺服器請求動態牆資料。"],
-  [["lb","gw"],"請求經過負載平衡器與 API 閘道，完成身分驗證。"],
-  [["feed"],"動態牆服務開始組合此使用者的內容清單。"],
-  [["graph","reco","ads"],"平行查詢三項來源：追蹤名單（社交關係圖）、推薦候選內容（推薦系統）與廣告版位（廣告系統）。"],
-  [["cache"],"已計算過的結果直接從快取取得，避免重複運算。"],
-  [["cdn"],"App 取得清單後，再從最近的 CDN 節點下載照片與影片。"],
-  [["app"],"畫面完成繪製；使用者捲動時，App 分批再請求下一頁資料。"]]},
+  [["app"],"你打開 App，App 向伺服器要一份「今天要給你看的內容」。","使用者開啟 App，App 向伺服器請求動態牆資料。"],
+  [["lb","gw"],"請求先經過引導員和服務窗口，確認是你本人。","請求經過負載平衡器與 API 閘道，完成身分驗證。"],
+  [["feed"],"動態牆服務開始幫你挑選要顯示的內容。","動態牆服務開始組合此使用者的內容清單。"],
+  [["graph","reco","ads"],"同時去查三個地方：你追蹤了誰、你可能喜歡什麼、要放哪些廣告。","平行查詢三項來源：追蹤名單（社交關係圖）、推薦候選內容（推薦系統）與廣告版位（廣告系統）。"],
+  [["cache"],"之前算好的結果直接拿來用，不用重算一次，所以比較快。","已計算過的結果直接從快取取得，避免重複運算。"],
+  [["cdn"],"App 拿到清單後，再從最近的分店倉庫下載照片和影片。","App 取得清單後，再從最近的 CDN 節點下載照片與影片。"],
+  [["app"],"畫面出現；你往下滑時，App 會再要下一批內容。","畫面完成繪製；使用者捲動時，App 分批再請求下一頁資料。"]]},
  {b:"傳送私訊",t:"約 0.2 秒",s:[
-  [["app"],"使用者輸入訊息並送出。"],
-  [["gw"],"API 閘道驗證身分。"],
-  [["dm"],"私訊服務接收訊息並指派唯一編號與時間戳記。"],
-  [["mq"],"訊息進入訊息佇列，確保不遺失且依序處理。"],
-  [["pdb"],"訊息寫入資料庫，因此更換裝置後仍可同步歷史紀錄。"],
-  [["push"],"若對方未在線上，經由推播服務送出通知。"],
-  [["app"],"對方裝置收到通知並顯示訊息。"]]}
+  [["app"],"你輸入訊息並按下送出。",""],
+  [["gw"],"服務窗口確認是你本人。","API 閘道驗證身分。"],
+  [["dm"],"私訊服務收到訊息，幫它編號並記下時間。","私訊服務接收訊息並指派唯一編號與時間戳記。"],
+  [["mq"],"訊息進入排隊區，確保不會弄丟，順序也不會亂。","訊息進入訊息佇列，確保不遺失且依序處理。"],
+  [["pdb"],"訊息存進資料庫，所以換手機也看得到以前的對話。","訊息寫入資料庫，因此更換裝置後仍可同步歷史紀錄。"],
+  [["push"],"如果對方沒開 App，就透過推播服務通知對方。","若對方未在線上，經由推播服務送出通知。"],
+  [["app"],"對方的手機收到通知，看到你的訊息。",""]]}
 ];
 var cur=-1,step=0,timer=null;
 var sb=document.getElementById("scenBtns"),cap=document.getElementById("cap"),prog=document.getElementById("prog"),
@@ -396,7 +465,8 @@ function render(){
       n.textContent=k+1;
     });
   }
-  cap.innerHTML='<b class="step">'+(step+1)+' / '+s.s.length+'</b>'+s.s[step][1];
+  cap.innerHTML='<b class="step">'+(step+1)+' / '+s.s.length+'</b>'+s.s[step][1]+
+   (s.s[step][2]?'<details class="more"><summary>進階說明（選讀）</summary><p>'+s.s[step][2]+'</p></details>':'');
   prog.style.width=((step+1)/s.s.length*100)+"%";
   prev.disabled=step===0;next.disabled=step===s.s.length-1;
   var last=step===s.s.length-1;tEl.hidden=!last;
@@ -425,12 +495,13 @@ document.addEventListener("keydown",function(e){
 });
 
 // ---------- quiz ----------
+// [題目, 選項, 正確答案索引, 一句話解析, 進階說明（選讀）]
 var Q=[
- ["在海外帳號的照片，為何在臺灣瀏覽時仍能快速載入？",["手機效能提升","CDN 將內容快取在接近使用者的邊緣節點","照片被壓縮成純文字"],1,"CDN 的邊緣節點快取了照片副本，使用者從地理上較近的節點取得資料，減少往返延遲，也減輕來源伺服器的負載。"],
- ["按讚後，作者手機跳出通知，最後一步由哪一類外部服務完成？",["推播服務（APNs／FCM）","金流服務","搜尋服務"],0,"App 開發者無法直接連線到使用者手機，須將通知交給 Apple APNs 或 Google FCM，由其維持與裝置的連線並代為送達。"],
- ["為什麼「通知作者」這項工作會先放入訊息佇列？",["為了讓通知永遠不送出","非即時工作可非同步處理，以削減流量尖峰並隔離故障","因為資料庫無法儲存通知"],1,"訊息佇列讓送出端不必等待處理完成；按讚請求可立即回應，通知則由背景程序依序處理。代價是通知會稍有延遲。"],
- ["MVP 以哪一項服務取代大型平台自建的資料收集與儲存？",["自建資料中心","推薦系統","Netlify Forms"],2,"Netlify Forms 屬於後端即服務（Backend as a Service, BaaS），在部署時辨識帶有 data-netlify 屬性的表單，並接收、保存使用者以 HTTP POST 送出的資料。"],
- ["以 LocalStorage 模擬會員登入，主要限制是什麼？",["資料只存在該瀏覽器，且可被使用者或頁面腳本讀取修改，不具安全性","資料會自動同步到所有裝置","資料會傳送到 Netlify 後台"],0,"LocalStorage 是瀏覽器依網站來源（origin）隔離的本機儲存，不會傳到伺服器，也無法跨裝置同步；任何同源腳本都能讀寫，因此不可存放密碼等敏感資料。"]
+ ["為什麼在臺灣看國外帳號的照片，還是很快就能打開？",["因為手機變快了","因為照片已經先複製到離你很近的 CDN 分店倉庫","因為照片被轉成了文字"],1,"CDN 在離你近的地方放了照片副本，所以不用跑到國外去拿。","CDN 的邊緣節點快取了照片副本，使用者從地理上較近的節點取得資料，減少往返延遲，也減輕來源伺服器的負載。"],
+ ["有人對你的貼文按讚，你的手機跳出通知。最後把通知送到手機的是誰？",["Apple 或 Google 的推播服務","金流（付款）服務","搜尋服務"],0,"App 公司不能直接連到你的手機，要請 Apple 或 Google 的推播服務代為送達。","App 開發者無法直接連線到使用者手機，須將通知交給 Apple APNs 或 Google FCM，由其維持與裝置的連線並代為送達。"],
+ ["為什麼「通知作者」這件事要先排隊，而不是馬上做？",["為了讓通知永遠不要送出","因為它不急；先排隊可以讓按讚馬上完成，也避免系統一下子太忙","因為資料庫存不了通知"],1,"按讚要馬上有反應，通知晚幾秒沒關係，所以先排隊、稍後再處理。","訊息佇列讓送出端不必等待處理完成；按讚請求可立即回應，通知則由背景程序依序處理。代價是通知會稍有延遲。"],
+ ["我們的小網站用哪一個服務來收下使用者填寫的表單資料？",["自己蓋一座資料中心","推薦系統","Netlify Forms"],2,"Netlify Forms 會幫我們收下並保存表單資料，不用自己寫後端程式。","Netlify Forms 屬於後端即服務（Backend as a Service, BaaS），在部署時辨識帶有 data-netlify 屬性的表單，並接收、保存使用者以 HTTP POST 送出的資料。"],
+ ["用 LocalStorage 假裝「會員登入」，最大的問題是什麼？",["資料只存在這個瀏覽器裡，而且使用者自己就能改，不安全","資料會自動同步到所有裝置","資料會傳到 Netlify 後台"],0,"LocalStorage 只是瀏覽器裡的小筆記本，換裝置就讀不到，也不能用來存密碼。","LocalStorage 是瀏覽器依網站來源（origin）隔離的本機儲存，不會傳到伺服器，也無法跨裝置同步；任何同源腳本都能讀寫，因此不可存放密碼等敏感資料。"]
 ];
 var qz=document.getElementById("quiz");
 Q.forEach(function(q,i){
@@ -443,6 +514,7 @@ Q.forEach(function(q,i){
       o.querySelectorAll(".opt").forEach(function(x){x.classList.remove("ok","ng");});
       var ok=j===q[2];b.classList.add(ok?"ok":"ng");
       fb.className="fb "+(ok?"ok":"ng");fb.textContent=ok?"正確。"+q[3]:"不正確。正確答案是「"+q[1][q[2]]+"」。"+q[3];
+      var more=document.createElement("details");more.className="more";more.innerHTML='<summary>進階說明（選讀）</summary><p>'+q[4]+'</p>';fb.appendChild(more);
       if(!(i in first)){first[i]=ok;updScore();}
     });
     o.appendChild(b);

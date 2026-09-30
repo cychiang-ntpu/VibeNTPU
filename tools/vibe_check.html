@@ -96,6 +96,16 @@ ul.checks{list-style:none;margin:0;padding:0;border:1px solid var(--line);border
 .ck .hint{margin:4px 0 0;font-size:.88rem;color:var(--muted);overflow-wrap:anywhere}
 .ck .ask{margin:8px 0 0;padding:8px 10px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 6px 6px 0;font-size:.88rem;overflow-wrap:anywhere}
 .ck .ask .lab{display:block;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:2px}
+.ck .plain{margin:4px 0 0;font-size:.92rem}
+.ck .plain b{color:var(--text)}
+details.more{margin-top:8px;border:1px solid var(--line);border-radius:6px;padding:5px 10px;background:var(--bg);font-size:.85rem}
+details.more summary{cursor:pointer;font-weight:600;color:var(--accent)}
+details.more p{margin:.3em 0 0;color:var(--muted);overflow-wrap:anywhere}
+.howto{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px}
+.howto h2{font-size:1rem;margin:0 0 4px}
+.howto ol{margin:0;padding-left:1.5em}
+.howto li{margin:2px 0}
+.top details.more{max-width:44em;margin-top:10px}
 .legend{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:.82rem;margin-top:18px}
 .done-note{border-color:var(--ok-line);background:var(--ok-soft)}
 .done-note h2{color:var(--ok)}
@@ -145,12 +155,22 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 16px 32px
   <div class="wrap">
     <div class="eyebrow">VibeNTPU · Self-Check</div>
     <h1>網站自我檢核工具</h1>
-    <p>對 <code>index.html</code> 進行靜態檢查，逐項確認是否符合 Level 1 部署基本要求、Level 2 表單串接與 Level 3 狀態保存的技術條件。未通過的項目會附上原因說明與可直接交給 AI 助理的修改指示。</p>
+    <p>把你的 <code>index.html</code> 放進來，這個工具會一項一項檢查網站有沒有做到 Level 1～3 的要求。沒通過的項目會用一句話告訴你是什麼意思，並附上可以直接複製給 Copilot 的一句話。</p>
+    <details class="more"><summary>進階說明（選讀）</summary><p>對 <code>index.html</code> 進行靜態檢查，逐項確認是否符合 Level 1 部署基本要求、Level 2 表單串接與 Level 3 狀態保存的技術條件。未通過的項目會附上原因說明與可直接交給 AI 助理的修改指示。</p></details>
     <span class="privacy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>檢查完全在瀏覽器內進行，檔案不會上傳；程式只解析 HTML，不會執行其中的 JavaScript。</span>
   </div>
 </header>
 
 <main class="wrap">
+  <section class="howto" aria-labelledby="howtoT">
+    <h2 id="howtoT">怎麼使用這一頁</h2>
+    <ol>
+      <li>按下方「點選以選擇檔案」，選你 repo 資料夾裡的 <code>index.html</code>（或把程式碼貼到下方框框）。</li>
+      <li>選好檔案後會自動檢查；如果是貼上程式碼，請按「開始檢核」。</li>
+      <li>看標示「未通過」的項目：按「複製指示」，貼到 VS Code 的 Copilot Chat 請它修改。</li>
+      <li>改好後在 VS Code 按 Commit 和 Sync，再回來檢查一次，直到全部通過。</li>
+    </ol>
+  </section>
   <section class="card" aria-labelledby="in-h">
     <h2 id="in-h"><span class="no">1</span>選擇 index.html</h2>
     <label class="drop" id="drop">
@@ -255,6 +275,30 @@ var CHECKS=[
 ["l3_urlencoded",3,REQ,"送出格式為 application/x-www-form-urlencoded","Netlify Forms 接收的是一般表單編碼格式，而非 JSON。請向 AI 說明：「fetch 的 headers 請設定 'Content-Type': 'application/x-www-form-urlencoded'，body 使用 new URLSearchParams(new FormData(form)).toString()」"],
 ["l3_logout",3,BONUS,"具備登出功能（removeItem 或 clear）","請向 AI 說明：「請在會員畫面加入登出按鈕，按下後以 localStorage.removeItem 刪除已儲存的資料並重新顯示表單」"]
 ];
+/* 未通過時先顯示的白話說明（一句話：這是什麼意思）；技術原因收在「進階說明（選讀）」 */
+var PLAIN={
+  l1_html:"系統認不出這是一個網頁檔，可能選錯了檔案，或程式碼沒有複製完整。",
+  l1_charset:"網頁沒有告訴瀏覽器要用哪一種文字編碼，中文可能會變成亂碼。",
+  l1_viewport:"網頁少了「手機版設定」，在手機上會縮成很小的一片。",
+  l1_title:"網頁沒有標題，瀏覽器分頁上不會顯示你的產品名稱。",
+  l1_h1:"網頁沒有主標題，訪客一眼看不出這是什麼產品。",
+  l1_cta:"網頁沒有可以按的行動按鈕，例如「加入早鳥名單」，訪客不知道下一步要做什麼。",
+  l1_style:"網頁沒有任何美化設定，看起來只會是黑白的純文字。",
+  l1_media:"網頁沒有針對手機調整版面，在手機上可能會擠在一起。",
+  l1_img:"網頁用到的圖片檔可能不在你的資料夾裡，上線後會變成破圖。",
+  l2_form:"網頁沒有 Netlify 認得的表單，訪客填的資料不會送到 Netlify 後台。",
+  l2_form_name:"表單沒有名字，Netlify 後台不知道要把資料放在哪一個表單底下。",
+  l2_hidden_form_name:"表單少了一個隱藏的名字標籤，用程式送出時 Netlify 可能收不到資料。",
+  l2_field_names:"有輸入欄位沒有名字，那一格填的資料不會被送出去。",
+  l2_email:"沒有專門填 Email 的欄位，瀏覽器沒辦法幫忙檢查 Email 格式。",
+  l2_honeypot:"表單沒有防機器人的隱藏欄位，比較容易收到垃圾資料。",
+  l3_set:"網頁沒有把使用者的名字記在瀏覽器裡，重新整理後就不記得他是誰。",
+  l3_get:"網頁打開時沒有去讀瀏覽器記住的名字，所以無法顯示「歡迎回來」。",
+  l3_prevent:"按下送出後整頁會跳走，沒辦法在同一頁顯示會員畫面。",
+  l3_fetch:"表單沒有在背景送出資料，所以做不到「送出後留在原頁」。",
+  l3_urlencoded:"資料送出的格式不是 Netlify 看得懂的格式，後台可能收不到。",
+  l3_logout:"沒有「登出」按鈕，使用者沒辦法清除瀏覽器記住的名字。"
+};
 var SKIP_TYPES={submit:1,button:1,reset:1,image:1};
 var RE={
   html:/<!doctype\s+html|<html[\s>]/i, ext:/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i, media:/@media\b/i,
@@ -372,15 +416,17 @@ function render(rep){
       if(!c.pass){
         var mm=c.hint.match(/請向 AI 說明：「([\s\S]+)」\s*$/);
         var why=mm?c.hint.slice(0,mm.index).trim():c.hint;
-        if(why)body.appendChild(el('p','hint',why));
+        if(PLAIN[c.id]){var pl=el('p','plain');pl.appendChild(el('b',null,'這是什麼意思：'));pl.appendChild(document.createTextNode(PLAIN[c.id]));body.appendChild(pl);}
+        else if(why)body.appendChild(el('p','hint',why));
         if(mm){
-          var ask=el('div','ask');ask.appendChild(el('span','lab','請向 AI 說明'));
+          var ask=el('div','ask');ask.appendChild(el('span','lab','請跟 Copilot 說（按「複製指示」後貼到 Copilot Chat）'));
           ask.appendChild(document.createTextNode('「'+mm[1]+'」'));
           var row=el('div','row');row.style.marginTop='6px';
           var cb=el('button','btn alt sm','複製指示');cb.type='button';cb.setAttribute('aria-label','複製給 AI 的指示：'+c.title);
           cb.addEventListener('click',function(){copyText(mm[1],cb);});row.appendChild(cb);
           ask.appendChild(row);body.appendChild(ask);
         }
+        if(why&&PLAIN[c.id]){var more=el('details','more');more.appendChild(el('summary',null,'進階說明（選讀）'));more.appendChild(el('p',null,why));body.appendChild(more);}
       }
       li.appendChild(body);ul.appendChild(li);
     });
