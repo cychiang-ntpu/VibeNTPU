@@ -3,7 +3,7 @@
 > 只要在 HTML 表單加一行 `data-netlify="true"`，Netlify 就會幫你收資料、存後台、寄通知。
 > 這就是 **BaaS（Backend as a Service，後端即服務）**。
 
-[← 回第二週](README.md)　｜　📖 官方文件：[Netlify Forms setup](https://docs.netlify.com/forms/setup/)
+[← 回第 2 週](../../lectures/wk02_1014_baas-cicd/README.md)　｜　📖 官方文件：[Netlify Forms setup](https://docs.netlify.com/manage/forms/setup/)
 
 ---
 
@@ -29,7 +29,7 @@ sequenceDiagram
 
 ## 步驟 1：確認表單程式碼正確
 
-用 [咒語 1](prompts.md#咒語-1加入早鳥候補名單waitlist表單) 產生表單後，檢查你的 `<form>` 是否長得像這樣：
+用 [咒語 1](../../lectures/wk02_1014_baas-cicd/prompts.md#咒語-1加入早鳥候補名單waitlist表單) 產生表單後，檢查你的 `<form>` 是否長得像這樣：
 
 ```html
 <form name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field">
@@ -58,7 +58,7 @@ sequenceDiagram
 
 ## 步驟 2：在 Netlify 開啟表單偵測（Form detection）
 
-> ⚠️ **最多人卡在這一步！** 新建立的 Netlify 專案，表單偵測功能**預設是關閉的**。
+> ⚠️ **最多人卡在這一步！** 自 2023 年 4 月起，新建立的 Netlify 專案表單偵測功能**預設是關閉的**（[官方公告](https://answers.netlify.com/t/forms-detection-now-off-by-default/90414)）。
 
 1. 登入 <https://app.netlify.com/>，點進你的專案。
 2. 左側選單點 **「Forms」**。
@@ -66,7 +66,7 @@ sequenceDiagram
    - （找不到的話，也可以到 **Project configuration → Forms → Form detection** 開啟。）
 4. 畫面會提示你需要**重新部署**，才會開始偵測表單。
 
-📖 官方說明：[Netlify：Form detection](https://docs.netlify.com/forms/setup/#enable-form-detection)
+📖 官方說明：[Netlify：Form detection](https://docs.netlify.com/manage/forms/setup/#enable-form-detection)
 
 ---
 
@@ -98,11 +98,11 @@ sequenceDiagram
 
 有人填表時自動寄信給你：
 
-1. Netlify → 你的專案 → **Project configuration** → **Notifications**。
-2. 找到 **Emails and webhooks** → **Form submission notifications** → **Add notification** → **Email notification**。
+1. Netlify → 你的專案 → 左側 **Forms**。
+2. 找到 **Submission notifications** → **Add notification** → 選 **Email notification**。
 3. 事件選 **New form submission**，填入你的 Email，表單選 `waitlist`，儲存。
 
-📖 官方說明：[Netlify：Form notifications](https://docs.netlify.com/forms/notifications/)
+📖 官方說明：[Netlify：Form notifications](https://docs.netlify.com/manage/forms/notifications/)
 
 ## 進階設定：匯出名單
 

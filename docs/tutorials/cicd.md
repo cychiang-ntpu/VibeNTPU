@@ -1,6 +1,6 @@
 # 🔄 體驗 CI/CD：上傳即上線的魔法
 
-[← 回第二週](README.md)
+[← 回第 2 週](../../lectures/wk02_1014_baas-cicd/README.md)
 
 ---
 
@@ -20,7 +20,7 @@ flowchart LR
 
 > 你上週在 Netlify 按下「Import from Git」的那一刻，就已經把這條自動化生產線接好了！
 
-📖 延伸閱讀：[Red Hat：什麼是 CI/CD？（繁中）](https://www.redhat.com/zh-tw/topics/devops/what-is-ci-cd)｜[GitHub：CI/CD 解說](https://github.com/resources/articles/devops/ci-cd)｜[Netlify：持續部署](https://docs.netlify.com/deploy/create-deploys/#deploy-with-git)
+📖 延伸閱讀：[Red Hat：什麼是 CI/CD？（繁中）](https://www.redhat.com/zh/topics/devops/what-is-ci-cd)｜[GitHub：CI/CD 解說](https://github.com/resources/articles/devops/ci-cd)｜[Netlify：持續部署](https://docs.netlify.com/deploy/create-deploys/#deploy-with-git)
 
 ---
 
@@ -30,7 +30,7 @@ flowchart LR
 記住現在的樣子（例如按鈕的顏色、標題的文字）。
 
 ### 2. 請 AI 做一個「明顯」的修改
-使用 [咒語 3](prompts.md#咒語-3快速改版體驗-cicd)，例如把按鈕改成亮橘色。存成 `index.html`。
+使用 [咒語 3](../../lectures/wk02_1014_baas-cicd/prompts.md#咒語-3快速改版體驗-cicd)，例如把按鈕改成亮橘色。存成 `index.html`。
 
 ### 3. 上傳到 GitHub 覆蓋舊檔案
 1. 到你的 GitHub repo → **Add file** → **Upload files**。
@@ -55,7 +55,7 @@ CI/CD 搭配版本控制，還有一個超強的保險：**隨時可以回到上
 - **在 Netlify 回復**：Deploys 頁面 → 點選之前某一筆成功的部署 → **Publish deploy**，網站立刻變回那個版本。
   📖 [Netlify：Rollbacks](https://docs.netlify.com/deploy/manage-deploys/manage-deploys-overview/#rollbacks)
 - **在 GitHub 查看歷史**：repo 頁面點 **Commits**（時鐘圖示），可以看到每一次修改的內容。
-  📖 [GitHub：檢視 Commit 歷史](https://docs.github.com/zh/pull-requests/committing-changes-to-your-project/viewing-and-comparing-commits/differences-between-commit-views)
+  📖 [GitHub：檢視 Commit 歷史](https://docs.github.com/zh/pull-requests/how-tos/commit-changes/comparing-commits)
 
 ---
 
@@ -69,4 +69,4 @@ CI/CD 搭配版本控制，還有一個超強的保險：**隨時可以回到上
 
 ---
 
-完成了！準備你的 MVP 發表 👉 [期末 Pitch 模板](../docs/pitch-template.md)
+完成了！準備你的 MVP 發表 👉 [期末 Pitch 模板](../pitch_template.md)

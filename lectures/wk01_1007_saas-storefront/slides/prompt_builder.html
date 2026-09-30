@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>咒語產生器</title>
+<style>
+:root{
+  --primary:#0f766e; --primary-2:#14b8a6; --accent:#f59e0b;
+  --bg:#f0fdfa; --card:#ffffff; --text:#1f2937; --muted:#5b6472;
+  --border:#cfe7e3; --chip:#f1f5f4; --chip-on:#ccfbf1; --code-bg:#0f2a28; --code-text:#e6fffb;
+  --shadow:0 6px 24px rgba(15,118,110,.10); --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --primary:#2dd4bf; --primary-2:#14b8a6; --accent:#fbbf24;
+    --bg:#0b1716; --card:#132322; --text:#e5f2f0; --muted:#9fb5b1;
+    --border:#24403d; --chip:#1a2e2c; --chip-on:#134e4a; --code-bg:#061110; --code-text:#d9fffa;
+    --shadow:0 6px 24px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+header{padding:20px 16px 8px;text-align:center}
+h1{margin:0;font-size:1.8rem;color:var(--primary)}
+.sub{margin:4px 0 12px;color:var(--muted)}
+.modes{display:inline-flex;flex-wrap:wrap;gap:6px;background:var(--card);padding:6px;border-radius:999px;border:1px solid var(--border);box-shadow:var(--shadow);max-width:100%}
+.modes button{border:0;background:transparent;padding:8px 16px;border-radius:999px;cursor:pointer;font-weight:600;color:var(--muted)}
+@media (max-width:560px){.modes{display:grid;grid-template-columns:1fr 1fr;border-radius:14px;width:100%}.modes button{border-radius:10px;padding:8px 6px;font-size:.92rem}}
+.modes button[aria-pressed="true"]{background:var(--primary);color:#fff}
+@media (prefers-color-scheme: dark){.modes button[aria-pressed="true"]{color:#042f2e}}
+main{max-width:1240px;margin:0 auto;padding:12px 16px 24px;display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){main{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.out{position:sticky;top:12px;align-self:start}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);min-width:0}
+.card h2{margin:0 0 10px;font-size:1.2rem}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.field{margin:14px 0}
+.field>label,legend{display:block;font-weight:700;margin-bottom:6px;padding:0}
+fieldset{border:0;margin:14px 0;padding:0;min-width:0}
+.hint{font-size:.88rem;color:var(--muted);font-weight:400}
+input[type=text],textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);font-size:1rem}
+input[type=text]:focus,textarea:focus{border-color:var(--primary-2)}
+.feat{display:grid;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--border);background:var(--chip);padding:7px 13px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:.95rem;user-select:none}
+.chip[aria-pressed="true"],.chip:has(input:checked){background:var(--chip-on);border-color:var(--primary-2);font-weight:700}
+.chip input{accent-color:var(--primary);margin:0;width:16px;height:16px}
+.chip:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+.custom{margin-top:8px}
+.btn{border:0;border-radius:10px;padding:9px 14px;cursor:pointer;font-weight:700}
+.btn-accent{background:var(--accent);color:#3b2600}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+.btn-big{width:100%;padding:14px;font-size:1.15rem;background:var(--primary);color:#fff;border-radius:12px;margin-top:10px}
+@media (prefers-color-scheme: dark){.btn-big{color:#042f2e}}
+.btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.remind{background:#fef3c7;color:#78350f;border:2px dashed var(--accent);border-radius:12px;padding:12px 14px;font-weight:700;font-size:1.05rem}
+.meter{margin-bottom:10px}
+.bar{height:12px;background:var(--chip);border-radius:999px;overflow:hidden;border:1px solid var(--border)}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary-2),var(--accent));transition:width .35s}
+.meter p{margin:6px 0 0;font-size:.95rem}
+pre{margin:0;background:var(--code-bg);color:var(--code-text);padding:14px;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font-family:ui-monospace,Menlo,Consolas,"Noto Sans TC",monospace;font-size:.92rem;line-height:1.55;max-height:60vh;overflow-y:auto}
+.tip{margin-top:12px;background:var(--chip);border-left:4px solid var(--primary-2);padding:10px 12px;border-radius:8px;font-size:.95rem}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,120px);background:var(--primary);color:#fff;padding:12px 20px;border-radius:999px;font-weight:700;box-shadow:var(--shadow);transition:transform .3s;z-index:9;max-width:calc(100% - 32px);text-align:center}
+.toast.show{transform:translate(-50%,0)}
+@media (prefers-color-scheme: dark){.toast{color:#042f2e}}
+footer{text-align:center;color:var(--muted);font-size:.9rem;padding:8px 16px 28px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <h1>🪄 咒語產生器</h1>
+  <p class="sub">填好表單，AI 咒語自動生成，一鍵複製貼給 AI 就能做出網站！</p>
+  <div class="modes" role="group" aria-label="選擇模式">
+    <button type="button" data-mode="w1" aria-pressed="true">第 1 週：產生首頁</button>
+    <button type="button" data-mode="w2" aria-pressed="false">第 2 週：加入早鳥名單表單</button>
+  </div>
+</header>
+
+<main>
+<section class="card" aria-labelledby="formTitle">
+  <div class="row">
+    <h2 id="formTitle">✍️ 填寫你的點子</h2>
+    <div class="chips">
+      <button type="button" class="btn btn-accent" id="randBtn">🎲 給我一個範例</button>
+      <button type="button" class="btn btn-ghost" id="resetBtn">🧹 清空重來</button>
+    </div>
+  </div>
+
+  <div class="remind" id="w2remind" hidden>📌 記得先把你的 index.html 完整貼給 AI！<br><span class="hint" style="color:inherit">（咒語複製後，在下面貼上整份 index.html 程式碼，再送出）</span></div>
+
+  <div class="field">
+    <label for="name">產品名稱 <span class="hint">例：三峽租屋雷達</span></label>
+    <input type="text" id="name" data-k="name" placeholder="幫你的產品取個名字">
+  </div>
+
+  <div id="w1fields">
+    <div class="field">
+      <label for="pitch">一句話介紹 <span class="hint">它幫誰解決什麼問題？</span></label>
+      <input type="text" id="pitch" data-k="pitch" placeholder="例：幫北大學生 3 分鐘找到安心好房">
+    </div>
+    <div class="field">
+      <label for="audience">目標客群</label>
+      <input type="text" id="audience" data-k="audience" placeholder="例：第一次在外租屋的大學生">
+    </div>
+    <fieldset>
+      <legend>三個核心功能 <span class="hint">每格寫一個</span></legend>
+      <div class="feat">
+        <input type="text" data-k="f1" aria-label="核心功能 1" placeholder="功能 1，例：地圖看房源">
+        <input type="text" data-k="f2" aria-label="核心功能 2" placeholder="功能 2，例：學長姐真實評價">
+        <input type="text" data-k="f3" aria-label="核心功能 3" placeholder="功能 3，例：新房源即時通知">
+      </div>
+    </fieldset>
+    <div class="field">
+      <label for="pricing">收費方式</label>
+      <input type="text" id="pricing" data-k="pricing" placeholder="例：免費版 + 進階版每月 NT$49">
+    </div>
+    <fieldset>
+      <legend>🎨 風格</legend>
+      <div class="chips" data-group="style">
+        <button type="button" class="chip" data-v="清新活潑">🌿 清新活潑</button>
+        <button type="button" class="chip" data-v="沉穩專業">💼 沉穩專業</button>
+        <button type="button" class="chip" data-v="可愛療癒">🧸 可愛療癒</button>
+        <button type="button" class="chip" data-v="科技未來感">🚀 科技未來感</button>
+        <button type="button" class="chip" data-v="文青手感">📖 文青手感</button>
+        <button type="button" class="chip" data-v="自訂">✏️ 自訂</button>
+      </div>
+      <input type="text" class="custom" data-k="styleCustom" aria-label="自訂風格" placeholder="描述你想要的風格，例：復古 90 年代像素風" hidden>
+    </fieldset>
+    <fieldset>
+      <legend>🖌️ 主色調</legend>
+      <div class="chips" data-group="color">
+        <button type="button" class="chip" data-v="青綠色"><span class="dot" style="background:#14b8a6"></span>青綠</button>
+        <button type="button" class="chip" data-v="莫蘭迪藍"><span class="dot" style="background:#7d93a8"></span>莫蘭迪藍</button>
+        <button type="button" class="chip" data-v="珊瑚橘"><span class="dot" style="background:#ff7f50"></span>珊瑚橘</button>
+        <button type="button" class="chip" data-v="薰衣草紫"><span class="dot" style="background:#a78bfa"></span>薰衣草紫</button>
+        <button type="button" class="chip" data-v="墨黑配金色"><span class="dot" style="background:linear-gradient(135deg,#111 50%,#d4a017 50%)"></span>墨黑金</button>
+        <button type="button" class="chip" data-v="自訂">✏️ 自訂文字</button>
+      </div>
+      <input type="text" class="custom" data-k="colorCustom" aria-label="自訂主色調" placeholder="例：抹茶綠配奶油白" hidden>
+    </fieldset>
+    <fieldset>
+      <legend>🧱 要包含的區塊</legend>
+      <div class="chips" id="secs"></div>
+    </fieldset>
+    <fieldset>
+      <legend>🤖 使用的 AI</legend>
+      <div class="chips">
+        <label class="chip"><input type="radio" name="ai" value="Claude">Claude</label>
+        <label class="chip"><input type="radio" name="ai" value="ChatGPT">ChatGPT</label>
+        <label class="chip"><input type="radio" name="ai" value="Gemini">Gemini</label>
+      </div>
+    </fieldset>
+  </div>
+
+  <div id="w2fields" hidden>
+    <fieldset>
+      <legend>即將推出的 3 個功能 <span class="hint">會顯示在會員儀表板的「敬請期待」卡片</span></legend>
+      <div class="feat">
+        <input type="text" data-k="u1" aria-label="即將推出功能 1" placeholder="例：一鍵預約看房">
+        <input type="text" data-k="u2" aria-label="即將推出功能 2" placeholder="例：室友配對">
+        <input type="text" data-k="u3" aria-label="即將推出功能 3" placeholder="例：租約健檢">
+      </div>
+    </fieldset>
+  </div>
+</section>
+
+<section class="card out" aria-labelledby="outTitle">
+  <h2 id="outTitle">✨ 你的專屬咒語</h2>
+  <div class="meter">
+    <div class="row" style="margin:0"><strong>💪 咒語健康度</strong><strong id="pct">0%</strong></div>
+    <div class="bar" role="progressbar" aria-label="咒語健康度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+    <p id="meterMsg"></p>
+  </div>
+  <pre id="out" tabindex="0" aria-label="產生的咒語"></pre>
+  <button type="button" class="btn btn-big" id="copyBtn">📋 複製咒語</button>
+  <div class="tip" id="tip"></div>
+</section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<footer>VibeNTPU 互動教材｜瀏覽器直接開，不需要網路</footer>
+
+<script>
+(function(){
+  var KEY = 'vibentpu_prompt_builder_v1';
+  var SECS = [['導覽列',1],['主視覺+CTA',1],['痛點',1],['功能介紹',1],['使用者推薦',0],['團隊介紹',0],['價格方案',1],['FAQ',1],['倒數計時',0],['頁尾',1]];
+  var SEC_DESC = {
+    '導覽列':'導覽列（Logo + 選單，手機版變漢堡選單）',
+    '主視覺+CTA':'主視覺 Hero 區（大標題、副標題、醒目的行動按鈕 CTA）',
+    '痛點':'痛點區（列出目標客群遇到的 3 個困擾）',
+    '功能介紹':'功能介紹（三個核心功能，用卡片 + emoji 圖示呈現）',
+    '使用者推薦':'使用者推薦（3 則虛構但真實感的使用者心得）',
+    '團隊介紹':'團隊介紹（2–3 位成員，用 emoji 當頭像）',
+    '價格方案':'價格方案（2–3 個方案卡片，推薦方案要特別標示）',
+    'FAQ':'常見問題 FAQ（4–5 題，可點擊展開收合）',
+    '倒數計時':'倒數計時（距離正式上線還有幾天幾時幾分幾秒，用 JavaScript 即時更新）',
+    '頁尾':'頁尾（版權宣告與聯絡方式）'
+  };
+  var PRESETS = [
+    {name:'三峽租屋雷達',pitch:'幫北大學生 3 分鐘找到安心又不踩雷的好房',audience:'第一次在三峽外宿的大學生',f1:'地圖一覽周邊房源與租金',f2:'學長姐真實租屋評價',f3:'新房源即時推播通知',pricing:'基本免費，進階版每月 NT$49',style:'清新活潑',color:'青綠色',u1:'一鍵預約看房',u2:'室友配對',u3:'租約健檢小幫手'},
+    {name:'AI 塔羅牌訂閱',pitch:'每天早上一張 AI 解讀的塔羅牌，陪你溫柔開始一天',audience:'喜歡占卜、想要心靈小語的年輕人',f1:'每日一抽 + AI 白話解讀',f2:'感情／課業／工作主題牌陣',f3:'抽牌日記與心情統計',pricing:'月訂閱 NT$99，年訂閱 NT$990',style:'可愛療癒',color:'薰衣草紫',u1:'好友合盤',u2:'月亮週期提醒',u3:'專屬塔羅語音'},
+    {name:'三峽學餐地圖',pitch:'不知道吃什麼？打開就知道北大附近哪家好吃又便宜',audience:'每天煩惱午餐的北大師生',f1:'依預算與距離篩選餐廳',f2:'今日隨機推薦轉盤',f3:'同學即時評分與排隊狀況',pricing:'完全免費，店家廣告收益',style:'清新活潑',color:'珊瑚橘',u1:'揪團訂便當',u2:'集點優惠券',u3:'素食專區'},
+    {name:'二手課本交換站',pitch:'學期末課本不再積灰塵，找到下一位主人還能省錢',audience:'想買便宜課本或清書櫃的大學生',f1:'輸入課號秒找課本',f2:'校內面交安全配對',f3:'筆記劃線程度標示',pricing:'免費刊登，成交抽 5% 手續費',style:'文青手感',color:'莫蘭迪藍',u1:'課本預購通知',u2:'筆記電子檔交換',u3:'信用評價徽章'},
+    {name:'毛孩保母媒合',pitch:'出遠門也安心，找到附近認證過的寵物保母',audience:'在外租屋、偶爾需要出遠門的毛孩家長',f1:'附近保母地圖與評價',f2:'照顧過程即時照片回報',f3:'線上預約與安心付款',pricing:'每次媒合收取 10% 服務費',style:'可愛療癒',color:'珊瑚橘',u1:'毛孩健康日誌',u2:'緊急獸醫轉介',u3:'保母培訓課程'},
+    {name:'揪運動 GoSport',pitch:'一個人也能運動！快速找到同校球友一起流汗',audience:'想運動但找不到伴的大學生',f1:'依運動項目與時段揪團',f2:'場地空位即時查詢',f3:'運動紀錄與成就徽章',pricing:'免費使用，進階版每月 NT$39',style:'科技未來感',color:'墨黑配金色',u1:'校際友誼賽',u2:'私人教練媒合',u3:'運動穿戴裝置同步'}
+  ];
+  var TIPS = {
+    Claude:'💡 <b>Claude 小撇步</b>：貼上咒語送出後，程式碼會出現在右側的 <b>Artifacts</b> 視窗，可以直接預覽網頁；點右上角的「下載」按鈕，就能把 index.html 存到電腦。',
+    ChatGPT:'💡 <b>ChatGPT 小撇步</b>：可以先開啟 <b>Canvas</b>（畫布）功能再送出咒語，就能在右側預覽網頁；也可以把程式碼複製到記事本，另存成 index.html（編碼選 UTF-8）。',
+    Gemini:'💡 <b>Gemini 小撇步</b>：在輸入框選擇 <b>Canvas</b> 再送出咒語，就能在右側預覽網頁；完成後可以複製程式碼，另存成 index.html（編碼選 UTF-8）。'
+  };
+  var W2TIP = '💡 <b>第 2 週小撇步</b>：送出前，把你第 1 週的 index.html <b>整份</b>貼在咒語下面。AI 回傳新版後，覆蓋舊檔並重新部署到 Netlify，表單才會在 Netlify 後台「Forms」出現喔！';
+
+  function blank(){
+    var s = {mode:'w1',name:'',pitch:'',audience:'',f1:'',f2:'',f3:'',pricing:'',style:'清新活潑',styleCustom:'',color:'青綠色',colorCustom:'',ai:'Claude',u1:'',u2:'',u3:'',sections:[]};
+    SECS.forEach(function(x){ if(x[1]) s.sections.push(x[0]); });
+    return s;
+  }
+  var S = blank();
+  try{ var saved = JSON.parse(localStorage.getItem(KEY)||'null'); if(saved && typeof saved==='object'){ for(var k in saved) if(k in S) S[k]=saved[k]; } }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+  var $ = function(q){ return document.querySelector(q); };
+  var $$ = function(q){ return Array.prototype.slice.call(document.querySelectorAll(q)); };
+
+  // 建立區塊勾選框
+  var secBox = $('#secs');
+  SECS.forEach(function(x){
+    var l = document.createElement('label'); l.className='chip';
+    var i = document.createElement('input'); i.type='checkbox'; i.value=x[0];
+    l.appendChild(i); l.appendChild(document.createTextNode(x[0]));
+    secBox.appendChild(l);
+  });
+
+  function syncUI(){
+    $$('[data-k]').forEach(function(el){ el.value = S[el.dataset.k]||''; });
+    $$('[data-group]').forEach(function(g){
+      var key = g.dataset.group;
+      $$('[data-group="'+key+'"] .chip').forEach(function(c){ c.setAttribute('aria-pressed', c.dataset.v===S[key]?'true':'false'); });
+      $('[data-k="'+key+'Custom"]').hidden = S[key]!=='自訂';
+    });
+    $$('#secs input').forEach(function(i){ i.checked = S.sections.indexOf(i.value)>=0; });
+    $$('input[name=ai]').forEach(function(i){ i.checked = i.value===S.ai; });
+    $$('[data-mode]').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.mode===S.mode?'true':'false'); });
+    var w2 = S.mode==='w2';
+    $('#w1fields').hidden = w2; $('#w2fields').hidden = !w2; $('#w2remind').hidden = !w2;
+    render();
+  }
+
+  function v(x, fb){ x = (x||'').trim(); return x || fb; }
+  var TBD = '（請你幫我想一個適合的）';
+
+  function buildW1(){
+    var style = S.style==='自訂' ? v(S.styleCustom, '由你決定') : S.style;
+    var color = S.color==='自訂' ? v(S.colorCustom, '由你決定') : S.color;
+    var secs = SECS.map(function(x){return x[0];}).filter(function(n){ return S.sections.indexOf(n)>=0; });
+    var L = [];
+    L.push('你是一位資深前端工程師兼 UI 設計師。請幫我做一個 SaaS 產品的「形象首頁（Landing Page）」，要漂亮、專業、讓人想立刻註冊。');
+    L.push('');
+    L.push('【產品資訊】');
+    L.push('- 產品名稱：' + v(S.name, TBD));
+    L.push('- 一句話介紹：' + v(S.pitch, TBD));
+    L.push('- 目標客群：' + v(S.audience, TBD));
+    L.push('- 三個核心功能：');
+    L.push('  1. ' + v(S.f1, TBD));
+    L.push('  2. ' + v(S.f2, TBD));
+    L.push('  3. ' + v(S.f3, TBD));
+    L.push('- 收費方式：' + v(S.pricing, TBD));
+    L.push('');
+    L.push('【視覺風格】');
+    L.push('- 整體風格：' + style);
+    L.push('- 主色調：' + color + '（請搭配協調的輔助色，按鈕與重點文字要夠醒目）');
+    L.push('- 加入適度的動畫效果（例如按鈕 hover、區塊淡入），但不要太花俏。');
+    L.push('');
+    L.push('【頁面區塊（由上到下）】');
+    if(!secs.length) L.push('（請你依照一般 SaaS 首頁的最佳實務自行安排）');
+    secs.forEach(function(n,i){ L.push((i+1)+'. '+SEC_DESC[n]); });
+    L.push('');
+    L.push('【技術要求（很重要，請務必遵守）】');
+    L.push('1. 所有 HTML、CSS、JavaScript 都寫在同一個 index.html 檔案裡。');
+    L.push('2. 不要使用任何框架或外部函式庫（不要 React、Vue、Tailwind、Bootstrap、jQuery）。');
+    L.push('3. 不要使用任何外部圖片或圖片網址，圖示與插圖請用 emoji 或 inline SVG。');
+    L.push('4. 要有 RWD 響應式設計，手機上也要好看好用（不能出現左右捲動）。');
+    L.push('5. 網頁上所有文字都使用繁體中文（台灣用語）。');
+    L.push('6. <head> 裡一定要有 <meta charset="UTF-8"> 和 <meta name="viewport" content="width=device-width, initial-scale=1.0">。');
+    L.push('7. 請直接回傳「完整」的 index.html 程式碼，不要省略任何部分，也不要用「…其餘相同」帶過。');
+    return L.join('\n');
+  }
+
+  function buildW2(){
+    var name = v(S.name, '我的產品');
+    var L = [];
+    L.push('你是一位資深前端工程師。下面是我目前的網站 index.html（產品名稱：' + name + '）。請幫我在頁面中加入一個「早鳥名單（Waitlist）」表單，並部署在 Netlify 上可以正常收集資料。');
+    L.push('');
+    L.push('【表單規格（Netlify Forms，請完全照做）】');
+    L.push('1. 表單標籤必須是：<form name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field">');
+    L.push('2. 表單內要有隱藏欄位：<input type="hidden" name="form-name" value="waitlist">');
+    L.push('3. 要有防機器人的隱藏蜜罐欄位（honeypot）：一個 name="bot-field" 的 input，用 CSS 隱藏起來，一般使用者看不到。');
+    L.push('4. 每一個欄位都一定要有 name 屬性。');
+    L.push('5. 欄位內容：');
+    L.push('   - 姓名（name="name"，必填）');
+    L.push('   - Email（name="email"，type="email"，必填）');
+    L.push('   - 身分（name="role"，下拉選單 select，選項例如：學生、上班族、老師、其他）');
+    L.push('   - 最期待的功能（name="wish"，多行文字 textarea）');
+    L.push('');
+    L.push('【送出行為（用 JavaScript）】');
+    L.push('1. 攔截表單送出（preventDefault），改用 fetch 以 POST 送到 "/"：');
+    L.push('   - headers：{ "Content-Type": "application/x-www-form-urlencoded" }');
+    L.push('   - body：new URLSearchParams(new FormData(form)).toString()');
+    L.push('2. 送出成功後：把使用者的姓名存進 localStorage，然後「在原本表單的位置」把表單替換成會員儀表板，顯示：');
+    L.push('   「🎉 歡迎回來，[名字]！這是您的會員儀表板，建置中…」');
+    L.push('   下面放 3 張「即將推出（Coming soon）」卡片，內容分別是：');
+    L.push('   1. ' + v(S.u1, TBD));
+    L.push('   2. ' + v(S.u2, TBD));
+    L.push('   3. ' + v(S.u3, TBD));
+    L.push('3. 重新整理頁面時，如果 localStorage 裡已經有姓名，就直接顯示儀表板，不用再填表單。');
+    L.push('4. 儀表板要有一個「登出」按鈕，按下後清除 localStorage，並重新顯示表單。');
+    L.push('5. 如果送出失敗，要顯示友善的中文錯誤訊息（例如：「哎呀，送出失敗了，請稍後再試一次 🙏」），不要讓畫面壞掉。');
+    L.push('');
+    L.push('【其他要求】');
+    L.push('1. 程式碼請加上繁體中文註解，讓初學者看得懂。');
+    L.push('2. 表單與儀表板的樣式要和原本網站的風格一致，手機上也要好看。');
+    L.push('3. 網站其他部分請保持不變，不要刪改原本的內容。');
+    L.push('4. 請回傳「完整」的 index.html 程式碼，不要省略任何部分。');
+    L.push('');
+    L.push('以下是我目前的 index.html：');
+    L.push('（↓↓↓ 請在這裡貼上你完整的 index.html ↓↓↓）');
+    return L.join('\n');
+  }
+
+  function health(){
+    var items;
+    if(S.mode==='w2'){
+      items = [[S.name,'先幫產品取個名字吧！✨'],[S.u1,'寫下第一個即將推出的功能 🚀'],[S.u2,'再想一個即將推出的功能 💡'],[S.u3,'再補一個功能就滿分囉！']];
+    }else{
+      items = [
+        [S.name,'先幫產品取個響亮的名字吧！✨'],
+        [S.pitch,'用一句話介紹你的產品，AI 會更懂你 💬'],
+        [S.audience,'寫下目標客群，文案會更打中人心 🎯'],
+        [S.f1,'寫下第一個核心功能 🧩'],[S.f2,'再寫一個核心功能 🧩'],[S.f3,'再補一個功能就滿分囉！'],
+        [S.pricing,'想想看怎麼收費？免費也是一種選擇 💰'],
+        [S.style==='自訂'?S.styleCustom:S.style,'描述一下你想要的風格 🎨'],
+        [S.color==='自訂'?S.colorCustom:S.color,'寫下你想要的顏色 🖌️'],
+        [S.sections.length>=3?'ok':'','至少勾選 3 個區塊，頁面才豐富喔 🧱']
+      ];
+    }
+    var done = items.filter(function(x){ return (x[0]||'').trim(); }).length;
+    var pct = Math.round(done/items.length*100);
+    var miss = items.filter(function(x){ return !(x[0]||'').trim(); });
+    var msg;
+    if(pct===100) msg='🏆 滿分咒語！快複製貼給 AI 吧！';
+    else if(miss.length===1) msg=miss[0][1];
+    else if(pct===0) msg='🌱 從產品名稱開始吧，或按「🎲 給我一個範例」先玩玩看！';
+    else msg=(pct>=60?'👍 很棒，快完成了！':'🙌 好的開始！')+'下一步：'+miss[0][1];
+    return {pct:pct,msg:msg};
+  }
+
+  function render(){
+    $('#out').textContent = S.mode==='w2' ? buildW2() : buildW1();
+    var h = health();
+    $('#pct').textContent = h.pct+'%';
+    $('#barFill').style.width = h.pct+'%';
+    $('#bar').setAttribute('aria-valuenow', h.pct);
+    $('#meterMsg').textContent = h.msg;
+    $('#tip').innerHTML = S.mode==='w2' ? W2TIP : TIPS[S.ai];
+    save();
+  }
+
+  // 事件綁定
+  document.addEventListener('input', function(e){
+    var k = e.target.dataset && e.target.dataset.k;
+    if(k){ S[k]=e.target.value; render(); }
+  });
+  document.addEventListener('change', function(e){
+    var t = e.target;
+    if(t.name==='ai'){ S.ai=t.value; render(); }
+    if(t.closest && t.closest('#secs')){ S.sections = $$('#secs input:checked').map(function(i){return i.value;}); render(); }
+  });
+  $$('[data-group] .chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      var key = c.parentNode.dataset.group; S[key]=c.dataset.v; syncUI();
+      if(c.dataset.v==='自訂'){ var inp=$('[data-k="'+key+'Custom"]'); if(inp) inp.focus(); }
+    });
+  });
+  $$('[data-mode]').forEach(function(b){ b.addEventListener('click', function(){ S.mode=b.dataset.mode; syncUI(); }); });
+
+  var lastPreset = -1;
+  $('#randBtn').addEventListener('click', function(){
+    var i; do{ i=Math.floor(Math.random()*PRESETS.length); }while(i===lastPreset && PRESETS.length>1);
+    lastPreset=i; var p=PRESETS[i];
+    for(var k in p) S[k]=p[k];
+    syncUI(); toast('🎲 已填入範例：'+p.name+'（可以自由修改喔）');
+  });
+  $('#resetBtn').addEventListener('click', function(){
+    if(!confirm('確定要清空所有欄位嗎？')) return;
+    var m=S.mode; S=blank(); S.mode=m; syncUI(); toast('🧹 已清空，重新開始吧！');
+  });
+
+  var tt;
+  function toast(msg){
+    var t=$('#toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(tt); tt=setTimeout(function(){ t.classList.remove('show'); }, 2600);
+  }
+  function fallbackCopy(text){
+    var ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly','');
+    ta.style.position='fixed'; ta.style.top='-1000px'; document.body.appendChild(ta);
+    ta.select(); var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta); return ok;
+  }
+  $('#copyBtn').addEventListener('click', function(){
+    var text=$('#out').textContent;
+    var done=function(){ toast(S.mode==='w2'?'✅ 已複製！記得在後面貼上你的 index.html 喔':'✅ 咒語已複製！快去貼給 '+S.ai+' 吧 🚀'); };
+    var fail=function(){ if(fallbackCopy(text)) done(); else toast('⚠️ 複製失敗，請手動選取文字複製'); };
+    if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(text).then(done, fail); }
+    else fail();
+  });
+
+  syncUI();
+})();
+</script>
+</body>
+</html>

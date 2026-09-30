@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>資料怎麼流動：BaaS、LocalStorage 與 CI/CD</title>
+<style>
+:root{
+  --pri:#0f766e;--pri2:#14b8a6;--acc:#f59e0b;--bg:#f6faf9;--card:#ffffff;--ink:#12302d;--muted:#52706c;
+  --line:#d4e6e3;--soft:#e6f5f3;--accsoft:#fff5e0;--ok:#15803d;--oksoft:#e7f7ec;--bad:#b91c1c;--badsoft:#fdecec;
+  --phone:#1f2937;--screen:#ffffff;--shadow:0 6px 20px rgba(15,60,55,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0b1716;--card:#12211f;--ink:#e3f2ef;--muted:#9bbab5;--line:#24403c;--soft:#15312d;--accsoft:#3a2c0e;
+  --ok:#4ade80;--oksoft:#12301d;--bad:#f87171;--badsoft:#3a1616;--phone:#000;--screen:#18292a;--pri:#2dd4bf;--shadow:0 6px 20px rgba(0,0,0,.4)}
+}
+*{box-sizing:border-box}
+html{font-size:18px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;margin:.3em 0 .2em;color:var(--pri)}
+h2{font-size:1.25rem;margin:.2em 0 .5em}
+h3{font-size:1.05rem;margin:.2em 0 .4em}
+p{margin:.4em 0}
+button{font:inherit;cursor:pointer;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:.45em .9em;min-height:44px}
+button:hover{border-color:var(--pri2)}
+button:disabled{opacity:.5;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+.btn-pri{background:var(--pri);border-color:var(--pri);color:#fff;font-weight:700}
+@media (prefers-color-scheme: dark){.btn-pri{color:#062522}}
+.sub{color:var(--muted)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;border-bottom:2px solid var(--line);padding-bottom:8px}
+.tabs button[aria-selected="true"]{background:var(--pri);border-color:var(--pri);color:#fff;font-weight:700}
+@media (prefers-color-scheme: dark){.tabs button[aria-selected="true"]{color:#062522}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:2px solid var(--pri2);border-radius:14px;overflow:hidden}
+.seg button{border:0;border-radius:0;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--pri2);color:#062522;font-weight:700}
+code{background:var(--soft);padding:0 .3em;border-radius:6px;font-size:.9em;word-break:break-all}
+.grid1{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:18px;margin-top:12px}
+.phone{background:var(--phone);border-radius:34px;padding:14px 12px 20px;max-width:320px;width:100%;margin:0 auto;box-shadow:var(--shadow)}
+.phone .notch{width:90px;height:8px;border-radius:6px;background:#444;margin:0 auto 10px}
+.screen{background:var(--screen);border-radius:20px;min-height:360px;padding:16px;position:relative}
+.screen .bar{font-size:.75rem;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:8px}
+.screen label{display:block;font-size:.9rem;margin-top:8px}
+.screen input{width:100%;font:inherit;padding:.4em .6em;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.screen .go{width:100%;margin-top:14px}
+.welcome{text-align:center;padding-top:40px;font-size:1.25rem;font-weight:700}
+.panels{display:grid;gap:14px}
+.panel h3{display:flex;align-items:center;gap:6px}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.list li{background:var(--soft);border-radius:10px;padding:.35em .6em;font-size:.9rem;display:flex;flex-wrap:wrap;gap:4px 12px}
+.list li.new{animation:pop .4s}
+.empty{color:var(--muted);font-size:.9rem;font-style:italic}
+.stamp{background:var(--accsoft);border:2px dashed var(--acc);border-radius:14px;padding:.6em .8em;font-size:.95rem;animation:pop .4s}
+.void{border:2px dashed var(--bad);border-radius:14px;padding:.8em;text-align:center;font-size:1.05rem;background:var(--badsoft)}
+.msg{margin-top:12px;border-radius:14px;padding:.7em 1em;border-left:6px solid var(--acc);background:var(--accsoft)}
+.msg.key{border-left-color:var(--pri2);background:var(--soft)}
+.msg:empty{display:none}
+.flyer{position:fixed;z-index:50;font-size:2rem;pointer-events:none;left:0;top:0;transition:transform .9s ease-in-out,opacity .9s}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cmp ul{padding-left:1.2em;margin:.3em 0}
+.game{display:grid;gap:10px;margin-top:10px}
+.q{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--card)}
+.q button.pick{opacity:1;border-color:var(--acc);background:var(--accsoft);font-weight:700}
+.q .fb{grid-column:1/-1;font-size:.92rem;border-radius:10px;padding:.35em .7em}
+.q .fb.ok{background:var(--oksoft);color:var(--ok)}
+.q .fb.no{background:var(--badsoft);color:var(--bad)}
+.score{font-size:1.2rem;font-weight:700;color:var(--pri)}
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0;list-style:none;padding:0}
+.step{border:2px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;background:var(--card);font-size:.88rem;transition:all .3s}
+.step .ic{font-size:1.8rem;display:block}
+.step.on{border-color:var(--acc);background:var(--accsoft);transform:translateY(-4px)}
+.step.done{border-color:var(--pri2);background:var(--soft)}
+.step .lbl{flex:1}.prog{display:block;width:80%;margin-left:auto;margin-right:auto;height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:6px}
+.prog i{display:block;height:100%;width:0;background:var(--pri2)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{width:48px;height:48px;border-radius:50%;border:3px solid transparent;padding:0}
+.chip[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 3px var(--acc)}
+.grid3{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:18px}
+.log li{justify-content:space-between}
+.badge{font-size:.78rem;border-radius:999px;padding:0 .6em;background:var(--line)}
+.badge.pub{background:var(--pri2);color:#062522;font-weight:700}
+footer{text-align:center;color:var(--muted);padding:24px 16px;font-size:.9rem}
+[hidden]{display:none!important}
+@media (max-width:760px){
+  .grid1,.grid3,.cmp{grid-template-columns:minmax(0,1fr)}
+  .pipe{grid-template-columns:minmax(0,1fr)}
+  .step{display:flex;gap:10px;align-items:center;text-align:left}
+  .step.on{transform:translateX(4px)}
+  .q{grid-template-columns:minmax(0,1fr)}
+  h1{font-size:1.35rem}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+@media (max-width:560px){.mcode{display:block;font-size:.8em}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🍜 資料怎麼流動？</h1>
+  <p class="sub">第 2 週：表單資料去哪了 → BaaS 訂單代收中心 → 集點卡 vs 登記簿 → CI/CD 自動傳真機</p>
+</header>
+<div class="tabs" role="tablist" aria-label="教材分頁">
+  <button role="tab" id="t1" aria-controls="p1" aria-selected="true">📮 資料去哪了？</button>
+  <button role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">🎫 集點卡 vs 登記簿</button>
+  <button role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">📠 CI/CD 自動傳真機</button>
+</div>
+
+<!-- TAB 1 -->
+<section id="p1" role="tabpanel" aria-labelledby="t1">
+  <div class="row">
+    <span>餐廳模式：</span>
+    <div class="seg" role="group" aria-label="後端模式">
+      <button id="mNone" aria-pressed="true">🚫 沒有後端</button>
+      <button id="mBaas" aria-pressed="false">✅ 有 BaaS<span class="mcode">（<code>data-netlify="true"</code>）</span></button>
+    </div>
+  </div>
+  <div class="grid1">
+    <div>
+      <div class="phone" aria-label="模擬手機">
+        <div class="notch"></div>
+        <div class="screen" id="screen">
+          <div class="bar"><span id="devLabel">📱 手機 #1</span><span>早鳥名單.netlify.app</span></div>
+          <form id="form" autocomplete="off">
+            <h3>🚀 加入早鳥名單</h3>
+            <label for="fName">姓名</label>
+            <input id="fName" required maxlength="20" placeholder="例如：小明">
+            <label for="fMail">Email</label>
+            <input id="fMail" type="email" required maxlength="40" placeholder="ming@example.com">
+            <button class="btn-pri go" id="fGo" type="submit">📨 送出</button>
+          </form>
+          <div id="welcome" class="welcome" hidden></div>
+        </div>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px">
+        <button id="bRefresh">🔄 重新整理網頁</button>
+        <button id="bDevice">📱 換一台手機</button>
+        <button id="bLogout">🚪 登出</button>
+      </div>
+    </div>
+    <div class="panels">
+      <div class="void" id="void">❓ 沒有後端＝沒有廚房<br><span class="sub" style="font-size:.9rem">表單送出後，資料無處可去</span></div>
+      <div class="card panel" id="pNet">
+        <h3>☁️ Netlify 後台（老闆看得到）</h3>
+        <p class="sub" style="font-size:.85rem">雲端資料庫＝櫃檯的會員登記簿：存在伺服器上，換哪台裝置都在。</p>
+        <ul class="list" id="netList"></ul>
+        <p class="empty" id="netEmpty">（目前還沒有任何報名）</p>
+      </div>
+      <div class="card panel" id="pLocal">
+        <h3>💻 這台裝置的 LocalStorage（集點卡）</h3>
+        <p class="sub" style="font-size:.85rem">集點卡＝帶回家的卡片：只存在「這支手機的瀏覽器」裡。</p>
+        <div id="localBox"></div>
+      </div>
+    </div>
+  </div>
+  <div class="msg" id="msg1" role="status" aria-live="polite"></div>
+</section>
+
+<!-- TAB 2 -->
+<section id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+  <div class="cmp">
+    <div class="card">
+      <h2>☁️ 雲端資料庫＝櫃檯的會員登記簿</h2>
+      <ul>
+        <li>存在<b>伺服器</b>（例如 Netlify 後台）</li>
+        <li><b>老闆看得到</b>所有人的資料</li>
+        <li><b>換手機、換電腦</b>都還在</li>
+        <li>適合：名單、訂單、會員資料</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>💻 LocalStorage＝帶回家的集點卡</h2>
+      <ul>
+        <li>存在<b>使用者自己的瀏覽器</b></li>
+        <li><b>老闆看不到</b>，只有這台裝置知道</li>
+        <li><b>換一台裝置就不見</b>，清除瀏覽資料也會不見</li>
+        <li>適合：偏好設定、「記得你來過」</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2>🧩 分類小遊戲：該放哪裡？</h2>
+    <p class="sub">每個情境點一下 ☁️ 登記簿 或 💻 集點卡，馬上知道答案！</p>
+    <div class="game" id="game"></div>
+    <div class="row" style="margin-top:12px;justify-content:space-between">
+      <span class="score" id="score" role="status" aria-live="polite">得分：0 / 6</span>
+      <button id="gReset">🔁 再玩一次</button>
+    </div>
+    <p id="cheer"></p>
+  </div>
+</section>
+
+<!-- TAB 3 -->
+<section id="p3" role="tabpanel" aria-labelledby="t3" hidden>
+  <p>📐 <b>GitHub＝總部設計圖</b>、<b>Netlify＝分店</b>。總部設計圖一改，<b>自動傳真機</b>就傳給分店，分店<b>不用關店</b>就換上新裝潢。</p>
+  <ol class="pipe" id="pipe">
+    <li class="step"><span class="ic">🤖</span><span>AI 改程式</span></li>
+    <li class="step"><span class="ic">💻</span><span>拖曳上傳 GitHub（Commit）</span></li>
+    <li class="step"><span class="ic">📠</span><span>GitHub 通知 Netlify</span></li>
+    <li class="step"><span class="ic">🏗️</span><span class="lbl">Netlify 部署<span class="prog"><i id="progBar"></i></span></span></li>
+    <li class="step"><span class="ic">📱</span><span>全世界重新整理就看到新版</span></li>
+  </ol>
+  <div class="grid3">
+    <div>
+      <div class="phone" aria-label="線上網站預覽">
+        <div class="notch"></div>
+        <div class="screen" style="min-height:260px">
+          <div class="bar"><span>🌐 線上版</span><span id="verLabel">v1</span></div>
+          <h3>🚀 加入早鳥名單</h3>
+          <p class="sub" style="font-size:.9rem">搶先體驗我們的新服務！</p>
+          <button id="liveBtn" class="go" style="width:100%;color:#fff;font-weight:700;border:0;margin-top:20px" tabindex="-1" aria-hidden="true">📨 立即報名</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎨 請 AI 改按鈕顏色</h3>
+      <div class="chips" id="chips" role="group" aria-label="選擇按鈕顏色"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn-pri" id="bPush">⬆️ 上傳到 GitHub</button>
+        <button id="bRoll">⏪ 回到上一版</button>
+      </div>
+      <p class="sub" id="status3" role="status" aria-live="polite">選一個顏色，按「上傳到 GitHub」。</p>
+      <h3 style="margin-top:10px">📋 Netlify Deploys</h3>
+      <ul class="list log" id="log"></ul>
+    </div>
+  </div>
+  <div class="msg key" style="margin-top:16px">
+    <b>🤔 為什麼 IG、Netflix 每天更新，卻不用掛「維修中」？</b><br>
+    因為新版是在<b>旁邊先蓋好</b>，蓋好才「一秒切換」過去；舊版一直照常營業。萬一新版出錯，按一下就能<b>回到上一版</b>。這就是 CI/CD：持續整合（改完就合併）＋持續部署（自動上線）。
+  </div>
+</section>
+</div>
+<footer>VibeNTPU 第 2 週互動教材｜瀏覽器直接開，不需要網路</footer>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id)};
+var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function now(){var d=new Date();return[d.getHours(),d.getMinutes(),d.getSeconds()].map(function(n){return String(n).padStart(2,'0')}).join(':')}
+function wait(ms){return new Promise(function(r){setTimeout(r,RM?Math.min(ms,60):ms)})}
+function el(tag,txt,cls){var e=document.createElement(tag);if(txt!=null)e.textContent=txt;if(cls)e.className=cls;return e}
+
+/* Tabs */
+var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+function sel(t){tabs.forEach(function(b){var on=b===t;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;$(b.getAttribute('aria-controls')).hidden=!on});}
+tabs.forEach(function(b,i){
+  b.addEventListener('click',function(){sel(b)});
+  b.addEventListener('keydown',function(e){var k=e.key,j=null;
+    if(k==='ArrowRight')j=(i+1)%tabs.length;else if(k==='ArrowLeft')j=(i-1+tabs.length)%tabs.length;else if(k==='Home')j=0;else if(k==='End')j=tabs.length-1;
+    if(j!==null){e.preventDefault();sel(tabs[j]);tabs[j].focus()}});
+});
+
+/* Fly animation */
+function fly(from,to,emoji,vanish){
+  return new Promise(function(res){
+    if(RM){res();return}
+    var a=from.getBoundingClientRect(),b=to.getBoundingClientRect();
+    var f=el('span',emoji,'flyer');f.setAttribute('aria-hidden','true');
+    var x0=a.left+a.width/2-16,y0=a.top+a.height/2-16;
+    f.style.transform='translate('+x0+'px,'+y0+'px)';document.body.appendChild(f);
+    f.getBoundingClientRect();
+    var x1=b.left+b.width/2-16,y1=b.top+b.height/2-16;
+    f.style.transform='translate('+x1+'px,'+y1+'px)'+(vanish?' scale(.2) rotate(360deg)':'');
+    if(vanish)f.style.opacity='0';
+    setTimeout(function(){f.remove();res()},950);
+  });
+}
+
+/* Tab 1 state (simulation only, in-memory) */
+var S={mode:'none',net:[],local:null,device:1,busy:false};
+var msg1=$('msg1');
+function say(html,key){msg1.className='msg'+(key?' key':'');msg1.innerHTML=html}
+function renderNet(fresh){
+  var ul=$('netList');ul.innerHTML='';
+  S.net.forEach(function(r,i){var li=el('li',null,fresh&&i===S.net.length-1?'new':'');li.appendChild(el('b','👤 '+r.name));li.appendChild(el('span','✉️ '+r.email));li.appendChild(el('span','🕒 '+r.time+'（手機 #'+r.dev+'）','sub'));ul.appendChild(li)});
+  $('netEmpty').hidden=S.net.length>0;
+}
+function renderLocal(){
+  var box=$('localBox');box.innerHTML='';
+  if(S.local){var c=el('div',null,'stamp');c.appendChild(el('div','🎫 集點卡'));c.appendChild(el('code','joinedName = "'+S.local.name+'"'));box.appendChild(c)}
+  else box.appendChild(el('p','（空的：這台裝置沒有存任何東西）','empty'));
+}
+function renderPhone(){
+  $('devLabel').textContent='📱 手機 #'+S.device;
+  var w=$('welcome');
+  if(S.local){$('form').hidden=true;w.hidden=false;w.textContent='🎉 歡迎回來，'+S.local.name+'！'}
+  else{$('form').hidden=false;w.hidden=true}
+}
+function renderMode(){
+  $('mNone').setAttribute('aria-pressed',S.mode==='none');$('mBaas').setAttribute('aria-pressed',S.mode==='baas');
+  $('void').hidden=S.mode!=='none';
+}
+function render(){renderNet();renderLocal();renderPhone();renderMode()}
+$('mNone').onclick=function(){S.mode='none';renderMode();say('🚫 現在是「只有裝潢、沒有廚房」的餐廳。試著送出表單看看？')};
+$('mBaas').onclick=function(){S.mode='baas';renderMode();say('✅ 加上 <code>data-netlify="true"</code>，Netlify 就變成你的<b>訂單代收中心</b>，不用自己寫後端！')};
+$('form').addEventListener('submit',function(e){
+  e.preventDefault();if(S.busy)return;
+  var name=$('fName').value.trim(),email=$('fMail').value.trim();
+  if(!name||!email)return;
+  S.busy=true;$('fGo').disabled=true;
+  if(S.mode==='none'){
+    fly($('fGo'),$('void'),'📄',true).then(function(){
+      $('form').reset();
+      say('❓ <b>資料哪裡都沒去！餐廳只有裝潢，沒有廚房。</b><br>網頁（前端）只負責好看，要「收」資料得有後端。切換到「有 BaaS」再試一次！');
+      S.busy=false;$('fGo').disabled=false;
+    });
+  }else{
+    fly($('fGo'),$('pNet'),'✉️').then(function(){
+      S.net.push({name:name,email:email,time:now(),dev:S.device});renderNet(true);
+      return fly($('fGo'),$('pLocal'),'🎫');
+    }).then(function(){
+      S.local={name:name};$('form').reset();renderLocal();renderPhone();
+      say('📬 資料寄到了 <b>Netlify 後台</b>（老闆看得到），同時在這台手機放了一張<b>集點卡</b>（LocalStorage）記住你的名字。<br>試試「🔄 重新整理網頁」或「📱 換一台手機」！');
+      S.busy=false;$('fGo').disabled=false;
+      if(innerWidth<=760&&!RM)$('pNet').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  }
+});
+$('bRefresh').onclick=function(){
+  if(S.busy)return;
+  var s=$('screen');s.style.opacity='.2';
+  wait(300).then(function(){s.style.opacity='';renderPhone();
+    if(S.local)say('🔄 重新整理後還是「歡迎回來，'+S.local.name+'」——因為瀏覽器口袋裡的<b>集點卡（LocalStorage）</b>還記得你！');
+    else say('🔄 重新整理完成。這台裝置沒有集點卡，所以顯示表單。');
+  });
+};
+$('bDevice').onclick=function(){
+  if(S.busy)return;
+  S.device++;S.local=null;render();$('form').reset();
+  say('📱 <b>換到手機 #'+S.device+'：集點卡不見了，但 Netlify 後台的名單還在！</b><br>💡 LocalStorage 只存在「那一台裝置的瀏覽器」；雲端資料庫存在伺服器，所以老闆的登記簿不受影響。想要「換手機也認得你」，就得查雲端的會員登記簿（需要登入系統）。',true);
+};
+$('bLogout').onclick=function(){
+  if(S.busy)return;
+  S.local=null;renderLocal();renderPhone();
+  say('🚪 已登出：把這台手機的集點卡撕掉了（刪除 LocalStorage）。雲端名單不受影響。');
+};
+render();
+say('👋 先在「沒有後端」模式填表送出，看看資料會去哪裡。');
+
+/* Tab 2 game */
+var Q=[
+ ['收集早鳥名單','cloud','老闆要看到所有人的名單，一定要放在雲端登記簿。'],
+ ['記住深色模式偏好','local','只跟這台裝置有關的小設定，放集點卡就好。'],
+ ['會員訂單紀錄','cloud','訂單很重要，要能跨裝置查、老闆也要看得到。'],
+ ['記住訪客已填過表單','local','只是讓這台瀏覽器別再跳出表單，用集點卡記一下即可（名單本身仍在雲端）。'],
+ ['跨裝置同步','cloud','手機、電腦都要一樣？只有伺服器上的登記簿做得到。'],
+ ['購物車暫存（還沒結帳）','local','還沒結帳的暫時清單，先放在這台瀏覽器；結帳時才送到雲端成為訂單。']
+];
+var ans={};
+function drawGame(){
+  var g=$('game');g.innerHTML='';
+  Q.forEach(function(q,i){
+    var d=el('div',null,'q');d.appendChild(el('span',(i+1)+'. '+q[0]));
+    var r=el('div',null,'row');
+    [['cloud','☁️ 登記簿'],['local','💻 集點卡']].forEach(function(o){
+      var b=el('button',o[1]);b.setAttribute('aria-label',q[0]+'：'+o[1]);
+      b.disabled=i in ans;if(ans[i]===o[0])b.className='pick';
+      b.onclick=function(){ans[i]=o[0];drawGame();var nb=$('game').children[i];if(nb)nb.querySelector('.fb').focus()};
+      r.appendChild(b)});
+    d.appendChild(r);
+    if(i in ans){var ok=ans[i]===q[1];var fb=el('div',(ok?'✅ 答對！':'❌ 應該是 '+(q[1]==='cloud'?'☁️ 登記簿':'💻 集點卡')+'。')+q[2],'fb '+(ok?'ok':'no'));fb.tabIndex=-1;d.appendChild(fb)}
+    else d.appendChild(el('div','','fb'));
+    g.appendChild(d)});
+  var n=Object.keys(ans).length,s=Object.keys(ans).filter(function(k){return ans[k]===Q[k][1]}).length;
+  $('score').textContent='得分：'+s+' / '+Q.length;
+  $('cheer').textContent=n<Q.length?'':(s===Q.length?'🏆 全對！你已經能幫 SaaS 設計資料架構了！':s>=4?'👍 很棒！看一下解說就全懂了。':'🌱 沒關係，記住口訣：老闆要看、跨裝置 → 登記簿；只跟這台有關 → 集點卡。');
+}
+$('gReset').onclick=function(){ans={};drawGame()};
+drawGame();
+
+/* Tab 3 CI/CD */
+var COLORS=[['藍綠','#0f766e'],['琥珀','#d97706'],['粉紅','#db2777'],['靛藍','#4f46e5'],['紅','#dc2626']];
+var pick=1,deploys=[{color:'#0f766e',name:'藍綠',msg:'第一版上線',time:now()}],cur=0,running=false;
+function drawChips(){var c=$('chips');c.innerHTML='';COLORS.forEach(function(k,i){var b=el('button',null,'chip');b.style.background=k[1];b.setAttribute('aria-label',k[0]+'色');b.setAttribute('aria-pressed',i===pick);b.onclick=function(){pick=i;drawChips();c.children[i].focus()};c.appendChild(b)})}
+function drawLive(){var d=deploys[cur];$('liveBtn').style.background=d.color;$('verLabel').textContent='v'+(cur+1)}
+function drawLog(){var ul=$('log');ul.innerHTML='';
+  for(var i=deploys.length-1;i>=0;i--){var d=deploys[i],li=el('li');li.appendChild(el('span','🕒 '+d.time+'　'+d.msg));li.appendChild(el('span',i===cur?'Published':'Old','badge'+(i===cur?' pub':'')));ul.appendChild(li)}
+  $('bRoll').disabled=running||cur===0;$('bPush').disabled=running;}
+var steps=[].slice.call(document.querySelectorAll('.step'));
+function setStep(n){steps.forEach(function(s,i){s.classList.toggle('on',i===n);s.classList.toggle('done',i<n)})}
+$('bPush').onclick=function(){
+  if(running)return;running=true;drawLog();
+  var k=COLORS[pick],msg='把按鈕改成'+k[0]+'色',st=$('status3'),bar=$('progBar');bar.style.width='0';
+  setStep(0);st.textContent='🤖 AI 正在修改 index.html…';
+  wait(900).then(function(){setStep(1);st.textContent='💻 Commit：「'+msg+'」上傳到 GitHub（總部設計圖更新）';return wait(1000)})
+  .then(function(){setStep(2);st.textContent='📠 自動傳真機啟動：GitHub 通知 Netlify「設計圖改了！」';return wait(1000)})
+  .then(function(){setStep(3);st.textContent='🏗️ Netlify 在旁邊蓋新版中…舊版照常營業，沒有「維修中」';
+    var p=0;return new Promise(function(r){var t=setInterval(function(){p+=RM?100:5;bar.style.width=Math.min(p,100)+'%';if(p>=100){clearInterval(t);r()}},120)})})
+  .then(function(){deploys.push({color:k[1],name:k[0],msg:msg,time:now()});cur=deploys.length-1;
+    setStep(4);drawLive();st.textContent='📱 Published！全世界重新整理就看到新版按鈕了 🎉';return wait(1200)})
+  .then(function(){setStep(5);running=false;drawLog()});
+};
+$('bRoll').onclick=function(){
+  if(running||cur===0)return;cur--;var d=deploys[cur];
+  drawLive();drawLog();setStep(-1);
+  $('status3').textContent='⏪ 一秒回到 v'+(cur+1)+'（'+d.msg+'）——新版有問題時的救命按鈕，不用重新部署！';
+};
+drawChips();drawLive();drawLog();
+})();
+</script>
+</body>
+</html>

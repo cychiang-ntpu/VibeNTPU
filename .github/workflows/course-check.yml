@@ -1,0 +1,44 @@
+# 課程 repo 自動檢查：每次 push 都確認講義連結沒壞、示範作品的健檢結果符合預期
+name: course-check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 檢查 Markdown 內部連結與錨點
+        run: python3 tools/ci/check_links.py
+
+      - name: 示範作品健檢（LOW / MEDIUM 應通過 Level 1，HIGH 應通過 Level 3）
+        run: |
+          set -e
+          python3 tools/ci/vibe_check.py samples/LOW/index.html --level 1
+          python3 tools/ci/vibe_check.py samples/MEDIUM/index.html --level 1
+          python3 tools/ci/vibe_check.py samples/HIGH/index.html --level 3
+          # LOW / MEDIUM 不應該通過 Level 2（確認健檢真的有在檢查）
+          if python3 tools/ci/vibe_check.py samples/MEDIUM/index.html --level 2 > /dev/null; then
+            echo "::error::MEDIUM 不應通過 Level 2"; exit 1
+          fi
+
+      - name: 互動教材是單一檔案、不引用外部資源（離線可用）
+        run: |
+          set -e
+          for f in tools/vibe_check.html lectures/*/slides/*.html; do
+            if grep -Eq '<(script|link)[^>]+(src|href)="https?://' "$f"; then
+              echo "::error file=$f::互動教材不應引用外部資源"; exit 1
+            fi
+            echo "✅ $f"
+          done

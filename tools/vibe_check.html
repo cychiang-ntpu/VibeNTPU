@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe 健檢站</title>
+<meta name="description" content="VibeNTPU 健檢站：檢查你的 index.html 完成了哪些任務，收集徽章、領取完課證書。">
+<style>
+:root{
+  --teal:#0f766e;--teal-2:#14b8a6;--amber:#f59e0b;--amber-soft:#fef3c7;
+  --bg:#f0fdfa;--card:#ffffff;--text:#0f172a;--muted:#475569;--line:#cbd5e1;
+  --ok:#15803d;--ok-soft:#dcfce7;--warn:#b45309;--warn-soft:#fef3c7;--todo-soft:#f1f5f9;
+  --shadow:0 6px 24px rgba(15,118,110,.12);--radius:16px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --teal:#2dd4bf;--teal-2:#14b8a6;--amber:#fbbf24;--amber-soft:#3b2a07;
+    --bg:#0b1716;--card:#12211f;--text:#e2e8f0;--muted:#94a3b8;--line:#2a3b39;
+    --ok:#4ade80;--ok-soft:#10301d;--warn:#fbbf24;--warn-soft:#33260a;--todo-soft:#1a2a28;
+    --shadow:0 6px 24px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,"Segoe UI","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;overflow-x:hidden}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px}
+header.hero{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;padding:36px 0 28px}
+.hero h1{margin:0;font-size:clamp(1.7rem,5vw,2.4rem);line-height:1.25}
+.hero p{margin:.5rem 0 0;opacity:.95}
+.privacy{display:inline-block;margin-top:14px;background:rgba(255,255,255,.18);border-radius:999px;padding:6px 14px;font-size:.9rem}
+main{padding:24px 0 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:20px}
+h2{font-size:1.25rem;margin:0 0 12px}
+.muted{color:var(--muted)}
+.drop{display:block;border:2px dashed var(--teal-2);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;transition:background .2s,border-color .2s}
+.drop:hover,.drop.over{background:color-mix(in srgb,var(--teal-2) 12%,transparent)}
+.drop:focus-within{outline:3px solid var(--amber);outline-offset:3px}
+.drop .big{font-size:2.2rem;display:block}
+.drop input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.or{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:.9rem}
+.or::before,.or::after{content:"";flex:1;border-top:1px solid var(--line)}
+label.lbl{display:block;font-weight:600;margin-bottom:6px}
+textarea,input[type=text],input[type=url]{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:140px;font-family:ui-monospace,Consolas,monospace;font-size:.85rem;resize:vertical}
+textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center}
+.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;background:var(--teal);color:#fff}
+@media (prefers-color-scheme:dark){.btn{color:#062522}}
+.btn.alt{background:transparent;color:var(--teal);border:2px solid var(--teal)}
+.btn.amber{background:var(--amber);color:#1f1300}
+.btn.sm{padding:4px 12px;font-size:.8rem}
+.fname{font-size:.9rem;color:var(--muted);word-break:break-all}
+.xpbox{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.xpnum{font-size:1.6rem;font-weight:800;color:var(--teal)}
+.bar{height:16px;background:var(--todo-soft);border-radius:999px;overflow:hidden;margin-top:8px;border:1px solid var(--line)}
+.bar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal-2),var(--amber));transition:width .8s ease}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.badge{border:2px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center;filter:grayscale(1);opacity:.6;transition:all .4s}
+.badge .ic{font-size:2.2rem;display:block}
+.badge b{display:block}
+.badge small{color:var(--muted)}
+.badge.on{filter:none;opacity:1;border-color:var(--amber);background:var(--amber-soft);transform:translateY(-2px)}
+.badge.on small{color:var(--text)}
+.lvl{margin-top:18px}
+.lvl h3{margin:0 0 8px;font-size:1.05rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{font-size:.75rem;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--todo-soft);color:var(--muted)}
+.pill.on{background:var(--ok-soft);color:var(--ok)}
+ul.quests{list-style:none;margin:0;padding:0}
+.q{display:flex;gap:10px;padding:10px 12px;border-radius:12px;margin-bottom:6px;background:var(--todo-soft)}
+.q.pass{background:var(--ok-soft)}
+.q.warn{background:var(--warn-soft)}
+.q .m{font-size:1.2rem;line-height:1.4;flex:none}
+.q .body{min-width:0;flex:1}
+.q .t{font-weight:600}
+.q .tag{font-size:.72rem;font-weight:700;border-radius:6px;padding:1px 6px;margin-left:6px;background:var(--card);color:var(--muted);border:1px solid var(--line)}
+.q .id{font-family:ui-monospace,Consolas,monospace;font-size:.72rem;color:var(--muted);margin-left:6px}
+.q .hint{margin:4px 0 0;font-size:.9rem;overflow-wrap:anywhere}
+.q .enc{margin:2px 0 0;font-size:.8rem;color:var(--warn)}
+.celebrate{text-align:center;background:linear-gradient(135deg,var(--amber-soft),color-mix(in srgb,var(--teal-2) 18%,var(--card)))}
+.celebrate .big{font-size:3rem}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.confetti span{position:absolute;top:-40px;font-size:1.6rem;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){.confetti{display:none}.bar>span,.badge{transition:none}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid2 .full{grid-column:1/-1}
+/* 證書 */
+#cert{margin-top:18px;background:#fffdf5;color:#1f2937;border:10px double #0f766e;border-radius:10px;padding:32px 24px;text-align:center;position:relative}
+#cert .seal{font-size:3rem}
+#cert h4{margin:4px 0 0;font-size:clamp(1.4rem,5vw,2rem);color:#0f766e;letter-spacing:.1em}
+#cert .sub{color:#92400e;font-weight:700;letter-spacing:.2em;font-size:.85rem}
+#cert .who{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;margin:18px 0 4px;border-bottom:2px solid #f59e0b;display:inline-block;padding:0 16px;min-width:50%}
+#cert p{margin:10px 0}
+#cert .prod{font-weight:800;color:#0f766e}
+#cert .url{font-family:ui-monospace,Consolas,monospace;font-size:.9rem;overflow-wrap:anywhere}
+#cert .bdg{font-size:1.05rem;margin:14px 0}
+#cert .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.8rem;color:#475569;margin-top:22px;border-top:1px dashed #94a3b8;padding-top:10px}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:0 16px 32px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:560px){
+  .badges{grid-template-columns:1fr}
+  .badge{display:flex;align-items:center;gap:12px;text-align:left}
+  .badge .ic{font-size:1.8rem}
+  .grid2{grid-template-columns:1fr}
+  #cert{padding:24px 12px;border-width:7px}
+}
+@media print{
+  @page{size:A4 landscape;margin:12mm}
+  body{background:#fff}
+  header,footer,.confetti,main>section:not(#certbox),#certbox>:not(#cert){display:none!important}
+  main,.wrap{padding:0;max-width:none}
+  #certbox{border:0;box-shadow:none;padding:0;margin:0;background:none}
+  #cert{margin:0;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>🩺 Vibe 健檢站</h1>
+    <p>把你用 AI 做的 <code>index.html</code> 丟進來，看看完成了哪些任務、收集幾枚徽章！</p>
+    <span class="privacy">🔒 本工具只在你的瀏覽器裡檢查，檔案不會上傳到任何地方</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card" aria-labelledby="in-h">
+    <h2 id="in-h">① 選擇你的 index.html</h2>
+    <label class="drop" id="drop">
+      <span class="big" aria-hidden="true">📂</span>
+      <strong>點這裡選擇檔案</strong>，或把 index.html 拖曳到這裡
+      <input type="file" id="file" accept=".html,.htm,text/html">
+      <span class="fname" id="fname" aria-live="polite"></span>
+    </label>
+    <div class="or">或是</div>
+    <label class="lbl" for="code">直接貼上程式碼（在 GitHub 打開 index.html → 全選複製）</label>
+    <textarea id="code" spellcheck="false" placeholder="<!DOCTYPE html>&#10;<html lang=&quot;zh-Hant&quot;>&#10;…"></textarea>
+    <div class="row">
+      <button class="btn" id="run" type="button">🔍 開始健檢</button>
+      <button class="btn alt" id="clear" type="button">清除</button>
+    </div>
+  </section>
+
+  <section class="card" id="result" hidden aria-labelledby="res-h" aria-live="polite">
+    <div class="xpbox">
+      <h2 id="res-h">② 任務日誌</h2>
+      <div><span class="xpnum" id="xp">0</span> <span class="muted">/ <span id="xpmax">0</span> XP</span></div>
+    </div>
+    <div class="bar" role="progressbar" aria-label="經驗值" aria-valuemin="0" id="barwrap"><span id="bar"></span></div>
+    <p class="muted" id="rank" style="margin:.5rem 0 0"></p>
+    <div class="badges" id="badges"></div>
+    <div id="levels"></div>
+    <p class="muted" style="font-size:.85rem;margin-top:14px">圖例：✅ 完成　⬜ 未完成（必要）　⚠️ 建議改善（不影響徽章）　⭐ 加分題　｜必要 +10 XP、建議/加分 +5 XP</p>
+  </section>
+
+  <section class="card celebrate" id="party" hidden>
+    <div class="big" aria-hidden="true">🎓🎉</div>
+    <h2>三枚徽章全部點亮！你已經是會做 SaaS 的人了！</h2>
+    <p>從一張白紙到上線網站＋會員系統，這一路的每個錯誤都變成了你的經驗值。填下面的資料，領取你的完課證書吧！</p>
+  </section>
+
+  <section class="card" id="certbox" hidden aria-labelledby="cert-h">
+    <h2 id="cert-h">③ 🎓 VibeNTPU 完課證書</h2>
+    <div class="grid2">
+      <div><label class="lbl" for="cName">你的名字</label><input type="text" id="cName" autocomplete="name" placeholder="王小明"></div>
+      <div><label class="lbl" for="cProd">產品名稱</label><input type="text" id="cProd" placeholder="三峽租屋雷達"></div>
+      <div class="full"><label class="lbl" for="cUrl">Netlify 網址</label><input type="url" id="cUrl" inputmode="url" placeholder="https://your-site.netlify.app"></div>
+    </div>
+    <div class="row"><button class="btn amber" id="print" type="button">🖨️ 列印 / 存成 PDF</button><span class="muted" style="font-size:.85rem">列印時只會印出證書；選「另存為 PDF」就能存檔分享。</span></div>
+    <div id="cert">
+      <div class="seal" aria-hidden="true">🎓</div>
+      <div class="sub">VIBE CODING · NTPU</div>
+      <h4>VibeNTPU 完課證書</h4>
+      <div class="who" id="oName">你的名字</div>
+      <p>完成國立臺北大學通識課程「Vibe Coding」全部任務，<br>親手打造並上線 SaaS 產品</p>
+      <p class="prod" id="oProd">產品名稱</p>
+      <p class="url" id="oUrl">https://your-site.netlify.app</p>
+      <div class="bdg">🏪 開店徽章　📦 收單徽章　💾 記憶徽章</div>
+      <div class="foot"><span id="oXp"></span><span id="oDate"></span><span id="oNo"></span></div>
+    </div>
+  </section>
+</main>
+<footer>VibeNTPU · Vibe 健檢站 · 檢查結果僅供學習參考，老師的評分以實際網站為準</footer>
+
+<script>
+(function(){
+'use strict';
+var REQ='required',WARN='warn',BONUS='bonus';
+var XP={required:10,warn:5,bonus:5};
+var LEVELS={
+  1:{icon:'🏪',name:'開店徽章',desc:'第 1 週：把店面（形象首頁）開起來'},
+  2:{icon:'📦',name:'收單徽章',desc:'第 2 週：用 Netlify Forms 收早鳥名單'},
+  3:{icon:'💾',name:'記憶徽章',desc:'第 2 週：LocalStorage 記住會員＋AJAX 送出'}
+};
+/* [id, level, kind, 標題, 失敗提示] —— 與 tools/ci/vibe_check.py 的 CHECKS 保持一致 */
+var CHECKS=[
+['l1_html',1,REQ,'檔案是 HTML 格式','檔案裡找不到 <html> 或 <!DOCTYPE html>。請確認你選的是 index.html；或請跟 AI 說：「請給我完整的 HTML 檔案，從 <!DOCTYPE html> 開始」'],
+['l1_charset',1,REQ,'設定 UTF-8 編碼（中文不亂碼）','請跟 AI 說：「請在 <head> 加上 <meta charset="UTF-8">」'],
+['l1_viewport',1,REQ,'設定 viewport（手機版 RWD）','請跟 AI 說：「請在 <head> 加上 <meta name="viewport" content="width=device-width, initial-scale=1.0">」'],
+['l1_title',1,REQ,'有網頁標題 <title>','請跟 AI 說：「請在 <head> 加上 <title>，內容是我的產品名稱＋一句話介紹」'],
+['l1_h1',1,REQ,'有大標題 <h1>','請跟 AI 說：「請在主視覺區加上一個 <h1> 大標題，寫出產品最吸引人的一句話」'],
+['l1_cta',1,REQ,'有行動按鈕（CTA）','請跟 AI 說：「請在主視覺區加上一個醒目的行動按鈕（例如『立即加入』），用 <a> 或 <button>」'],
+['l1_style',1,REQ,'有 CSS 樣式（不是陽春白底黑字）','請跟 AI 說：「請用 <style> 幫整個頁面加上配色、字體與排版，全部寫在同一個 index.html 裡」'],
+['l1_media',1,WARN,'有 @media 手機版樣式','請跟 AI 說：「請加上 @media (max-width: 640px) 的手機版樣式，讓手機上也好看」'],
+['l1_img',1,WARN,'沒有引用不存在的圖片檔','你用了相對路徑的圖片（例如 photo.jpg），但 repo 裡可能沒有這個檔案，上線後會破圖。請跟 AI 說：「請把圖片改成 emoji 或 inline SVG，不要引用外部圖片檔」'],
+['l2_form',2,REQ,'有 Netlify 表單（data-netlify="true"）','請跟 AI 說：「請加一個早鳥名單表單，<form> 要有 data-netlify="true" 和 method="POST"」'],
+['l2_form_name',2,REQ,'表單有 name 名稱','請跟 AI 說：「請幫 <form> 加上 name="waitlist"，這是 Netlify 後台收件箱的名字」'],
+['l2_hidden_form_name',2,REQ,'有隱藏欄位 form-name 且值與表單名稱相同','請跟 AI 說：「請在 <form> 裡加上 <input type="hidden" name="form-name" value="（跟表單 name 一樣）">」'],
+['l2_field_names',2,REQ,'每個輸入欄位都有 name','沒有 name 的欄位，Netlify 收不到資料。請跟 AI 說：「請確認表單裡每個 input、select、textarea 都有 name 屬性」'],
+['l2_email',2,WARN,'有 Email 欄位（type="email"）','請跟 AI 說：「請在表單加上 <input type="email" name="email" required>，讓瀏覽器幫忙檢查格式」'],
+['l2_honeypot',2,BONUS,'有防機器人陷阱（honeypot）','加分題！請跟 AI 說：「請在 <form> 加上 netlify-honeypot="bot-field"，並加一個隱藏的 <input name="bot-field">」'],
+['l3_set',3,REQ,'用 localStorage.setItem 存資料','請跟 AI 說：「送出表單成功後，請用 localStorage.setItem 把使用者名字存起來」'],
+['l3_get',3,REQ,'用 localStorage.getItem 讀資料','請跟 AI 說：「打開網頁時，請用 localStorage.getItem 檢查有沒有存過名字，有的話顯示『歡迎回來』儀表板」'],
+['l3_prevent',3,REQ,'用 preventDefault 阻止頁面跳轉','請跟 AI 說：「表單送出時，請先呼叫 event.preventDefault()，不要跳到別的頁面」'],
+['l3_fetch',3,REQ,'用 fetch() 以 AJAX 送出表單','請跟 AI 說：「請用 fetch(\'/\', { method: \'POST\', ... }) 在背景把表單送給 Netlify」'],
+['l3_urlencoded',3,REQ,'送出格式是 application/x-www-form-urlencoded','請跟 AI 說：「fetch 的 headers 請設定 \'Content-Type\': \'application/x-www-form-urlencoded\'，body 用 new URLSearchParams(formData).toString()」'],
+['l3_logout',3,BONUS,'有登出功能（removeItem 或 clear）','加分題！請跟 AI 說：「請在儀表板加一個登出按鈕，按下去用 localStorage.removeItem 清掉資料」']
+];
+var ENCOURAGE=['還差一步！這是升級的經驗值 💪','卡關是正常的，改完再來一次就好 🌱','每個工程師都修過這個，你也可以 🔧','把提示複製給 AI，下一輪就會變 ✅ 🚀'];
+var SKIP_TYPES={submit:1,button:1,reset:1,image:1};
+var RE={
+  html:/<!doctype\s+html|<html[\s>]/i, ext:/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i, media:/@media\b/i,
+  set:/localStorage\s*\.\s*setItem\s*\(/, get:/localStorage\s*\.\s*getItem\s*\(/,
+  prevent:/preventDefault\s*\(/, fetch:/\bfetch\s*\(/, urlenc:/application\/x-www-form-urlencoded/i,
+  logout:/localStorage\s*\.\s*(?:removeItem|clear)\s*\(/
+};
+function attr(el,n){var v=el.getAttribute(n);return v==null?'':v;}
+function lc(s){return String(s).trim().toLowerCase();}
+function isNetlify(f){return lc(attr(f,'data-netlify'))==='true'||f.hasAttribute('netlify');}
+
+/* 只用 DOMParser 解析，不會執行學生的程式碼 */
+function analyze(text){
+  var doc=new DOMParser().parseFromString(text,'text/html');
+  var $$=function(s,root){return Array.prototype.slice.call((root||doc).querySelectorAll(s));};
+  var metas=$$('meta'),r={};
+  var css=$$('style').map(function(s){return s.textContent;}).join('\n');
+  var js=$$('script').filter(function(s){return !s.hasAttribute('src');}).map(function(s){return s.textContent;}).join('\n');
+  r.l1_html=RE.html.test(text);
+  r.l1_charset=metas.some(function(m){
+    var cs=lc(attr(m,'charset'));
+    return cs==='utf-8'||cs==='utf8'||(lc(attr(m,'http-equiv'))==='content-type'&&/charset\s*=\s*utf-?8/i.test(attr(m,'content')));
+  });
+  r.l1_viewport=metas.some(function(m){return lc(attr(m,'name'))==='viewport'&&attr(m,'content').toLowerCase().indexOf('width')>-1;});
+  var t=doc.querySelector('title');r.l1_title=!!(t&&t.textContent.trim());
+  r.l1_h1=!!doc.querySelector('h1');
+  r.l1_cta=!!doc.querySelector('button, a[href]');
+  r.l1_style=!!css.trim()||$$('link').some(function(l){return lc(attr(l,'rel')).split(/\s+/).indexOf('stylesheet')>-1;});
+  r.l1_media=RE.media.test(css);
+  r.l1_img=!$$('img').some(function(i){var s=attr(i,'src').trim();return s&&!RE.ext.test(s);});
+  var forms=$$('form'),form=forms.filter(isNetlify)[0]||forms[0]||null;
+  var fields=form?$$('input, select, textarea',form):[];
+  var fname=form?attr(form,'name').trim():'';
+  r.l2_form=!!form&&isNetlify(form);
+  r.l2_form_name=!!fname;
+  r.l2_hidden_form_name=!!fname&&fields.some(function(f){
+    return f.tagName==='INPUT'&&lc(attr(f,'type'))==='hidden'&&attr(f,'name')==='form-name'&&attr(f,'value').trim()===fname;
+  });
+  var data=fields.filter(function(f){return !(f.tagName==='INPUT'&&SKIP_TYPES[lc(attr(f,'type'))])&&attr(f,'name')!=='form-name';});
+  r.l2_field_names=data.length>0&&data.every(function(f){return attr(f,'name').trim();});
+  r.l2_email=fields.some(function(f){return f.tagName==='INPUT'&&lc(attr(f,'type'))==='email';});
+  var hp=form?attr(form,'netlify-honeypot').trim():'';
+  r.l2_honeypot=!!hp&&fields.some(function(f){return attr(f,'name')===hp;});
+  r.l3_set=RE.set.test(js);r.l3_get=RE.get.test(js);r.l3_prevent=RE.prevent.test(js);
+  r.l3_fetch=RE.fetch.test(js);r.l3_urlencoded=RE.urlenc.test(js);r.l3_logout=RE.logout.test(js);
+  r._title=t?t.textContent.trim():'';
+  return r;
+}
+function buildReport(text){
+  var res=analyze(text),xp=0,max=0,checks=CHECKS.map(function(c){
+    var ok=!!res[c[0]];max+=XP[c[2]];if(ok)xp+=XP[c[2]];
+    return {id:c[0],level:c[1],kind:c[2],pass:ok,title:c[3],hint:ok?null:c[4]};
+  });
+  var levels={};
+  [1,2,3].forEach(function(lv){
+    var req=checks.filter(function(c){return c.level===lv&&c.kind===REQ;});
+    var p=req.filter(function(c){return c.pass;}).length;
+    levels[lv]={badge:p===req.length,passed:p,total:req.length};
+  });
+  return {xp:xp,max_xp:max,levels:levels,checks:checks,title:res._title};
+}
+
+/* ---------- 畫面 ---------- */
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+var $=function(id){return document.getElementById(id);};
+var lastReport=null;
+
+function copyText(s,btn){
+  function done(){var o=btn.textContent;btn.textContent='已複製 ✓';setTimeout(function(){btn.textContent=o;},1500);}
+  function fallback(){var ta=el('textarea');ta.value=s;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}ta.remove();}
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(s).then(done,fallback);}else fallback();
+}
+
+function render(rep){
+  lastReport=rep;
+  $('result').hidden=false;
+  $('xp').textContent=rep.xp;$('xpmax').textContent=rep.max_xp;
+  var pct=Math.round(rep.xp/rep.max_xp*100);
+  $('barwrap').setAttribute('aria-valuemax',rep.max_xp);$('barwrap').setAttribute('aria-valuenow',rep.xp);
+  requestAnimationFrame(function(){$('bar').style.width=pct+'%';});
+  var nb=[1,2,3].filter(function(l){return rep.levels[l].badge;}).length;
+  $('rank').textContent=['🥚 新手村：先把第一關的任務完成吧！','🐣 開店成功！下一步：讓顧客能留下資料。','🐥 會收單了！再讓網站「記得」會員就完成了。','🦅 全破！你是 Vibe Coding 大師！'][nb]+'（完成度 '+pct+'%）';
+
+  var bw=$('badges');bw.textContent='';
+  [1,2,3].forEach(function(lv){
+    var L=LEVELS[lv],s=rep.levels[lv],b=el('div','badge'+(s.badge?' on':''));
+    b.appendChild(el('span','ic',L.icon));
+    var tx=el('div');tx.appendChild(el('b',null,'Level '+lv+' '+L.name));
+    tx.appendChild(el('small',null,s.badge?'🏅 已點亮！':'必要任務 '+s.passed+' / '+s.total));
+    b.appendChild(tx);b.setAttribute('aria-label',L.name+(s.badge?' 已點亮':' 未點亮，'+s.passed+'/'+s.total));
+    bw.appendChild(b);
+  });
+
+  var lw=$('levels');lw.textContent='';var n=0;
+  [1,2,3].forEach(function(lv){
+    var L=LEVELS[lv],s=rep.levels[lv],sec=el('div','lvl'),h=el('h3');
+    h.appendChild(el('span',null,L.icon+' Level '+lv+'・'+L.name));
+    h.appendChild(el('span','pill'+(s.badge?' on':''),s.badge?'徽章 GET':s.passed+'/'+s.total));
+    sec.appendChild(h);sec.appendChild(el('p','muted',L.desc)).style.margin='-4px 0 8px';
+    var ul=el('ul','quests');
+    rep.checks.filter(function(c){return c.level===lv;}).forEach(function(c){
+      var cls=c.pass?'pass':(c.kind===WARN?'warn':'');
+      var li=el('li','q '+cls);
+      var mark=c.pass?'✅':(c.kind===WARN?'⚠️':(c.kind===BONUS?'⭐':'⬜'));
+      var m=el('span','m',mark);m.setAttribute('aria-hidden','true');li.appendChild(m);
+      var body=el('div','body'),t=el('div','t');
+      t.appendChild(el('span','sr',c.pass?'已完成：':(c.kind===REQ?'未完成：':'可改善：')));
+      t.appendChild(document.createTextNode(c.title));
+      if(c.kind!==REQ)t.appendChild(el('span','tag',c.kind===WARN?'建議':'加分'));
+      t.appendChild(el('span','id',c.id));
+      body.appendChild(t);
+      if(!c.pass){
+        body.appendChild(el('p','hint','💡 '+c.hint));
+        var mm=c.hint.match(/請跟 AI 說：「([\s\S]+)」/);
+        var row=el('div','row');row.style.marginTop='6px';
+        if(c.kind===REQ)row.appendChild(el('span','enc',ENCOURAGE[n++%ENCOURAGE.length]));
+        if(mm){var cb=el('button','btn alt sm','📋 複製給 AI 的話');cb.type='button';cb.addEventListener('click',function(){copyText(mm[1],cb);});row.appendChild(cb);}
+        body.appendChild(row);
+      }
+      li.appendChild(body);ul.appendChild(li);
+    });
+    sec.appendChild(ul);lw.appendChild(sec);
+  });
+
+  var all=nb===3;
+  $('party').hidden=!all;$('certbox').hidden=!all;
+  if(all){
+    if(!$('cProd').value&&rep.title)$('cProd').value=rep.title.split(/[｜|—\-:：]/)[0].trim();
+    updateCert();confetti();
+  }
+  $('result').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+}
+
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var box=el('div','confetti'),E=['🎉','🎊','⭐','🏅','✨','🎓','💚','🧡'];
+  for(var i=0;i<40;i++){var s=el('span',null,E[i%E.length]);s.style.left=Math.random()*100+'%';s.style.animationDuration=(2.2+Math.random()*2)+'s';s.style.animationDelay=Math.random()*.8+'s';box.appendChild(s);}
+  document.body.appendChild(box);setTimeout(function(){box.remove();},5200);
+}
+
+function hash(s){var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36).toUpperCase().slice(-5);}
+function updateCert(){
+  var n=$('cName').value.trim(),p=$('cProd').value.trim(),u=$('cUrl').value.trim();
+  $('oName').textContent=n||'你的名字';$('oProd').textContent=p?'《'+p+'》':'產品名稱';
+  $('oUrl').textContent=u||'https://your-site.netlify.app';
+  var d=new Date();
+  $('oDate').textContent='頒發日期：'+d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日';
+  $('oXp').textContent='⭐ '+(lastReport?lastReport.xp+' / '+lastReport.max_xp:'')+' XP';
+  $('oNo').textContent='證書編號 VIBE-'+d.getFullYear()+'-'+hash(n+'|'+u+'|'+p);
+}
+['cName','cProd','cUrl'].forEach(function(id){$(id).addEventListener('input',updateCert);});
+$('print').addEventListener('click',function(){
+  if(!$('cName').value.trim()){$('cName').focus();$('cName').placeholder='先填上你的名字喔 ✍️';return;}
+  updateCert();window.print();
+});
+
+function runText(text,name){
+  $('fname').textContent=name?'📄 '+name:'';
+  if(!text.trim()){$('code').focus();$('code').placeholder='這裡還是空的喔！請選檔案或貼上程式碼 🙂';return;}
+  render(buildReport(text));
+}
+function readFile(f){
+  if(!f)return;
+  var rd=new FileReader();
+  rd.onload=function(){var s=String(rd.result).replace(/^﻿/,'');$('code').value=s;runText(s,f.name);};
+  rd.onerror=function(){$('fname').textContent='😢 讀取失敗，請改用貼上程式碼的方式';};
+  rd.readAsText(f,'UTF-8');
+}
+$('file').addEventListener('change',function(e){readFile(e.target.files[0]);});
+var drop=$('drop');
+['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over');});});
+['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over');});});
+drop.addEventListener('drop',function(e){if(e.dataTransfer&&e.dataTransfer.files.length)readFile(e.dataTransfer.files[0]);});
+/* 防止檔案拖到頁面其他地方時，瀏覽器直接打開它 */
+['dragover','drop'].forEach(function(ev){window.addEventListener(ev,function(e){e.preventDefault();});});
+$('run').addEventListener('click',function(){runText($('code').value,'');});
+$('clear').addEventListener('click',function(){
+  $('code').value='';$('file').value='';$('fname').textContent='';
+  $('result').hidden=true;$('party').hidden=true;$('certbox').hidden=true;$('bar').style.width='0';$('code').focus();
+});
+/* 給測試或進階使用者：window.vibeCheck(htmlText) 回傳與 Python 版相同 ID 的結果 */
+window.vibeCheck=buildReport;
+})();
+</script>
+</body>
+</html>

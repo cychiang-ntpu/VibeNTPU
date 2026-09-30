@@ -1,118 +1,146 @@
-# VibeNTPU：用 AI 與 SaaS 積木，4 小時打造你的第一個創業 MVP 🚀
+# VibeNTPU（115-1）Vibe Coding × SaaS 創業實戰 — 課程資料庫 🚀
 
-> 國立臺北大學通識課程・非電資背景也能上手的「Vibe Coding × SaaS 創業」實戰教材
->
-> **先懂 Why（為什麼要這樣做），再學 How（怎麼做）。**
+國立臺北大學通識課程單元，**專為完全沒有電機資訊背景的同學設計**。
+授課教師：江振宇（[教師個人網頁](https://web.ntpu.edu.tw/~cychiang/)）
+本 repo 是這個單元的「課本＋講義＋互動教材＋示範作品」，上課前打開當週資料夾照著做就好。
 
-不懂現代網路服務（SaaS）的架構，「用 AI 寫 Code → 丟上 GitHub → 連到 Netlify」看起來就只是一套死板的操作步驟。
+> 🌱 **沒寫過程式？太好了，這堂課就是為你設計的。**
+> 兩週、4 小時，你會用 AI 做出一個**真的在網路上、能收集客戶名單**的創業網站。
+
+---
+
+## 🎯 教學目標
+
+「**先懂 Why，再學 How**」。
+不懂現代網路服務（SaaS）的架構，「用 AI 寫 Code → 丟上 GitHub → 連到 Netlify」看起來只是一套死板的操作；
 懂了之後你會發現：**現代的科技創業，可以像「組裝樂高」一樣，借用別人的雲端服務來拼湊出自己的產品。**
 
-這個 repo 就是這堂課的「課本 + 講義 + 範例程式」，請依照下面的路線圖一步一步 follow。
+上完這個單元，你將能：
+1. 用「美食街比喻」說明 SaaS 與現代網路架構；
+2. 用 AI（Vibe Coding）做出自己創業題目的網站，並部署到全世界；
+3. 用 BaaS 收集早鳥名單、用 LocalStorage 記住使用者、體驗 CI/CD 自動更新；
+4. 用專業的架構語言發表你的 MVP。
+
+完整目標與評分 👉 [docs/course_plan.md](docs/course_plan.md)
+
+## 🧠 這個 repo 的設計理念
+
+這門課的每個安排都根據**教育心理學**設計，目標是讓你「有興趣、做得到、想繼續」：
+
+| 你會遇到的設計 | 為什麼這樣做 |
+| --- | --- |
+| 🥚 上課前就先成功一次（請 AI 做 Hello NTPU） | 親身成功經驗是「我做得到」的最強來源（自我效能） |
+| 🍱 全程用「美食街比喻」 | 先用熟悉的東西理解，再換上專業術語（具體 → 抽象） |
+| 📋 一頁版步驟卡、咒語產生器 | 一次只處理一件新事，大腦不超載（認知負荷理論） |
+| 👀 我做 → 🤝 我們做 → 🚀 你做 | 先看示範、再填空、最後獨立完成（範例效應＋鷹架） |
+| 🗺️ 冒險地圖、徽章、經驗值 | 進度看得見，每一步都有回饋（遊戲化） |
+| 💪 錯誤 = 經驗值、紅綠便利貼 | 敢錯才敢嘗試（成長型思維、心理安全感） |
+| 🎯 自己選題目、選 AI、選風格 | 自主感是內在動機的來源（自我決定論） |
+| 🤝 駕駛／領航員、作品巡禮、作品牆 | 一起學不孤單（歸屬感、同儕教學） |
+| 🥉🥈🥇 三級示範作品 | 先知道好作品長怎樣，再動手（透明化評量） |
+
+詳細說明與參考文獻 👉 [docs/learning_design.md](docs/learning_design.md)
 
 ---
 
-## 🗺️ 課程路線圖
-
-| 週次 | 日期 | 主題 | 你會帶走的成果 |
-| --- | --- | --- | --- |
-| 課前 | 10/7 之前 | [課前準備：申請帳號](docs/00-before-class.md) | GitHub 帳號、Netlify 帳號、一個 AI 助理 |
-| 第一週 | 10/7（2 小時） | [看懂 SaaS 商業邏輯 ＆ 打造數位店面](week1/README.md) | 一個全世界都能打開的網址 🌍 |
-| 第二週 | 10/14（2 小時） | [SaaS 的靈魂：串接後端與自動化迭代](week2/README.md) | 能收集早鳥名單、會「記得」使用者的 MVP 📋 |
-| 期末 | — | [期末 Pitch 模板](docs/pitch-template.md) | 一段連資工系都佩服的架構說明 🎤 |
-
----
-
-## 🍱 麻瓜版網路架構圖（整堂課的核心比喻）
-
-> 詳細解說請看 👉 [docs/01-saas-architecture.md](docs/01-saas-architecture.md)
-
-**傳統創業（自建主機）** ＝ 自己去深山買一塊荒地，從零蓋一間餐廳：自己牽水電（伺服器環境）、請保全（資安與防火牆）、蓋大廚房（後端資料庫）。
-👉 初期花幾十萬、搞好幾個月，一旦沒客人就破產。
-
-**現代 SaaS 創業（樂高積木法）** ＝ 直接進駐「百貨公司美食街」，水電保全百貨公司都弄好了。你只做四件事：
+## 🗺️ 冒險地圖
 
 ```mermaid
 flowchart LR
-    U["👩‍🎓 客人<br/>(使用者的瀏覽器)"]
-    subgraph YOU["🧑‍🍳 你（創業者）"]
-        F["👨‍💻 前端 Frontend<br/>裝潢・菜單・點餐櫃檯<br/>index.html"]
-    end
-    G["🗄️ GitHub<br/>總部保險箱 + 自動傳真機<br/>(版本控制)"]
-    N["☁️ Netlify<br/>美食街免費攤位<br/>(雲端託管 SaaS)"]
-    B["📦 Netlify Forms<br/>訂單代收中心<br/>(後端即服務 BaaS)"]
-
-    F -- "上傳設計圖" --> G
-    G -- "一改就自動傳真 (CI/CD)" --> N
-    U -- "逛店面 (網址)" --> N
-    U -- "填寫早鳥名單" --> B
-    B -. "名單收進後台" .-> YOU
+    Q0["🥚 Q0 報到<br/>課前"] --> Q1["🧠 Q1 看懂美食街"] --> Q2["🎨 Q2 詠唱店面"] --> Q3["🏪 Q3 開店上線"]
+    Q3 --> Q4["📦 Q4 收單"] --> Q5["💾 Q5 記住客人"] --> Q6["🔄 Q6 自動傳真"] --> Q7["🎤 Q7 MVP 發表"]
 ```
 
-| 積木 | 美食街比喻 | 真實技術 | 哪一週用到 |
-| --- | --- | --- | --- |
-| 👨‍💻 前端 Frontend | 餐廳的裝潢、菜單、點餐櫃檯 | HTML / CSS / JavaScript | 第一週 |
-| 🗄️ 版本控制 | 總部的保險箱與自動傳真機 | [GitHub](https://github.com/) | 第一週 |
-| ☁️ 雲端託管 SaaS | 美食街的免費攤位（水電、門牌都有） | [Netlify](https://www.netlify.com/) | 第一週 |
-| 📦 後端即服務 BaaS | 訂單代收中心 | [Netlify Forms](https://docs.netlify.com/forms/setup/) | 第二週 |
+| 等級 | 🥚 實習生 | 🐣 見習創辦人 | 🐥 創辦人 | 🦅 連續創業家 | 🦄 獨角獸 |
+| --- | --- | --- | --- | --- | --- |
+| XP | 0 | 100 | 250 | 400 | 500+ |
 
-> 💡 **今天這堂課，我們完全不碰複雜的 GCP，因為聰明的現代創業者，是「用 SaaS 服務來打造自己的 SaaS 產品」！**
+關卡、支線任務與徽章 👉 [docs/quest_map.md](docs/quest_map.md)
+用 [🎒 冒險護照](templates/passport_README.md) 記錄進度，用 [🩺 Vibe 健檢站](tools/vibe_check.html) 驗收！
+
+## 🍱 麻瓜版網路架構圖
+
+**傳統創業**＝自己去深山買荒地蓋餐廳（自己牽水電、請保全、蓋廚房），花幾十萬、搞好幾個月。
+**現代 SaaS 創業**＝直接進駐「百貨公司美食街」，你只做四件事：
+
+| 積木 | 美食街比喻 | 真實技術 | 哪週用 |
+| --- | --- | --- | --- |
+| 👨‍💻 前端 Frontend | 裝潢、菜單、點餐櫃檯 | HTML／CSS／JS | 第 1 週 |
+| 🗄️ 版本控制 | 總部保險箱＋自動傳真機 | [GitHub](https://github.com/) | 第 1 週 |
+| ☁️ 雲端託管 SaaS | 美食街免費攤位 | [Netlify](https://www.netlify.com/) | 第 1 週 |
+| 📦 後端即服務 BaaS | 訂單代收中心 | [Netlify Forms](https://docs.netlify.com/manage/forms/setup/) | 第 2 週 |
+
+> 💡 **聰明的現代創業者，是「用 SaaS 服務來打造自己的 SaaS 產品」！**
+
+互動版 👉 [foodcourt.html](lectures/wk01_1007_saas-storefront/slides/foodcourt.html)　｜　完整圖解 👉 [saas_architecture.md](lectures/wk01_1007_saas-storefront/saas_architecture.md)
 
 ---
 
-## 📁 Repo 結構
+## 📅 每週講義
+
+每週上課用的講義、步驟卡、互動教材與學習單都在 [lectures/](lectures/README.md)，**上課前先打開當週資料夾**。
+
+| 週 | 日期 | 主題 | 關卡 | 資料夾 |
+| --- | --- | --- | --- | --- |
+| 課前 | 10/7 前 | 申請帳號、跟 AI 打招呼 | 🥚 Q0 | [before_class.md](docs/tutorials/before_class.md) |
+| 1 | 10/7 | 看懂 SaaS 商業邏輯 ＆ 打造數位店面 | 🧠🎨🏪 Q1–Q3 | [wk01_1007_saas-storefront/](lectures/wk01_1007_saas-storefront/README.md) |
+| 2 | 10/14 | SaaS 的靈魂：串接後端與體驗自動化迭代 | 📦💾🔄🎤 Q4–Q7 | [wk02_1014_baas-cicd/](lectures/wk02_1014_baas-cicd/README.md) |
+| 期末 | — | 創業計畫發表 | 🎤 | [pitch_template.md](docs/pitch_template.md) |
+
+## ✅ 第一堂課 checklist
+
+1. 完成 [🥚 Q0 報到任務](docs/tutorials/before_class.md)：GitHub 帳號、Netlify 帳號、請 AI 做出 Hello NTPU。
+2. 讀 [docs/course_plan.md](docs/course_plan.md)：學習目標、評分方式與上課小規則（3 分鐘就看完）。
+3. 瀏覽 [samples/](samples/README.md)：看看 🥉🥈🥇 三個等級的示範作品長什麼樣子。
+4. 想一個你在乎的創業題目（[依學院分類的點子](lectures/wk01_1007_saas-storefront/README.md#21-選一個你在乎的題目10-分鐘)）。
+5. 上課時打開 [第 1 週步驟卡](lectures/wk01_1007_saas-storefront/steps.md)，跟隊友一起照著打勾。
+
+## 🆘 卡關了怎麼辦？
+
+**卡關是正常的，每個工程師每天都在卡關。** 問問題的建議順序：
+
+1. 📖 查 [卡關急救手冊](docs/tutorials/error_guide.md)（90% 的問題都在這裡）
+2. 🤖 把錯誤畫面截圖問 AI
+3. 🙋 問隔壁組
+4. 🟥 貼紅色便利貼／課程群組發問／開一張 [🆘 求救單](https://github.com/cychiang-ntpu/VibeNTPU/issues/new?template=help_request.yml)
+
+⏱️ **15 分鐘法則**：自己試 15 分鐘沒進展，就求救。卡太久不是毅力，是浪費時間。
+
+---
+
+## 📁 目錄結構
 
 ```
 VibeNTPU/
-├── README.md                     ← 你在這裡：課程總覽
-├── LICENSE                       ← 授權（教材 CC BY-NC-SA／程式碼 MIT）
+├── lectures/                    每週講義（依日曆日期編號）
+│   ├── wk01_1007_saas-storefront/   第 1 週：README、steps、prompts、worksheet、announcement、slides/
+│   └── wk02_1014_baas-cicd/         第 2 週：同上
 ├── docs/
-│   ├── 00-before-class.md        ← 課前準備（帳號申請清單）
-│   ├── 01-saas-architecture.md   ← 麻瓜版網路架構圖（觀念課講義）
-│   ├── glossary.md               ← 名詞小辭典（SaaS、BaaS、CI/CD…）
-│   ├── faq.md                    ← 常見問題與錯誤排除
-│   ├── pitch-template.md         ← 期末 Pitch 模板
-│   ├── resources.md              ← 延伸學習資源總整理 📚
-│   └── teacher-notes.md          ← 教師備課筆記（時間分配與講稿）
-├── week1/
-│   ├── README.md                 ← 第一週課程流程
-│   ├── prompts.md                ← AI 咒語集（前端產生）
-│   └── deploy-github-netlify.md  ← 圖文步驟：GitHub 上傳 + Netlify 部署
-├── week2/
-│   ├── README.md                 ← 第二週課程流程
-│   ├── prompts.md                ← AI 咒語集（表單、LocalStorage、改版）
-│   ├── netlify-forms.md          ← Netlify Forms 設定與後台查看
-│   ├── localstorage.md           ← LocalStorage 原理白話解說
-│   └── cicd.md                   ← CI/CD 自動部署體驗
-└── examples/
-    ├── README.md                 ← 範例說明與部署方式
-    ├── week1-landing/index.html  ← 第一週完成品範例（形象首頁）
-    └── week2-waitlist/index.html ← 第二週完成品範例（早鳥名單 + 會員儀表板）
+│   ├── course_plan.md           學習目標、時程、評分、上課規則
+│   ├── learning_design.md       🧠 教育心理學設計說明
+│   ├── quest_map.md             🗺️ 冒險地圖：關卡、支線、徽章
+│   ├── tutorials/               新手教學（帳號、部署、表單、LocalStorage、CI/CD、卡關急救）
+│   ├── glossary.md              名詞小辭典
+│   ├── resources.md             📚 延伸學習資源
+│   ├── pitch_template.md        🎤 期末 Pitch 模板
+│   └── teacher_guide.md         👩‍🏫 教師備課指南
+├── samples/                     🥉 LOW／🥈 MEDIUM／🥇 HIGH 三級示範作品＋評語
+├── tools/
+│   ├── vibe_check.html          🩺 Vibe 健檢站（瀏覽器自我檢查＋完課證書）
+│   └── ci/                      自動健檢腳本與 GitHub Actions 範本
+├── templates/passport_README.md 🎒 冒險護照（貼到自己的 repo）
+├── showcase/                    🖼️ 作品牆
+└── .github/                     求救單、作品牆登記表、課程自動檢查
 ```
-
----
-
-## ⚡ 我很急，給我最短路徑
-
-1. 課前：申請 [GitHub](https://github.com/signup) 帳號，並準備一個 AI 助理（[Claude](https://claude.ai/)、[ChatGPT](https://chatgpt.com/)、[Gemini](https://gemini.google.com/) 擇一）。
-2. 第一週：用 [week1/prompts.md](week1/prompts.md) 的咒語產生 `index.html` → 照 [week1/deploy-github-netlify.md](week1/deploy-github-netlify.md) 上線。
-3. 第二週：用 [week2/prompts.md](week2/prompts.md) 加上早鳥表單與會員歡迎畫面 → 照 [week2/netlify-forms.md](week2/netlify-forms.md) 開啟表單收集 → 照 [week2/cicd.md](week2/cicd.md) 體驗自動更新。
-4. 卡關了？先看 [docs/faq.md](docs/faq.md)。
-5. 想看完成品長什麼樣子？直接打開 [examples/](examples/) 裡的範例。
-
----
-
-## 🌟 上完這堂課，你可以這樣說
-
-> 「我們團隊運用了 **AI 輔助開發（Vibe Coding）** 產出前端介面，並採用了現代的 **SaaS 網路架構**，將網站**無伺服器部署**在 **Netlify** 雲端上。針對初期的 **MVP** 測試，我們捨棄了繁重的資料庫開發，改用輕量級的 **BaaS** 雲端表單服務來收集第一批早鳥用戶名單，大幅降低了創業的**試錯成本**！」
-
-更多期末發表技巧 👉 [docs/pitch-template.md](docs/pitch-template.md)
-
----
 
 ## 📚 延伸學習
 
-所有參考連結都整理在 👉 [docs/resources.md](docs/resources.md)，包含：SaaS 商業模式、精實創業、HTML/CSS/JS 入門、GitHub 與 Netlify 官方文件、Vibe Coding 的由來與注意事項。
+所有參考連結整理在 👉 [docs/resources.md](docs/resources.md)：SaaS 商業模式、精實創業、HTML/CSS/JS、GitHub、Netlify、Vibe Coding、資安與個資、Pitch 技巧。
+
+## 🎤 上完這個單元，你可以這樣說
+
+> 「我們團隊運用了 **AI 輔助開發（Vibe Coding）** 產出前端介面，並採用了現代的 **SaaS 網路架構**，將網站**無伺服器部署**在 **Netlify** 雲端上。針對初期的 **MVP** 測試，我們捨棄了繁重的資料庫開發，改用輕量級的 **BaaS** 雲端表單服務來收集第一批早鳥用戶名單，大幅降低了創業的**試錯成本**！」
 
 ## 📝 授權
 
-教材內容採用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant)，範例程式碼採用 [MIT License](https://opensource.org/license/mit)，歡迎其他老師非商業改作使用。
+教材內容採用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant)，程式碼（`samples/`、`tools/`、`lectures/*/slides/*.html`）採用 [MIT License](https://opensource.org/license/mit)。歡迎其他老師非商業改作使用。

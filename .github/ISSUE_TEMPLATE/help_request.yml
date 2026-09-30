@@ -1,0 +1,53 @@
+name: 🆘 求救單（卡關了！）
+description: 卡關很正常！填好這張單，助教和同學會來幫你。
+title: "🆘 [求救] "
+labels: ["求救"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 💪 卡關 = 經驗值
+        每個工程師每天都在卡關，你不是一個人！
+        送出前，請先看看 [卡關急救手冊](https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/error_guide.md)，說不定答案就在那裡。
+
+        🔐 **請不要**貼上密碼、驗證碼或同學填寫的個人資料。
+  - type: dropdown
+    id: quest
+    attributes:
+      label: 你卡在哪一關？
+      options:
+        - Q0 報到（帳號申請）
+        - Q2 詠唱店面（AI 產生 index.html）
+        - Q3 開店上線（GitHub / Netlify 部署）
+        - Q4 收單（Netlify Forms）
+        - Q5 記住客人（LocalStorage）
+        - Q6 自動傳真魔法（CI/CD）
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 你想做到什麼？
+      placeholder: 例如：我想讓網站在 Netlify 上線
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 實際發生了什麼？
+      description: 可以直接貼上截圖（Ctrl+V / ⌘+V），或複製錯誤訊息
+      placeholder: 例如：打開網址顯示 Page not found
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: 你已經試過哪些方法？
+      description: 寫下來很有幫助，而且你會發現自己其實已經很努力了 👍
+      placeholder: 例如：我確認過檔名是 index.html，也問過 AI
+  - type: input
+    id: url
+    attributes:
+      label: 你的網址或 GitHub repo（選填）
+      placeholder: https://xxx.netlify.app

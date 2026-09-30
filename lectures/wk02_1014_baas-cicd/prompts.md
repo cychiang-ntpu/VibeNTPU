@@ -3,7 +3,7 @@
 > 使用方式：**先把你上週的 `index.html` 完整內容貼給 AI**（或上傳檔案），再貼上下面的咒語。
 > 這樣 AI 才會在「你的網頁」上修改，而不是重新做一個新的。
 
-[← 回第二週](README.md)
+[← 回第 2 週](README.md)
 
 ---
 
@@ -36,7 +36,7 @@
 ```
 
 > 🏗️ **架構呼應**：`data-netlify="true"` 這一行字，就是把「訂單代收中心（BaaS）」接上你餐廳的關鍵！
-> 📖 官方說明：[Netlify Forms：HTML 表單設定](https://docs.netlify.com/forms/setup/)
+> 📖 官方說明：[Netlify Forms：HTML 表單設定](https://docs.netlify.com/manage/forms/setup/)
 
 ✅ **檢查 AI 有沒有做對**：用 `Ctrl + F`（Mac 用 `⌘ + F`）在程式碼裡搜尋 `data-netlify`，找得到就對了。
 
@@ -67,7 +67,7 @@
 > - ☁️ **Netlify Forms**（雲端）：老闆在後台看得到名單。
 > - 💻 **LocalStorage**（瀏覽器）：客人自己的瀏覽器記得「我已經加入了」。
 >
-> 📖 原理解說：[localstorage.md](localstorage.md)｜官方說明：[Netlify：用 AJAX 送出表單](https://docs.netlify.com/forms/setup/#submit-javascript-rendered-forms-with-ajax)
+> 📖 原理解說：[localstorage.md](../../docs/tutorials/localstorage.md)｜官方說明：[Netlify：用 AJAX 送出表單](https://docs.netlify.com/manage/forms/setup/#submit-javascript-rendered-forms-with-ajax)
 
 ---
 
@@ -85,7 +85,7 @@
 其他部分保持不變，請給我完整的程式碼。
 ```
 
-然後照 👉 [cicd.md](cicd.md) 的步驟上傳，見證自動更新的魔法！
+然後照 👉 [cicd.md](../../docs/tutorials/cicd.md) 的步驟上傳，見證自動更新的魔法！
 
 ---
 

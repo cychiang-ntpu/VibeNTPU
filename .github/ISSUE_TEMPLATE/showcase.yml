@@ -1,0 +1,47 @@
+name: 🖼️ 登記作品牆
+description: 把你的 SaaS MVP 展示在作品牆上！
+title: "🖼️ [作品牆] "
+labels: ["作品牆"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎉 恭喜你做出自己的產品！
+        登記後老師會把你的作品加到 [作品牆](https://github.com/cychiang-ntpu/VibeNTPU/blob/master/showcase/README.md)。可以用暱稱，**請勿填寫電話、住址等個資**。
+  - type: input
+    id: name
+    attributes:
+      label: 產品名稱
+      placeholder: 例如：三峽租屋雷達
+    validations:
+      required: true
+  - type: input
+    id: pitch
+    attributes:
+      label: 一句話介紹
+      placeholder: 例如：北大學生專屬的真實租屋評價平台
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: 網址
+      placeholder: https://xxx.netlify.app
+    validations:
+      required: true
+  - type: input
+    id: makers
+    attributes:
+      label: 創辦人（可用暱稱）
+  - type: textarea
+    id: proud
+    attributes:
+      label: 你最得意的地方
+      placeholder: 例如：送出表單後會出現會員儀表板
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: 同意事項
+      options:
+        - label: 我同意把以上資訊公開展示在作品牆上
+          required: true

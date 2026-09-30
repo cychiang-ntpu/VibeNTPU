@@ -1,6 +1,6 @@
 # 💻 LocalStorage 白話解說：讓網頁「記得」你
 
-[← 回第二週](README.md)　｜　📖 官方文件：[MDN：Window.localStorage（繁中）](https://developer.mozilla.org/zh-TW/docs/Web/API/Window/localStorage)
+[← 回第 2 週](../../lectures/wk02_1014_baas-cicd/README.md)　｜　📖 官方文件：[MDN：Window.localStorage（繁中）](https://developer.mozilla.org/zh-TW/docs/Web/API/Window/localStorage)
 
 ---
 
@@ -16,7 +16,7 @@
 
 ## 🔍 實際看看你的「集點卡」
 
-1. 打開你的網站（或 [範例網站](../examples/week2-waitlist/index.html)），填寫表單送出。
+1. 打開你的網站（或 [範例網站](../../samples/HIGH/index.html)），填寫表單送出。
 2. 按 `F12`（Mac：`⌘ + ⌥ + I`）打開開發者工具。
 3. 點上方的 **「Application（應用程式）」** 分頁。
 4. 左側展開 **Storage → Local storage**，點你的網址。

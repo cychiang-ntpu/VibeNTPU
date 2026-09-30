@@ -2,7 +2,7 @@
 
 > 第一週開場 20～30 分鐘的觀念課講義。**這一頁是整堂課的靈魂，請一定要看懂再動手。**
 
-[← 回課程首頁](../README.md)
+[← 回第 1 週](README.md)
 
 ---
 
@@ -28,7 +28,7 @@
 📖 延伸閱讀：
 - [什麼是 SaaS？（Microsoft Azure，繁中）](https://azure.microsoft.com/zh-tw/resources/cloud-computing-dictionary/what-is-saas)
 - [軟體即服務（維基百科，中文）](https://zh.wikipedia.org/zh-tw/%E8%BD%AF%E4%BB%B6%E5%8D%B3%E6%9C%8D%E5%8A%A1)
-- [IaaS、PaaS、SaaS 有什麼不同？（Red Hat，繁中）](https://www.redhat.com/zh-tw/topics/cloud-computing/iaas-vs-paas-vs-saas)
+- [IaaS、PaaS、SaaS 有什麼不同？（Red Hat，繁中）](https://www.redhat.com/zh/topics/cloud-computing/iaas-vs-paas-vs-saas)
 
 ---
 
@@ -77,10 +77,10 @@
 
 | 積木 | 美食街比喻 | 白話解釋 | 延伸學習 |
 | --- | --- | --- | --- |
-| 👨‍💻 **前端 (Frontend)** | 裝潢、菜單、點餐櫃檯 | 使用者看得到、摸得到的畫面。由 HTML（骨架）、CSS（化妝）、JavaScript（動作）組成 | [MDN：網頁入門（繁中）](https://developer.mozilla.org/zh-TW/docs/Learn_web_development/Getting_started) |
+| 👨‍💻 **前端 (Frontend)** | 裝潢、菜單、點餐櫃檯 | 使用者看得到、摸得到的畫面。由 HTML（骨架）、CSS（化妝）、JavaScript（動作）組成 | [MDN：網頁入門（繁中）](https://developer.mozilla.org/zh-TW/docs/Learn_web_development/Getting_started/Your_first_website) |
 | 🗄️ **版本控制 (GitHub)** | 總部保險箱＋自動傳真機 | 保存每一版程式碼，改壞了可以回到上一版；一更新就通知其他服務 | [GitHub Hello World 教學（繁中）](https://docs.github.com/zh/get-started/start-your-journey/hello-world) |
 | ☁️ **雲端託管 SaaS (Netlify)** | 美食街的免費攤位 | 把你的檔案放到全世界都連得到的伺服器上，並給你一個網址 | [Netlify 官方文件](https://docs.netlify.com/) |
-| 📦 **後端即服務 BaaS (Netlify Forms)** | 訂單代收中心 | 不自己寫資料庫，租用現成的服務幫你收資料 | [Netlify Forms 說明](https://docs.netlify.com/forms/setup/) |
+| 📦 **後端即服務 BaaS (Netlify Forms)** | 訂單代收中心 | 不自己寫資料庫，租用現成的服務幫你收資料 | [Netlify Forms 說明](https://docs.netlify.com/manage/forms/setup/) |
 
 > 💡 **今天這堂課，我們完全不碰複雜的 GCP，因為聰明的現代創業者，是「用 SaaS 服務來打造自己的 SaaS 產品」！**
 
@@ -103,7 +103,7 @@ sequenceDiagram
     老闆->>F: 6. 登入 Netlify 後台查看名單
 ```
 
-📖 延伸閱讀：[MDN：網際網路是如何運作的？（繁中）](https://developer.mozilla.org/zh-TW/docs/Learn_web_development/Howto/Web_mechanics/How_does_the_Internet_work)
+📖 延伸閱讀：[MDN：網際網路是如何運作的？（繁中）](https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/How_does_the_Internet_work)
 
 ---
 
@@ -141,4 +141,4 @@ sequenceDiagram
 
 ---
 
-下一步 👉 [第一週實戰：Vibe Coding 詠唱你的 SaaS 產品前端](../week1/README.md)
+下一步 👉 [第一週實戰：Vibe Coding 詠唱你的 SaaS 產品前端](README.md)

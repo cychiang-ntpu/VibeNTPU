@@ -2,7 +2,7 @@
 
 > 使用方式：複製咒語 → 把 `【】` 裡的內容換成你自己的 → 貼給 AI 助理（[Claude](https://claude.ai/)／[ChatGPT](https://chatgpt.com/)／[Gemini](https://gemini.google.com/)）。
 
-[← 回第一週](README.md)
+[← 回第 1 週](README.md)
 
 ---
 
@@ -143,4 +143,4 @@ AI 第一次產出的結果通常不會完美，這很正常！Vibe Coding 的�
 
 ---
 
-存好 `index.html` 了嗎？下一步 👉 [把店面放上雲端](deploy-github-netlify.md)
+存好 `index.html` 了嗎？下一步 👉 [把店面放上雲端](steps.md)

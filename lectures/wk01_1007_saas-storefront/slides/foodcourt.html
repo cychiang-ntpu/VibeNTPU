@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SaaS 美食街：現代網路架構</title>
+<style>
+:root{
+  --primary:#0f766e; --primary-2:#14b8a6; --accent:#f59e0b;
+  --bg:#f5faf9; --surface:#ffffff; --surface-2:#e6f4f1;
+  --text:#12302c; --muted:#4b635f; --border:#c9e2dd;
+  --bad:#dc2626; --bad-bg:#fdecec; --good:#15803d; --good-bg:#e8f7ec;
+  --mountain:#8a5a2b; --shadow:0 4px 16px rgba(15,118,110,.12);
+  --radius:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --primary:#2dd4bf; --primary-2:#14b8a6; --accent:#fbbf24;
+    --bg:#0b1716; --surface:#12211f; --surface-2:#183230;
+    --text:#e3f4f1; --muted:#9dbab5; --border:#2a4a46;
+    --bad:#f87171; --bad-bg:#3a1a1a; --good:#4ade80; --good-bg:#143321;
+    --mountain:#d4a373; --shadow:0 4px 16px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{font-size:18px}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  line-height:1.6;overflow-x:hidden}
+.wrap{max-width:1120px;margin:0 auto;padding:16px}
+header h1{margin:.2em 0 .1em;font-size:clamp(1.5rem,4vw,2.3rem);color:var(--primary)}
+header p{margin:0 0 12px;color:var(--muted)}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px;border-bottom:2px solid var(--border);padding-bottom:8px}
+.tab{background:var(--surface);border:2px solid var(--border);border-radius:999px;padding:.5em 1.1em;font-weight:700}
+.tab[aria-selected="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+@media (prefers-color-scheme: dark){.tab[aria-selected="true"]{color:#06201d}}
+.panel{animation:fade .3s ease}
+.panel[hidden]{display:none}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+h2{font-size:1.35rem;margin:.2em 0 .5em}
+h3{margin:.2em 0 .4em;font-size:1.15rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.side ul{padding-left:1.2em;margin:.3em 0}
+.side.mtn{border-top:6px solid var(--mountain)}
+.side.fc{border-top:6px solid var(--primary-2)}
+.tag{display:inline-block;background:var(--accent);color:#3b2600;font-size:.75rem;font-weight:700;border-radius:6px;padding:0 .5em;vertical-align:middle}
+.controls{margin:16px 0;display:grid;gap:12px}
+.controls label{font-weight:700}
+input[type=range]{width:100%;accent-color:var(--primary);height:32px}
+.switch{display:flex;align-items:center;gap:10px;font-weight:600}
+.switch input{width:24px;height:24px;accent-color:var(--primary)}
+.bars{display:grid;gap:14px;margin-top:8px}
+.barrow .lbl{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;font-weight:700}
+.track{background:var(--surface-2);border-radius:10px;height:34px;overflow:hidden}
+.fill{height:100%;border-radius:10px;transition:width .5s ease;min-width:4px}
+.fill.m{background:linear-gradient(90deg,#b7793f,var(--mountain))}
+.fill.f{background:linear-gradient(90deg,var(--primary),var(--primary-2))}
+.punch{margin-top:16px;font-size:1.25rem;font-weight:800;background:var(--surface-2);border-left:6px solid var(--accent);padding:12px 16px;border-radius:10px}
+.note{color:var(--muted);font-size:.85rem;margin-top:8px}
+.saas{margin-top:16px}
+.saas .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{background:var(--surface-2);border-radius:999px;padding:.2em .8em;font-weight:600}
+/* Diagram */
+.diagram{display:grid;gap:14px;grid-template-columns:repeat(3,1fr);
+  grid-template-areas:"you fe gh" "forms cust nl";position:relative}
+@media (max-width:760px){.diagram{grid-template-columns:1fr 1fr;grid-template-areas:"you fe" "nl gh" "cust forms"}}
+.node{background:var(--surface);border:3px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;min-height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .25s,border-color .25s,box-shadow .25s}
+.node .emo{font-size:2.2rem;line-height:1.1}
+.node b{font-size:1.02rem}
+.node small{color:var(--muted);font-size:.8rem;line-height:1.3}
+button.node:hover{border-color:var(--primary-2)}
+.node.block{border-style:solid;background:linear-gradient(180deg,var(--surface),var(--surface-2))}
+.node.person{border-style:dashed}
+.node.sel{border-color:var(--primary);box-shadow:0 0 0 4px rgba(20,184,166,.25)}
+.node.on{border-color:var(--accent);box-shadow:0 0 0 5px rgba(245,158,11,.35);transform:scale(1.04)}
+.stepbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0 10px}
+.btn{background:var(--primary);color:#fff;border:0;border-radius:12px;padding:.5em 1em;font-weight:700}
+@media (prefers-color-scheme: dark){.btn{color:#06201d}}
+.btn.ghost{background:var(--surface);color:var(--text);border:2px solid var(--border)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.caption{min-height:3.2em;font-size:1.15rem;font-weight:700;background:var(--surface-2);border-radius:12px;padding:10px 14px}
+.steps{list-style:none;padding:0;margin:10px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px}
+.steps li{border:2px solid var(--border);border-radius:10px;padding:4px 8px;font-size:.85rem;color:var(--muted)}
+.steps li.done{border-color:var(--primary-2);color:var(--text)}
+.steps li.cur{border-color:var(--accent);background:var(--surface-2);color:var(--text);font-weight:700}
+.info{margin-top:16px}
+.info dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}
+.info dt{font-weight:800;color:var(--primary)}
+.info dd{margin:0}
+@media (max-width:480px){.info dl{grid-template-columns:1fr}.info dd{margin-bottom:6px}}
+.hint{color:var(--muted);font-size:.85rem}
+/* Quiz */
+.qprog{height:10px;background:var(--surface-2);border-radius:10px;overflow:hidden;margin:6px 0 14px}
+.qprog div{height:100%;background:var(--accent);transition:width .4s}
+.opts{display:grid;gap:10px;margin:12px 0}
+.opt{text-align:left;background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:.6em .9em;font-weight:600}
+.opt:hover:not(:disabled){border-color:var(--primary-2)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--good);background:var(--good-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.fb{border-radius:12px;padding:10px 14px;margin:8px 0;font-weight:600}
+.fb.good{background:var(--good-bg);border-left:6px solid var(--good)}
+.fb.try{background:var(--surface-2);border-left:6px solid var(--accent)}
+.result{text-align:center;padding:10px}
+.result .big{font-size:2.6rem;font-weight:900;color:var(--primary)}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.confetti span{position:absolute;top:-10vh;font-size:1.8rem;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(120vh) rotate(540deg)}}
+footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-size:.85rem}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .node.on{transform:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🏬 SaaS 美食街：現代網路架構</h1>
+  <p>與其去深山蓋餐廳，不如進駐百貨公司美食街！用逛美食街的方式，看懂一個網站怎麼開張 🍜</p>
+</header>
+
+<div class="tabs" role="tablist" aria-label="教材分頁">
+  <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true">⛰️ 深山 vs 美食街</button>
+  <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">🧱 組裝樂高積木</button>
+  <button class="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">📝 小測驗</button>
+</div>
+
+<!-- TAB 1 -->
+<section class="panel" id="p1" role="tabpanel" aria-labelledby="t1">
+  <div class="grid2">
+    <div class="card side mtn">
+      <h3>⛰️ 傳統創業：深山買荒地蓋餐廳</h3>
+      <ul>
+        <li>🔌 牽水電 = 架設<strong>伺服器環境</strong></li>
+        <li>💂 請保全 = <strong>資安防火牆</strong></li>
+        <li>🍳 蓋大廚房 = <strong>後端資料庫</strong></li>
+        <li>🌙 24 小時顧店 = <strong>維運</strong></li>
+      </ul>
+      <p>花費動輒數萬元以上、準備好幾個月；<br>沒客人上門……就倒閉 😱</p>
+    </div>
+    <div class="card side fc">
+      <h3>🏬 現代 SaaS 創業：進駐美食街</h3>
+      <ul>
+        <li>👨‍💻 前端 = 裝潢、菜單、點餐櫃檯</li>
+        <li>🗄️ GitHub = 總部保險箱＋自動傳真機</li>
+        <li>☁️ Netlify = 美食街免費攤位</li>
+        <li>📦 Netlify Forms = 訂單代收中心</li>
+      </ul>
+      <p>水電、保全、清潔都由百貨公司處理；<br>你只要專心做出好吃的菜 😋</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>💸 想先驗證點子，要花多少？ <span class="tag">示意數字</span></h2>
+    <div class="controls">
+      <label for="months">想驗證的月數：<span id="mVal">3</span> 個月</label>
+      <input type="range" id="months" min="1" max="12" value="3" aria-describedby="mVal">
+      <label class="switch"><input type="checkbox" id="ai"> 美食街方案加上 AI 訂閱（每月 NT$650，選用）</label>
+    </div>
+    <div class="bars">
+      <div class="barrow">
+        <div class="lbl"><span>⛰️ 深山蓋餐廳</span><span id="mCost"></span></div>
+        <div class="track"><div class="fill m" id="mBar"></div></div>
+      </div>
+      <div class="barrow">
+        <div class="lbl"><span>🏬 美食街</span><span id="fCost"></span></div>
+        <div class="track"><div class="fill f" id="fBar"></div></div>
+      </div>
+      <div class="barrow">
+        <div class="lbl"><span>⏱️ 開張前準備時間</span><span></span></div>
+        <div class="lbl" style="font-weight:600"><span>⛰️ 約 2–3 個月</span><span>🏬 一堂課（約 2 小時）</span></div>
+      </div>
+    </div>
+    <div class="punch" id="punch" aria-live="polite"></div>
+    <p class="note">⚠️ 以上皆為<strong>課堂示意數字</strong>，非真實報價：深山 = 開辦費 NT$30,000 ＋ 工程師 1 人 × NT$50,000/月 ＋ 主機 NT$3,000/月；美食街 = GitHub、Netlify 免費方案 NT$0（＋選用 AI 訂閱 NT$0–650/月）。</p>
+  </div>
+
+  <div class="card saas">
+    <h2>🎬 SaaS vs 買斷</h2>
+    <p><strong>以前：</strong>去店裡買光碟 💿，裝在自己電腦，一次買斷。<br>
+    <strong>現在：</strong>打開瀏覽器或 App 就能用，按月「租用」服務 👇</p>
+    <div class="row"><span class="chip">🎞️ Netflix</span><span class="chip">🎵 Spotify</span><span class="chip">🎨 Canva</span></div>
+    <p class="punch" style="font-size:1.1rem">💡 程式寫一次，放在雲端，可以租給全世界！</p>
+  </div>
+</section>
+
+<!-- TAB 2 -->
+<section class="panel" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+  <div class="card">
+    <h2>🧱 四塊積木，組成你的線上店面</h2>
+    <p class="hint">👆 點任一塊積木看說明；按「▶ 播放資料流」或用 ← → 方向鍵一步步看資料怎麼跑。</p>
+    <div class="diagram" id="diagram">
+      <div class="node person" data-n="you" style="grid-area:you"><span class="emo">🧑‍💼🤖</span><b>你（老闆）＋ AI</b><small>用 AI 產生程式碼</small></div>
+      <button class="node block" data-n="fe" data-k="fe" style="grid-area:fe"><span class="emo">👨‍💻</span><b>前端 Frontend</b><small>裝潢・菜單・點餐櫃檯</small></button>
+      <button class="node block" data-n="gh" data-k="gh" style="grid-area:gh"><span class="emo">🗄️</span><b>版本控制 GitHub</b><small>總部保險箱＋自動傳真機</small></button>
+      <button class="node block" data-n="nl" data-k="nl" style="grid-area:nl"><span class="emo">☁️</span><b>雲端託管 Netlify</b><small>美食街免費攤位</small></button>
+      <button class="node person" data-n="cust" data-k="cust" style="grid-area:cust"><span class="emo">👩‍🎓</span><b>客人瀏覽器</b><small>打開網址來逛</small></button>
+      <button class="node block" data-n="forms" data-k="forms" style="grid-area:forms"><span class="emo">📦</span><b>BaaS Netlify Forms</b><small>訂單代收中心</small></button>
+    </div>
+    <div class="stepbar">
+      <button class="btn" id="play">▶ 播放資料流</button>
+      <button class="btn ghost" id="prev">◀ 上一步</button>
+      <button class="btn ghost" id="next">下一步 ▶</button>
+      <button class="btn ghost" id="reset">↺ 重來</button>
+    </div>
+    <div class="caption" id="caption" aria-live="polite">準備好了嗎？按「▶ 播放資料流」開始 🚀</div>
+    <ol class="steps" id="steps"></ol>
+  </div>
+  <div class="card info" id="info" aria-live="polite">
+    <h3 id="infoT">👆 點一塊積木看看</h3>
+    <dl id="infoD"><dt>提示</dt><dd>每塊積木都有：比喻、真實技術、本課哪一週用到、一句話重點。</dd></dl>
+  </div>
+</section>
+
+<!-- TAB 3 -->
+<section class="panel" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
+  <div class="card" id="quiz">
+    <h2>📝 小測驗：想一想再作答</h2>
+    <p class="hint">答錯沒關係！大腦在「努力回想」的時候記得最牢 🧠💪</p>
+    <div id="qBody"></div>
+  </div>
+</section>
+
+<footer>VibeNTPU 第 1 週互動教材｜瀏覽器直接開，不需要網路</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s);};
+var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s));};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Tabs ---------- */
+var tabs=$$('.tab');
+function selectTab(i,focus){
+  tabs.forEach(function(t,j){
+    var on=i===j;
+    t.setAttribute('aria-selected',on);
+    t.tabIndex=on?0:-1;
+    document.getElementById(t.getAttribute('aria-controls')).hidden=!on;
+  });
+  if(focus)tabs[i].focus();
+}
+tabs.forEach(function(t,i){
+  t.addEventListener('click',function(){selectTab(i);});
+  t.addEventListener('keydown',function(e){
+    var n=null;
+    if(e.key==='ArrowRight')n=(i+1)%tabs.length;
+    else if(e.key==='ArrowLeft')n=(i-1+tabs.length)%tabs.length;
+    else if(e.key==='Home')n=0;
+    else if(e.key==='End')n=tabs.length-1;
+    if(n!==null){e.preventDefault();e.stopPropagation();selectTab(n,true);}
+  });
+});
+
+/* ---------- Tab 1: cost ---------- */
+var fmt=function(n){return 'NT$'+n.toLocaleString('en-US');};
+function calc(){
+  var m=+$('#months').value, ai=$('#ai').checked;
+  var mc=30000+m*(50000+3000), fc=ai?m*650:0;
+  $('#mVal').textContent=m;
+  $('#mCost').textContent=fmt(mc);
+  $('#fCost').textContent=fmt(fc);
+  $('#mBar').style.width='100%';
+  $('#fBar').style.width=Math.max(fc/mc*100,0.8)+'%';
+  var s='驗證 '+m+' 個月：深山 '+fmt(mc)+' vs 美食街 '+fmt(fc);
+  s+= fc===0?' 🎉 完全免費！':'（約只要深山的 '+(fc/mc*100).toFixed(1)+'%）👍';
+  $('#punch').textContent=s;
+}
+$('#months').addEventListener('input',calc);
+$('#ai').addEventListener('change',calc);
+calc();
+
+/* ---------- Tab 2: blocks ---------- */
+var INFO={
+  fe:{t:'👨‍💻 前端 Frontend',a:'餐廳的裝潢、菜單、點餐櫃檯——客人一眼看到、親手操作的部分。',r:'HTML（骨架）＋ CSS（裝潢）＋ JavaScript（互動），存成 index.html',w:'第 1 週：請 AI 幫你生出 index.html；第 2 週加上 LocalStorage',o:'客人看得到、摸得到的，都是前端！'},
+  gh:{t:'🗄️ 版本控制 GitHub',a:'總部保險箱＋自動傳真機：設計圖安全存好，一改就立刻傳真給分店。',r:'Git 版本控制、GitHub 雲端程式碼倉庫（repository）',w:'第 1 週：上傳 index.html；第 2 週：搭配 CI/CD 自動部署',o:'改錯了也能回到上一版，永遠不怕弄丟。'},
+  nl:{t:'☁️ 雲端託管 SaaS：Netlify',a:'百貨公司美食街的免費攤位：水電、保全、清潔都幫你搞定。',r:'Netlify 靜態網站託管，提供網址（https）、全球流量與 CDN',w:'第 1 週：部署上線拿到網址；第 2 週：GitHub 一更新就自動重新部署',o:'不用自己顧主機，專心把菜做好吃。'},
+  forms:{t:'📦 後端即服務 BaaS：Netlify Forms',a:'訂單代收中心：客人留下的資料，有人幫你收好、整理好。',r:'Netlify Forms：在 <form> 加上 netlify 屬性，就能收表單資料',w:'第 2 週：做一個「早鳥名單」表單收集客戶',o:'不用自己蓋大廚房（資料庫），也能收名單！'},
+  cust:{t:'👩‍🎓 客人瀏覽器',a:'走進美食街的客人。',r:'Chrome、Safari 等瀏覽器，輸入網址就能看到你的網站',w:'每一週：你的同學、朋友、家人都是客人！',o:'網站是做給客人用的，記得從客人的角度想。'}
+};
+var nodes=$$('#diagram .node');
+function show(k){
+  var d=INFO[k]; if(!d)return;
+  nodes.forEach(function(n){n.classList.toggle('sel',n.dataset.k===k);});
+  $('#infoT').textContent=d.t;
+  var dl=$('#infoD'); dl.innerHTML='';
+  [['🎭 比喻',d.a],['🔧 真實技術',d.r],['📅 本課哪一週',d.w],['💬 一句話',d.o]].forEach(function(p){
+    var dt=document.createElement('dt'),dd=document.createElement('dd');
+    dt.textContent=p[0];dd.textContent=p[1];dl.appendChild(dt);dl.appendChild(dd);
+  });
+}
+nodes.forEach(function(n){if(n.dataset.k)n.addEventListener('click',function(){stopPlay();show(n.dataset.k);});});
+
+/* ---------- Tab 2: flow ---------- */
+var STEPS=[
+  {s:'① AI 產生 index.html',c:'① 你請 AI 幫忙寫程式，產生店面設計圖 index.html 🤖✍️',n:['you','fe'],k:'fe'},
+  {s:'② 上傳 GitHub',c:'② 把 index.html 放進總部保險箱 GitHub 🗄️',n:['fe','gh'],k:'gh'},
+  {s:'③ 自動傳真給 Netlify',c:'③ GitHub 自動傳真給美食街攤位 Netlify（這就是 CI/CD）📠☁️',n:['gh','nl'],k:'nl'},
+  {s:'④ 客人打開網址',c:'④ 客人打開網址，Netlify 端出你的店面給他看 👩‍🎓🌐',n:['nl','cust'],k:'cust'},
+  {s:'⑤ 填早鳥名單',c:'⑤ 客人填寫早鳥名單，資料送到訂單代收中心 Netlify Forms 📦',n:['cust','forms'],k:'forms'},
+  {s:'⑥ 老闆看名單',c:'⑥ 老闆（你！）登入後台查看名單，驗證點子有沒有人要 🎉',n:['forms','you'],k:'forms'}
+];
+var ol=$('#steps');
+STEPS.forEach(function(s){var li=document.createElement('li');li.textContent=s.s;ol.appendChild(li);});
+var cur=-1,timer=null;
+function render(){
+  var s=STEPS[cur];
+  nodes.forEach(function(n){n.classList.toggle('on',!!s&&s.n.indexOf(n.dataset.n)>-1);});
+  $$('#steps li').forEach(function(li,i){li.className=i===cur?'cur':(i<cur?'done':'');});
+  $('#caption').textContent=s?s.c:'準備好了嗎？按「▶ 播放資料流」開始 🚀';
+  if(s)show(s.k);
+  $('#prev').disabled=cur<=0;
+  $('#next').disabled=cur>=STEPS.length-1;
+}
+function go(i){cur=Math.max(-1,Math.min(STEPS.length-1,i));render();}
+function stopPlay(){if(timer){clearInterval(timer);timer=null;}$('#play').textContent='▶ 播放資料流';}
+$('#play').addEventListener('click',function(){
+  if(timer){stopPlay();return;}
+  if(cur>=STEPS.length-1)cur=-1;
+  go(cur+1);
+  $('#play').textContent='⏸ 暫停';
+  timer=setInterval(function(){
+    if(cur>=STEPS.length-1){stopPlay();return;}
+    go(cur+1);
+  },reduce?3500:2400);
+});
+$('#prev').addEventListener('click',function(){stopPlay();go(cur-1);});
+$('#next').addEventListener('click',function(){stopPlay();go(cur+1);});
+$('#reset').addEventListener('click',function(){stopPlay();go(-1);});
+document.addEventListener('keydown',function(e){
+  if($('#p2').hidden)return;
+  var t=e.target;
+  if(t&&(t.getAttribute('role')==='tab'||t.tagName==='INPUT'))return;
+  if(e.key==='ArrowRight'){e.preventDefault();stopPlay();go(cur+1);}
+  else if(e.key==='ArrowLeft'){e.preventDefault();stopPlay();go(cur-1);}
+});
+render();
+
+/* ---------- Tab 3: quiz ---------- */
+var Q=[
+  {q:'🎵 Spotify 是「買斷」還是「SaaS」？',o:['買斷：付一次錢就永久擁有','SaaS：按月訂閱，在雲端使用','兩者都不是'],a:1,
+   e:'Spotify 不用買 CD，按月訂閱、打開 App 就能聽，是典型的 SaaS（軟體即服務）。'},
+  {q:'👨‍💻 在美食街比喻中，「前端」是餐廳的哪個部分？',o:['後面的大廚房','裝潢、菜單、點餐櫃檯','百貨公司的保全'],a:1,
+   e:'前端就是客人看得到、摸得到的部分：裝潢、菜單、點餐櫃檯，用 HTML/CSS/JS 做成。'},
+  {q:'🗄️ GitHub 在比喻中扮演什麼角色？',o:['總部保險箱＋自動傳真機','客人的錢包','美食街的清潔阿姨'],a:0,
+   e:'GitHub 安全保存每一版設計圖（程式碼），一更新就自動「傳真」給 Netlify 分店上線。'},
+  {q:'⛰️ 為什麼新創初期不建議「深山蓋餐廳」（自建主機）？',o:['因為深山風景不好','因為花錢又花時間，還沒確定有客人就可能先倒閉','因為法律規定不能自建主機'],a:1,
+   e:'創業初期最重要的是「快速、便宜地驗證點子」。自建主機要花大錢和好幾個月，風險太高。'},
+  {q:'☁️ Netlify 在美食街比喻中是？',o:['訂單代收中心','美食街的免費攤位（提供網址與流量）','點餐櫃檯'],a:1,
+   e:'Netlify（託管服務）是美食街攤位，給你網址和流量；Netlify Forms 才是訂單代收中心喔！'}
+];
+var qi=0,score=0,body=$('#qBody');
+var CHEER=['太棒了！🎉','答對了！👏','完全正確！🌟','你真的懂了！💯','漂亮！🙌'];
+function renderQ(){
+  if(qi>=Q.length)return renderEnd();
+  var d=Q[qi];
+  body.innerHTML='<p class="hint">第 '+(qi+1)+' / '+Q.length+' 題</p><div class="qprog"><div style="width:'+(qi/Q.length*100)+'%"></div></div><h3 id="qq"></h3><div class="opts" role="group" aria-labelledby="qq"></div><div id="fb" aria-live="polite"></div>';
+  $('#qq').textContent=d.q;
+  var box=body.querySelector('.opts');
+  d.o.forEach(function(txt,i){
+    var b=document.createElement('button');
+    b.className='opt';b.textContent=String.fromCharCode(65+i)+'. '+txt;
+    b.addEventListener('click',function(){answer(i);});
+    box.appendChild(b);
+  });
+}
+function answer(i){
+  var d=Q[qi],ok=i===d.a,btns=$$('#qBody .opt');
+  if(ok)score++;
+  btns.forEach(function(b,j){b.disabled=true;if(j===d.a)b.classList.add('right');else if(j===i)b.classList.add('wrong');});
+  var fb=$('#fb');
+  fb.innerHTML='<div class="fb '+(ok?'good':'try')+'"></div>';
+  fb.firstChild.textContent=(ok?CHEER[qi%CHEER.length]+' ':'差一點點！這題很多人也會想錯，我們一起看看 👉 ')+d.e;
+  var nb=document.createElement('button');
+  nb.className='btn';nb.textContent=qi<Q.length-1?'下一題 ▶':'看結果 🏁';
+  nb.addEventListener('click',function(){qi++;renderQ();var h=$('#qq')||$('#resTitle');if(h){h.tabIndex=-1;h.focus();}});
+  fb.appendChild(nb);nb.focus();
+}
+function renderEnd(){
+  var msg=score===Q.length?'全對！你已經是美食街架構達人 🏆':score>=3?'很棒！再複習一下錯的題目就完美了 💪':'每一次練習都讓大腦更強壯，再挑戰一次吧 🌱';
+  body.innerHTML='<div class="result"><div class="qprog"><div style="width:100%"></div></div><h3 id="resTitle">🎊 測驗完成！</h3><div class="big">'+score+' / '+Q.length+'</div><p>'+msg+'</p></div>';
+  var r=document.createElement('button');r.className='btn';r.textContent='↺ 再玩一次';
+  r.addEventListener('click',function(){qi=0;score=0;renderQ();});
+  body.querySelector('.result').appendChild(r);
+  celebrate();
+}
+function celebrate(){
+  if(reduce)return;
+  var c=document.createElement('div');c.className='confetti';c.setAttribute('aria-hidden','true');
+  var E=['🎉','✨','🍜','🎊','⭐','🧋','🍱'];
+  for(var i=0;i<40;i++){
+    var s=document.createElement('span');
+    s.textContent=E[i%E.length];
+    s.style.left=Math.random()*100+'%';
+    s.style.animationDuration=(2+Math.random()*2)+'s';
+    s.style.animationDelay=Math.random()*0.8+'s';
+    c.appendChild(s);
+  }
+  document.body.appendChild(c);
+  setTimeout(function(){c.remove();},5000);
+}
+renderQ();
+})();
+</script>
+</body>
+</html>

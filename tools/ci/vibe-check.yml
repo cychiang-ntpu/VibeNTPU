@@ -1,0 +1,62 @@
+# ============================================================
+# 🩺 VibeNTPU 健檢機器人（GitHub Actions 自動檢查）
+#
+# 怎麼安裝？（只要做一次）
+#   1. 打開你自己的 GitHub repo 首頁
+#   2. 按「Add file」→「Create new file」
+#   3. 檔名輸入：.github/workflows/vibe-check.yml
+#      （打到 / 時 GitHub 會自動幫你變成資料夾，這是正常的）
+#   4. 把這整份內容貼進去 → 按「Commit changes」
+#   5. 到 repo 上方的「Actions」分頁，就能看到健檢結果：
+#      綠色 ✅ = 通過；紅色 ❌ = 還差一步，點進去看 Summary 的提示
+#
+# 之後每次你上傳（push）新的 index.html，機器人都會自動幫你檢查一次。
+# ============================================================
+
+name: Vibe 健檢
+
+# 什麼時候執行？
+on:
+  push:               # 每次上傳（push / Commit changes）檔案時
+  workflow_dispatch:  # 也可以在 Actions 分頁手動按「Run workflow」
+
+# 🎯 要檢查到第幾關？
+#   1 = 第 1 週：形象首頁（開店徽章）
+#   2 = 第 2 週：再加上 Netlify Forms 早鳥表單（收單徽章）
+#   3 = 第 2 週：再加上 LocalStorage 會員儀表板＋AJAX 送出（記憶徽章）
+# 👉 第 2 週做完表單後，把下面的 "1" 改成 "2"；做完會員儀表板再改成 "3"。
+env:
+  LEVEL: "1"
+
+# 只需要讀取程式碼的權限就夠了（比較安全）
+permissions:
+  contents: read
+
+jobs:
+  vibe-check:
+    name: 健檢 index.html
+    runs-on: ubuntu-latest   # 在 GitHub 提供的雲端電腦（Linux）上執行
+    steps:
+      # 步驟 1：把你 repo 裡的檔案下載到雲端電腦
+      - name: 📥 下載我的程式碼
+        uses: actions/checkout@v4
+
+      # 步驟 2：安裝 Python（健檢程式是用 Python 寫的）
+      - name: 🐍 安裝 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 步驟 3：從 VibeNTPU 課程 repo 下載最新版的健檢程式
+      - name: 🩺 下載健檢程式
+        run: curl -fsSL -o vibe_check.py https://raw.githubusercontent.com/cychiang-ntpu/VibeNTPU/master/tools/ci/vibe_check.py
+
+      # 步驟 4：把健檢報告寫進 Summary（Actions 執行頁面最上方的漂亮報告）
+      #         這一步不管通過與否都不會失敗，只負責產生報告
+      - name: 📝 產生健檢報告（Summary）
+        run: python3 vibe_check.py index.html --level "$LEVEL" --markdown >> "$GITHUB_STEP_SUMMARY" || true
+
+      # 步驟 5：正式檢查！必要項目沒過的話，這一步會變紅色 ❌
+      #         點開這一步可以看到每一項的 ✅ / ❌ 和「請跟 AI 說」的提示
+      - name: ✅ 檢查到第 ${{ env.LEVEL }} 關
+        run: python3 vibe_check.py index.html --level "$LEVEL"

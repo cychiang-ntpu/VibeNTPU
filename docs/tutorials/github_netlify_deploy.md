@@ -3,7 +3,7 @@
 > 這一頁帶你把電腦裡的 `index.html`，變成全世界都能打開的網址。
 > 全程只需要**滑鼠拖曳 ＋ 點按鈕**，不需要打任何指令。
 
-[← 回第一週](README.md)
+[← 回第 1 週](../../lectures/wk01_1007_saas-storefront/README.md)
 
 > 📝 GitHub 與 Netlify 的介面偶爾會改版，按鈕位置可能跟下面描述略有不同。找不到按鈕時，請對照官方文件：
 > [GitHub：新增檔案到儲存庫](https://docs.github.com/zh/repositories/working-with-files/managing-files/adding-a-file-to-a-repository)｜[Netlify：從 Git 儲存庫部署](https://docs.netlify.com/start/quickstarts/deploy-from-repository/)
@@ -66,9 +66,11 @@
 ### B3. （如果剛剛沒取名）更改網址
 
 預設網址會長得像 `https://jolly-pony-123abc.netlify.app` 這種亂碼。
-到 **Project configuration（或 Site configuration）** → **General** → **Project details** → **Change project name**，改成好記的名字即可。
+在專案首頁（Project overview）點 **Customize** → **Manage project name and cover image**；或到 **Project configuration** → **General** → **Project details** → **Manage project name and cover image**，改成好記的名字即可。
 
-📖 延伸學習：[Netlify：更改網站名稱／網域](https://docs.netlify.com/domains-https/custom-domains/)（想要 `.com` 自訂網域的同學可以研究）
+📖 官方說明：[Netlify：更改專案名稱](https://docs.netlify.com/manage/projects/customize-project-name-and-cover-image/)
+
+📖 延伸學習：[Netlify：更改網站名稱／網域](https://docs.netlify.com/manage/domains/get-started-with-domains/)（想要 `.com` 自訂網域的同學可以研究）
 
 ---
 
@@ -93,8 +95,8 @@
 | Deploy 失敗（Failed） | 檢查 Build command 和 Publish directory 是否都留空 |
 | 想先試試看、不想用 GitHub | 可以用 [Netlify Drop](https://app.netlify.com/drop) 直接拖曳資料夾上線。但**這樣就沒有自動更新（CI/CD）的魔法**，所以課堂上請用 GitHub 的方式 |
 
-更多問題 👉 [常見問題 FAQ](../docs/faq.md)
+更多問題 👉 [常見問題 FAQ](error_guide.md)
 
 ---
 
-完成了嗎？回到 👉 [第一週驗收清單](README.md#-本週驗收清單)
+完成了嗎？回到 👉 [第 1 週步驟卡](../../lectures/wk01_1007_saas-storefront/steps.md)

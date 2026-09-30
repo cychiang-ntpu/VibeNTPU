@@ -60,7 +60,7 @@ flowchart LR
 
 ## 📚 延伸學習：怎麼做好一場 Pitch？
 
-- [Y Combinator：How to Pitch Your Startup](https://www.ycombinator.com/library/4b-how-to-pitch-your-startup)
+- [Y Combinator Startup Library（搜尋 “How to pitch your company”）](https://www.ycombinator.com/library)
 - [Y Combinator：How to Design a Better Pitch Deck](https://www.ycombinator.com/library/2u-how-to-build-your-seed-round-pitch-deck)
 - [Sequoia Capital：Writing a Business Plan](https://sequoiacap.com/article/writing-a-business-plan/)
 - [Guy Kawasaki：The 10/20/30 Rule of PowerPoint](https://guykawasaki.com/the_102030_rule/)

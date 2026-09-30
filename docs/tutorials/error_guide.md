@@ -1,8 +1,18 @@
-# 🆘 常見問題與錯誤排除（FAQ）
+# 🆘 卡關急救手冊（打怪攻略）
 
-> 卡關時先照這頁檢查，90% 的問題都能在這裡解決。還是不行？把錯誤畫面截圖問 AI 或問助教！
+> 💪 **卡關 = 經驗值。** 每個工程師每天都在卡關，差別只是他們知道去哪裡找答案。
+> 你現在遇到的問題，幾乎每一屆同學都遇過，所以才會寫在這裡。**你一點都不笨，你只是還沒遇過這隻怪。**
 
-[← 回課程首頁](../README.md)
+### 🧭 卡關時的四個步驟
+
+1. **深呼吸** 😮‍💨：錯誤訊息不是在罵你，是在給你線索。
+2. **在這頁找找看**：按 `Ctrl+F`（Mac：`⌘+F`）搜尋你看到的關鍵字，例如「Page not found」「亂碼」。
+3. **問 AI**：把錯誤畫面截圖貼給 AI，說「我是新手，看到這個畫面，請一步一步教我怎麼解決」。
+4. **15 分鐘還沒解決 → 求救**：貼紅色便利貼、問隔壁組、課程群組發問，或開一張 [🆘 求救單](https://github.com/cychiang-ntpu/VibeNTPU/issues/new?template=help_request.yml)。
+
+> 🏆 解決過的問題，記得寫進冒險護照的反思裡，「卡過又解決」就是你升級最多的地方。
+
+[← 回課程首頁](../../README.md)
 
 ---
 
@@ -18,9 +28,9 @@
 <details>
 <summary><b>Q2. 雙擊 index.html 後，畫面一片空白或只顯示程式碼文字？</b></summary>
 
-- **顯示程式碼文字**：檔名可能是 `index.html.txt`。請開啟「顯示副檔名」檢查（見 [存檔教學](../week1/prompts.md#-如何把-ai-給的程式碼存成-indexhtml)）。
+- **顯示程式碼文字**：檔名可能是 `index.html.txt`。請開啟「顯示副檔名」檢查（見 [存檔教學](../../lectures/wk01_1007_saas-storefront/prompts.md#-如何把-ai-給的程式碼存成-indexhtml)）。
 - **一片空白**：程式碼可能沒複製完整。檢查檔案最後一行是不是 `</html>`。
-- 還是不行：用 [卡關急救包咒語](../week1/prompts.md#咒語-3卡關急救包-) 問 AI。
+- 還是不行：用 [卡關急救包咒語](../../lectures/wk01_1007_saas-storefront/prompts.md#咒語-3卡關急救包-) 問 AI。
 </details>
 
 <details>
@@ -105,7 +115,7 @@
 3. **`<form>` 有沒有 `data-netlify="true"` 和 `name` 屬性？**
 4. **表單是不是由 JavaScript 動態產生的？** 如果 AI 用 JavaScript「畫出」表單，Netlify 掃描 HTML 時會看不到。請 AI 把 `<form>` 直接寫在 HTML 裡。
 
-📖 [Netlify：表單疑難排解](https://docs.netlify.com/forms/troubleshooting-tips/)
+📖 [Netlify：表單疑難排解](https://docs.netlify.com/manage/forms/troubleshooting-tips/)
 </details>
 
 <details>
@@ -119,7 +129,7 @@
 <details>
 <summary><b>Q13. 送出後網頁跳到一個 Netlify 的「Thank you」頁面，沒有顯示會員儀表板？</b></summary>
 
-表示 JavaScript 沒有攔截送出動作（沒有 `event.preventDefault()`）。請用 [第二週咒語 2](../week2/prompts.md#咒語-2送出後原地變成會員儀表板) 請 AI 改成 AJAX 送出。
+表示 JavaScript 沒有攔截送出動作（沒有 `event.preventDefault()`）。請用 [第二週咒語 2](../../lectures/wk02_1014_baas-cicd/prompts.md#咒語-2送出後原地變成會員儀表板) 請 AI 改成 AJAX 送出。
 </details>
 
 ---
@@ -129,7 +139,7 @@
 <details>
 <summary><b>Q14. 換了手機打開網站，歡迎畫面不見了？</b></summary>
 
-這是正常的！LocalStorage 存在**每台裝置自己的瀏覽器**裡，就像集點卡在你口袋，換一個人（裝置）就沒有了。詳見 [LocalStorage 解說](../week2/localstorage.md)。
+這是正常的！LocalStorage 存在**每台裝置自己的瀏覽器**裡，就像集點卡在你口袋，換一個人（裝置）就沒有了。詳見 [LocalStorage 解說](localstorage.md)。
 </details>
 
 <details>
