@@ -2,6 +2,8 @@
 
 學生照 [第 2 週手把手實作](../README.md) 操作，教師依下表帶節奏。互動網頁 [data_flow.html](data_flow.html) 直接用瀏覽器開啟，不需網路。原理補充（選講）見 [精實創業、MVP 與指標](../../../docs/deep_dive/lean_startup_and_metrics.md)、[表單、儲存與 CI/CD](../../../docs/deep_dive/forms_storage_cicd.md)。
 
+> 若第 1 週採用 [調整版授課計畫](../../wk01_1007_saas-storefront/no_prep_plan.md)：開頭加 10 分鐘讓未完成的同學補做 Netlify 上線，Part 1 縮為 5 分鐘（教師投影 data_flow.html 示範一次即可）。
+
 ## 課前準備
 
 - 教師自己的示範網站已完成第 1 週，並且**尚未**開啟表單偵測（現場示範用）。

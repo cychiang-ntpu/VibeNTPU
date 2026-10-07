@@ -1,6 +1,8 @@
 # 第 1 週手把手實作（2026/10/7）
 
-[一頁版步驟清單](steps.md)　｜　[提示詞](prompts.md)　｜　[學習單](worksheet.md)　｜　[下一週](../wk02_1014_baas-cicd/README.md)
+[一頁版步驟清單](steps.md)　｜　[提示詞](prompts.md)　｜　[學習單](worksheet.md)　｜　[課後作業](homework.md)　｜　[下一週](../wk02_1014_baas-cicd/README.md)
+
+> **本學期調整：** 課前沒有完成「課前準備清單」的班級，今天先在課堂上完成安裝、建立 repo、請 Copilot 做出網頁，並提交、同步到 GitHub。其餘步驟（架構互動網頁與測驗、修改網頁、Netlify 上線、雙重驗證等）改為 [課後作業](homework.md)，請在 **10/13（二）晚上前**完成。教師版時間表見 [調整版授課計畫](no_prep_plan.md)。
 
 ---
 
@@ -448,18 +450,7 @@ commit（提交）＝ 在你的電腦上存一個版本，並寫一句說明；s
 
 ## 課後作業（第 2 週上課前）
 
-**必做**
-
-- [ ] 確認網站用手機打得開，而且網址已貼到課程群組。
-- [ ] 在 VS Code 打開 repo 裡的 `README.md`，貼上 [學習歷程檔案範本](../../templates/portfolio_README.md)，勾選已完成的檢核點，寫下 3-2-1 反思（三個學到的、兩個疑問、一個想改進的）。
-- [ ] 重做步驟 20、21（提交、同步），訊息寫 `新增學習歷程檔案`。Netlify 會自動再部署一次。
-- [ ] 閱讀 [自建或使用雲端服務](saas_architecture.md) 與 [你每天用的 App 背後長怎樣](social_media_architecture.md)。
-
-**選做**
-
-- [ ] 用手機檢查版面，請 Copilot 修正，再提交、同步，觀察網站是否自動更新。
-- [ ] 看三位同學的網站，各給一則回饋。
-- [ ] 參考範例作品：[samples](../../samples/README.md)。
+完整的課後作業與步驟請見 **[homework.md](homework.md)**，分為 A 必做（10/13 晚上前完成）、B 建議、C 預習第 2 週。
 
 **下週預告：** 訪客想在你的網站留下 Email，資料要存到哪裡？
 
@@ -480,6 +471,8 @@ commit（提交）＝ 在你的電腦上存一個版本，並寫一句說明；s
 | [slides/prompt_builder.html](slides/prompt_builder.html) | 提示詞產生器 |
 | [slides/outline.md](slides/outline.md) | 教師授課大綱 |
 | [announcement.md](announcement.md) | 課程公告文字 |
+| [homework.md](homework.md) | 第 1 週課後作業（步驟式） |
+| [no_prep_plan.md](no_prep_plan.md) | 教師用：學生未做課前準備時的調整版時間表 |
 
 選讀（課堂不要求）：[SaaS 模式與網站運作](../../docs/deep_dive/saas_and_web.md)、[社群媒體系統設計深入](../../docs/deep_dive/social_media_systems.md)。
 

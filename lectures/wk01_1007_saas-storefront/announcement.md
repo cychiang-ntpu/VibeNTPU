@@ -84,3 +84,27 @@ https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/error_guide
 
 授課教師　江振宇
 ```
+
+## 4. 下課後（學生未做課前準備的版本）
+
+```
+【Vibe Coding × SaaS 創業實戰｜第 1 週課後作業】
+
+今天大部分時間用在安裝軟體與建立帳號，謝謝大家的耐心。
+其餘內容請回家照下面這份作業一步一步完成：
+https://github.com/cychiang-ntpu/VibeNTPU/blob/master/lectures/wk01_1007_saas-storefront/homework.md
+
+A 必做（10/13 星期二晚上前完成）：
+1. 補完課堂上沒做完的步驟（作業中有表格幫你找出從哪一步開始）
+2. 讓網站在 Netlify 上線，手機打得開
+3. 開啟 GitHub 雙重驗證，保存復原碼
+4. 操作兩個互動網頁並完成小測驗
+5. 用 Copilot 修改網頁，提交、同步，看網站自動更新
+6. 建立學習歷程檔案，並把網站網址貼到群組
+
+建議今天就申請 GitHub 學生方案（審核需要幾天，通過後 Copilot 可用次數較多）。
+
+卡住 15 分鐘就停下來，把「做到第幾步」和「畫面截圖」貼到群組，助教會協助。
+下週第 2 週會在你已上線的網站上繼續加功能，請務必在上課前完成 A。
+```
+
