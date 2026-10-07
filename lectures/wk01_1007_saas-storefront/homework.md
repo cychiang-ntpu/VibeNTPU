@@ -14,6 +14,8 @@
 | **B 建議** | 學生方案、預覽工具、自我檢核 | 約 30 分鐘 | 10/14 前 |
 | **C 預習** | 先看第 2 週的互動網頁 | 約 15 分鐘 | 10/14 前 |
 
+**回家用的電腦和教室不一樣？** 課堂用的是電腦教室的 Windows 桌機，那台電腦上的檔案不會跟著你回家；你的成果存在 GitHub 上。回家後先在自己的電腦裝好軟體，再把 repo clone 下來，步驟見 [Windows 與 macOS 差異對照](../../docs/tutorials/windows_vs_macos.md) 第 4 節。用 Mac 的同學請先看該頁第 2、3 節。
+
 **做作業的方法：** 一次只做一步。每一步做完，先對照「完成後你應該看到」，再往下做。卡住 15 分鐘就停下來，把**你做到第幾步、畫面長什麼樣子（截圖）**貼到課程群組。
 
 **下週一定要完成 A**：第 2 週要在你已經上線的網站上繼續加功能。如果網站還沒上線，下週會跟不上。
@@ -28,12 +30,13 @@
 
 | 檢查 | 是 → 看下一列 | 否 → 從這裡開始 |
 | --- | --- | --- |
+| 0. 我自己的電腦已裝好 VS Code 與 Git（教室桌機的不算） | ↓ | [課前準備清單](../../docs/tutorials/before_class.md) 步驟 3、4；Mac 看 [差異對照](../../docs/tutorials/windows_vs_macos.md) |
 | 1. 我有 GitHub 帳號，而且登得進去 | ↓ | [課前準備清單](../../docs/tutorials/before_class.md) 步驟 1 |
 | 2. 電腦已安裝 VS Code | ↓ | [課前準備清單](../../docs/tutorials/before_class.md) 步驟 3 |
 | 3. VS Code 的終端機輸入 `git --version` 會顯示版本號 | ↓ | [課前準備清單](../../docs/tutorials/before_class.md) 步驟 4、5 |
 | 4. VS Code 左下角的帳戶圖示點開後，看得到我的 GitHub 帳號 | ↓ | [課前準備清單](../../docs/tutorials/before_class.md) 步驟 6 |
 | 5. VS Code 打得開 Copilot 聊天面板 | ↓ | [課前準備清單](../../docs/tutorials/before_class.md) 步驟 7 |
-| 6. 我在 GitHub 上有自己的 repo，而且已經 clone 到電腦 | ↓ | [第 1 週手把手實作](README.md) 步驟 9–12 |
+| 6. 我在 GitHub 上有自己的 repo，而且已經 clone 到**自己的**電腦 | ↓ | 已有 repo 只需 clone：[差異對照](../../docs/tutorials/windows_vs_macos.md) 第 4 節；還沒有 repo：[第 1 週手把手實作](README.md) 步驟 9–12 |
 | 7. repo 資料夾裡有 Copilot 做的 `index.html`，用瀏覽器打得開 | ↓ | [第 1 週手把手實作](README.md) 步驟 13–17 |
 | 8. 在 GitHub 網頁上看得到我的 `index.html` | 做 A2 | [第 1 週手把手實作](README.md) 步驟 20–21（提交、同步） |
 

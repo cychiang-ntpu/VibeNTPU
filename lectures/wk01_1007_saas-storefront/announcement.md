@@ -104,6 +104,9 @@ A 必做（10/13 星期二晚上前完成）：
 
 建議今天就申請 GitHub 學生方案（審核需要幾天，通過後 Copilot 可用次數較多）。
 
+今天的檔案存在 GitHub 上，教室電腦裡的不會跟著你回家。回家請先在自己電腦安裝軟體，再把 repo clone 下來；用 Mac 的同學請看這份差異對照：
+https://github.com/cychiang-ntpu/VibeNTPU/blob/master/docs/tutorials/windows_vs_macos.md
+
 卡住 15 分鐘就停下來，把「做到第幾步」和「畫面截圖」貼到群組，助教會協助。
 下週第 2 週會在你已上線的網站上繼續加功能，請務必在上課前完成 A。
 ```

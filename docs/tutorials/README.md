@@ -30,6 +30,10 @@
 
 - [以 GitHub Actions 自動檢核網站](vibe_check_ci.md)：完成檢核點 3 之後，讓 GitHub 自動幫你檢查網頁。
 
+### 回家用的電腦和教室不同時
+
+- [Windows 與 macOS 差異對照](windows_vs_macos.md)：課堂用 Windows 桌機、回家用 Mac 的同學請看；也說明怎麼把課堂成果 clone 回自己的電腦。
+
 ### 遇到問題時
 
 - [疑難排解手冊](error_guide.md)：Q1–Q18 常見問題與解法。
