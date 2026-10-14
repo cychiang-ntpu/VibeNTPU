@@ -66,6 +66,7 @@ flowchart LR
 | 10/7 前 | 註冊帳號、安裝軟體、做出第一個網頁 | 檢核點 0 | [課前準備](docs/tutorials/before_class.md) |
 | 10/7（三） | 了解架構；用 AI 做首頁；發布上線 | 檢核點 1–3 | [第 1 週](lectures/wk01_1007_saas-storefront/README.md) |
 | 10/14（三） | 加上表單與會員畫面；自動更新；1 分鐘發表 | 檢核點 4–7 | [第 2 週](lectures/wk02_1014_baas-cicd/README.md) |
+| 第 3 週（進階） | 用 Supabase 做真正的帳號、雲端購物車與訂單後台 | [第 3 週](lectures/wk03_supabase/README.md) |
 | 期末（另行公告） | 3 分鐘產品發表 | — | [發表模板](docs/pitch_template.md) |
 
 評分方式與 AI 使用規範見 [課程規劃](docs/course_plan.md)；不同品質的作品長什麼樣子，見 [示範作品](samples/README.md)。
