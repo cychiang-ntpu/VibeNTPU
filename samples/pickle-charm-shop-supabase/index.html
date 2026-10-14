@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pickle Charm Shop｜皮克敏吊飾</title>
+    <meta
+      name="description"
+      content="皮克敏吊飾專賣網站，販售可愛療癒的吊飾與收藏品。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <div class="brand">
+          <span class="brand-mark">P</span>
+          <span>Pickle Charm</span>
+        </div>
+
+        <nav class="main-nav" aria-label="主選單">
+          <a href="#about">品牌故事</a>
+          <a href="#products">熱賣商品</a>
+          <a href="#features">購買理由</a>
+          <a href="#reviews">評價</a>
+        </nav>
+
+        <div class="nav-actions">
+          <span class="welcome-text" id="welcome-text" hidden></span>
+          <button class="ghost-btn" id="login-btn" type="button">登入</button>
+          <button class="ghost-btn" id="logout-btn" type="button" hidden>登出</button>
+          <button class="cart-btn" id="cart-btn" type="button" aria-label="購物車" aria-controls="cart-panel" aria-expanded="false">
+            購物車 <span class="cart-count" id="cart-count">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">療癒系小物 · 讓生活多一點可愛</p>
+            <h1>皮克敏吊飾，給日常一點小幸福。</h1>
+            <p class="subtitle">
+              從可愛的毛絨表情到柔和的色系設計，我們精選每一款吊飾，讓你的包包、手機、鍵圈都能帶著好心情。
+            </p>
+            <div class="hero-actions">
+              <a href="#products" class="primary-btn">立即選購</a>
+              <a href="#about" class="secondary-btn">了解更多</a>
+            </div>
+            <ul class="trust-list">
+              <li>100% 手作小物</li>
+              <li>出貨 24 小時內</li>
+              <li>安心保固</li>
+            </ul>
+          </div>
+
+          <div class="hero-visual" aria-label="產品展示">
+            <div class="product-showcase">
+              <div class="float-card card-top">
+                <span>夢幻粉</span>
+              </div>
+              <div class="main-badge">
+                <div class="badge-face">◕‿◕</div>
+              </div>
+              <div class="float-card card-bottom">
+                <span>夜空藍</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="story">
+        <div class="container story-grid">
+          <div class="story-copy">
+            <p class="section-tag">品牌故事</p>
+            <h2>每一個吊飾，都是一個小小的陪伴。</h2>
+            <p>
+              Pickle Charm 從一個小小的想法開始：把日常中的點滴變成可愛的小禮物。
+              我們相信，像皮克敏一樣活潑、療癒、帶來笑容的物件，能讓每一天都更有溫度。
+            </p>
+            <p>
+              這裡的每一款吊飾都經過細心設計與檢查，從材質到細節都希望帶來安心與喜悅。
+            </p>
+          </div>
+
+          <div class="story-stats">
+            <div class="stat-item">
+              <strong>8,000+</strong>
+              <span>已送出吊飾</span>
+            </div>
+            <div class="stat-item">
+              <strong>4.9/5</strong>
+              <span>顧客評價</span>
+            </div>
+            <div class="stat-item">
+              <strong>12款</strong>
+              <span>經典系列</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="products" class="products">
+        <div class="container">
+          <div class="section-head">
+            <p class="section-tag">熱賣商品</p>
+            <h2>最受歡迎的皮克敏吊飾</h2>
+          </div>
+
+          <div class="product-grid">
+            <article class="product-card">
+              <div class="product-image image-pink">
+                <span>◕‿◕</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta">
+                  <span class="tag">熱銷</span>
+                  <span class="price">NT$ 390</span>
+                </div>
+                <h3>粉糖皮克敏</h3>
+                <p>粉嫩色系，像糖果般療癒，適合放在書包或手機吊飾上。</p>
+                <button class="buy-btn" type="button" data-name="粉糖皮克敏" data-price="390">加入購物車</button>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-image image-blue">
+                <span>◉‿◉</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta">
+                  <span class="tag">新款</span>
+                  <span class="price">NT$ 420</span>
+                </div>
+                <h3>夜空藍皮克敏</h3>
+                <p>靜謐藍色調，搭配簡約風，讓每日通勤多一份安定感。</p>
+                <button class="buy-btn" type="button" data-name="夜空藍皮克敏" data-price="420">加入購物車</button>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-image image-yellow">
+                <span>◠◡◠</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta">
+                  <span class="tag">人氣</span>
+                  <span class="price">NT$ 450</span>
+                </div>
+                <h3>陽光草莓皮克敏</h3>
+                <p>明亮的黃色與草莓紅，像夏天的笑容一樣帶來好運氣。</p>
+                <button class="buy-btn" type="button" data-name="陽光草莓皮克敏" data-price="450">加入購物車</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="features">
+        <div class="container">
+          <div class="section-head center">
+            <p class="section-tag">購買理由</p>
+            <h2>為什麼大家都喜歡這些小吊飾</h2>
+          </div>
+
+          <div class="feature-grid">
+            <div class="feature-box">
+              <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg></div>
+              <h3>療癒外觀</h3>
+              <p>圓潤可愛的表情設計，讓每一次拿起都會忍不住笑起來。</p>
+            </div>
+            <div class="feature-box">
+              <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20c4-6 8-6 12-12"/><circle cx="17" cy="7" r="3"/><path d="M4 20l2-1"/></svg></div>
+              <h3>細緻手作</h3>
+              <p>每一個產品都經過檢查與整理，細節處理乾淨且耐看。</p>
+            </div>
+            <div class="feature-box">
+              <div class="feature-icon"><svg class="icon" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18M12 9v12"/><path d="M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6 0 6-1.5S14 5 12 9z"/></svg></div>
+              <h3>適合送禮</h3>
+              <p>是送朋友、同事、伴侶的超可愛小禮物，滿足療癒系收藏癖。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="reviews" class="reviews">
+        <div class="container">
+          <div class="section-head center">
+            <p class="section-tag">顧客評價</p>
+            <h2>大家都說超可愛</h2>
+          </div>
+
+          <div class="review-grid">
+            <blockquote>
+              「吊飾超級可愛，質感也很好，真的很適合放在包包上。」
+              <span>— 小晴</span>
+            </blockquote>
+            <blockquote>
+              「顏色很療癒，朋友看到都問我哪裡買的，超推薦！」
+              <span>— 阿哲</span>
+            </blockquote>
+            <blockquote>
+              「送禮很有心，包裝也很細緻，收到時真的超驚喜。」
+              <span>— 佩佩</span>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section id="my-orders" class="my-orders">
+        <div class="container">
+          <div class="section-head center">
+            <p class="section-tag">我的訂單</p>
+            <h2>我的訂單</h2>
+          </div>
+          <p class="orders-note" id="orders-note">登入後可查看訂單</p>
+          <ul class="order-list" id="order-list"></ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <div class="brand footer-brand">
+            <span class="brand-mark">P</span>
+            <span>Pickle Charm</span>
+          </div>
+          <p>讓生活多一點可愛，讓每一天都更有故事。</p>
+        </div>
+
+        <div class="footer-links">
+          <a href="#about">品牌故事</a>
+          <a href="#products">商品</a>
+          <a href="#reviews">評價</a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="modal" id="signup-modal" hidden>
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="signup-title">
+        <button class="icon-btn modal-close" type="button" data-close-modal aria-label="關閉">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <h2 id="signup-title">登入</h2>
+        <div class="mode-switch" role="tablist" aria-label="切換註冊或登入">
+          <button class="mode-btn" type="button" id="mode-login" data-mode="login" aria-pressed="true">登入</button>
+          <button class="mode-btn" type="button" id="mode-signup" data-mode="signup" aria-pressed="false">註冊</button>
+        </div>
+        <p class="form-note" id="auth-note" hidden></p>
+        <form id="auth-form" class="stack-form">
+          <label id="auth-name-label">
+            姓名
+            <input type="text" name="name" id="auth-name" autocomplete="name" />
+          </label>
+          <label>
+            Email
+            <input type="email" name="email" id="auth-email" required autocomplete="email" />
+          </label>
+          <label>
+            密碼
+            <input type="password" name="password" id="auth-password" required minlength="6" autocomplete="current-password" />
+          </label>
+          <button class="primary-btn" type="submit" id="auth-submit">送出</button>
+          <p class="form-error" id="auth-error" role="alert" hidden></p>
+        </form>
+      </div>
+    </div>
+
+    <div class="cart-overlay" id="cart-overlay" hidden></div>
+    <aside class="cart-panel" id="cart-panel" aria-label="購物車" aria-hidden="true">
+      <div class="cart-head">
+        <h2>購物車</h2>
+        <button class="icon-btn" type="button" id="cart-close" aria-label="關閉購物車">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <div class="cart-body" id="cart-body">
+        <ul class="cart-items" id="cart-items"></ul>
+        <p class="cart-empty" id="cart-empty">購物車是空的</p>
+        <div class="cart-total">
+          <span>總金額</span>
+          <strong>NT$ <span id="cart-total">0</span></strong>
+        </div>
+
+        <p class="form-error" id="cart-error" role="alert" hidden></p>
+        <form id="order-form" class="stack-form">
+          <h3>結帳資料</h3>
+          <label>
+            收件人姓名
+            <input type="text" name="name" id="order-name" required autocomplete="name" />
+          </label>
+          <label>
+            電話
+            <input type="tel" name="phone" id="order-phone" required autocomplete="tel" />
+          </label>
+          <label>
+            地址
+            <input type="text" name="address" id="order-address" required autocomplete="street-address" />
+          </label>
+          <label>
+            備註（選填）
+            <textarea name="note" id="order-note" rows="2"></textarea>
+          </label>
+          <button class="primary-btn" type="submit" id="order-submit">送出訂單</button>
+          <p class="form-error" id="order-error" role="alert" hidden></p>
+        </form>
+      </div>
+      <div class="cart-success" id="cart-success" hidden>
+        <h3 id="success-title">訂單已送出</h3>
+        <p>感謝你的訂購，以下是訂單摘要：</p>
+        <ul id="success-items"></ul>
+        <p class="cart-success-total">總金額 NT$ <strong id="success-total">0</strong></p>
+        <button class="secondary-btn" type="button" id="success-close">繼續逛逛</button>
+      </div>
+    </aside>
+
+    <script src="script.js"></script>
+  </body>
+</html>
