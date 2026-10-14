@@ -276,4 +276,6 @@
 
 **個資提醒：** 訂單含姓名、電話、地址，是他人的個人資料。只收必要欄位、不公開、不轉傳；課程結束後到 Netlify 後台刪除。截圖時遮住個資。
 
+老師的完成版（做完後可以對照）：[samples/pickle-charm-shop](../../samples/pickle-charm-shop/README.md)。
+
 想了解表單與儲存的原理（選讀）：[表單、儲存與 CI/CD](../../docs/deep_dive/forms_storage_cicd.md)。
