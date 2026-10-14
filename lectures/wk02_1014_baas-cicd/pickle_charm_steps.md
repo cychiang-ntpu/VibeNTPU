@@ -13,16 +13,16 @@
 - [ ] 6 Netlify → Forms → Enable form detection
 
 ## Part 2 註冊與登入
-- [ ] 7 Copilot（Agent）貼提示詞 1 → 保留
-- [ ] 8 `Ctrl+F` 找到 `data-netlify`、`form-name`；本機預覽可開對話框
+- [ ] 7 Copilot（Agent）：貼「約定」→ 貼提示詞 1 → 保留 → 預覽有小視窗
+- [ ] 8 貼提示詞 2 → 保留 → `Ctrl+F` 找到 `data-netlify` → 貼提示詞 3 → 保留
 - [ ] 9 提交 `新增註冊與登入` → 同步變更
 - [ ] 10 Deploys 變 Published → 手機註冊 → 重新整理仍顯示歡迎 → 登出
 - [ ] 11 Netlify → Forms → signup 看到資料（檢核點 4、5）
 - [ ] 交換駕駛／導航員
 
 ## Part 3 真正的下訂單
-- [ ] 12 Copilot（Agent）貼提示詞 2 → 保留
-- [ ] 13 本機：加入兩種商品 → 開購物車 → 改數量 → 總金額正確
+- [ ] 12 貼提示詞 4 → 保留 → 預覽：加入兩種商品、按＋，總金額會變
+- [ ] 13 貼提示詞 5 → 保留 → 貼提示詞 6 → 保留 → 預覽有收件表單
 - [ ] 14 提交 `新增購物車與下訂單` → 同步變更 → Published
 - [ ] 15 手機下單 → 看到「訂單已送出」與摘要
 - [ ] 16 Netlify → Forms → order 看到 name、phone、address、items、total
