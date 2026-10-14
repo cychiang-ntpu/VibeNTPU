@@ -10,7 +10,7 @@
 | --- | --- | --- | --- |
 | 10/7 前 | 註冊帳號、安裝軟體、做出第一個網頁 | 檢核點 0 | [課前準備](../docs/tutorials/before_class.md) |
 | 10/7（三） | 了解架構；用 AI 做首頁；發布上線 | 檢核點 1–3 | [第 1 週](wk01_1007_saas-storefront/README.md) |
-| 10/14（三） | 加上表單與會員畫面；自動更新；1 分鐘發表 | 檢核點 4–7 | [第 2 週](wk02_1014_baas-cicd/README.md) |
+| 10/14（三） | Pickle Charm Shop 上線、註冊登入、真正的下訂單；自動更新 | 檢核點 3–6 | [Pickle Charm Shop 實作](wk02_1014_baas-cicd/pickle_charm_lab.md)（原版：[第 2 週](wk02_1014_baas-cicd/README.md)） |
 
 ## 2. 每週資料夾裡有什麼
 

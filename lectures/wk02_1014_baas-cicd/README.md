@@ -1,5 +1,8 @@
 # 第 2 週手把手實作（2026/10/14）：候補名單、會員畫面與自動更新
 
+
+> **本學期實際採用：** 全班以 [Pickle Charm Shop](https://github.com/cychiang-ntpu/pickle-charm-shop) 為共同範例。本週請改用 [Pickle Charm Shop 手把手實作](pickle_charm_lab.md)（上線、註冊登入、真正的下訂單），搭配 [提示詞](pickle_charm_prompts.md) 與 [一頁版步驟清單](pickle_charm_steps.md)。以下原版流程適用於用自己題目做網站的同學。
+
 - 時間：2 小時（兩節）
 - 對應檢核點：檢核點 4 表單串接、檢核點 5 狀態保存、檢核點 6 持續部署、檢核點 7 成果發表（定義見 [學習檢核點](../../docs/checkpoints.md)）
 - 上課請同時開啟：[一頁版步驟卡 steps.md](steps.md)（邊做邊勾選）、[本週提示詞 prompts.md](prompts.md)
