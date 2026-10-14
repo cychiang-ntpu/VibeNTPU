@@ -44,9 +44,10 @@
 1. 小視窗裡有兩個模式可以切換：「註冊」和「登入」。
    - 註冊：姓名、Email、密碼（至少 6 個字）、送出。
    - 登入：Email、密碼、送出。
-2. 註冊用 db.auth.signUp，並把姓名放在 options.data.name 裡（資料庫會自動存成會員資料）。
+2. 註冊用 db.auth.signUp，並把姓名放在 options.data.name 裡。不要自己寫入 profiles 資料表，資料庫會自動建立。
+   如果 signUp 回來沒有 session（表示需要 Email 確認），顯示「請到信箱點確認連結後再登入」。
 3. 登入用 db.auth.signInWithPassword。
-4. 註冊或登入成功後：關掉小視窗，右上角顯示「歡迎回來，〔姓名〕」加「登出」按鈕。姓名從 Supabase 的 profiles 資料表讀（欄位 name，用 id 等於目前使用者的 id 查）；讀不到就顯示 Email。
+4. 註冊或登入成功後：關掉小視窗。畫面更新（右上角顯示「歡迎回來，〔姓名〕」加「登出」按鈕）統一由第 6 點的 onAuthStateChange 處理，不要在送出時另外更新一次。姓名從 profiles 資料表讀（欄位 name，用 id 等於目前使用者的 id 查，用 maybeSingle）；讀不到就顯示 Email，不要顯示錯誤。
 5. 「登出」用 db.auth.signOut，畫面回到「登入」按鈕。
 6. 網頁打開時用 db.auth.getSession 檢查是否已登入；並用 db.auth.onAuthStateChange 在登入狀態改變時更新畫面。
 7. 不要再用 localStorage 記會員資料；把上週的 localStorage "pickleUser" 相關程式移除。
@@ -62,8 +63,8 @@
 ```text
 把購物車從 localStorage 改成存在 Supabase 的 cart_items 資料表（欄位：user_id、product_name、unit_price、qty；同一個使用者加同一個商品是同一列）：
 1. 沒有登入時按「加入購物車」，自動打開登入小視窗，並顯示「請先登入再加入購物車」。
-2. 登入後按「加入購物車」：用 upsert 寫入 cart_items（onConflict 用 "user_id,product_name"），同一商品 qty 加一。user_id 填目前登入者的 id。
-3. 購物車面板的內容從 cart_items 讀取（只會讀到自己的，資料庫規則已設定）；「＋」「－」更新 qty，減到 0 就刪除那一列。
+2. 登入後按「加入購物車」：先從目前購物車找到該商品的 qty，加一之後再用 upsert 寫入 cart_items（onConflict 用 "user_id,product_name"；upsert 本身不會自動加一）。每一列都要填 user_id 為目前登入者的 id。
+3. 購物車面板的內容從 cart_items 讀取，select 時加上 user_id 等於目前使用者的條件；「＋」「－」更新 qty，減到 0 就刪除那一列（不要把 qty 更新成 0）。
 4. 右上角數字 = 自己購物車裡 qty 的總和。登出後數字變 0、面板清空。
 5. 登入或網頁打開時重新載入購物車。
 6. 移除上週 localStorage "pickleCart" 的程式。
@@ -79,12 +80,13 @@
 1. 送出訂單時，用 db.from("orders").insert 寫入一列：
    user_id（目前登入者 id）、email（登入者 Email）、name、phone、address、note（表單欄位）、
    items（一個陣列，每個元素是 { name, price, qty }，從購物車來）、total（總金額）。
-   status 不用填，資料庫會預設為 pending。
+   status 不用填，資料庫會預設為 pending。items 要是陣列，不是文字。
    用 .select().single() 拿回新增的那一列，取得訂單編號 id。
+   上週表單裡的 items、total、email 三個隱藏欄位移除，不再用表單送出。
 2. 成功後：清空購物車（如果購物車還是上週的 localStorage 版本就清 localStorage；如果已改成 Supabase 的 cart_items 就刪除自己的所有列）、面板換成「訂單已送出，訂單編號 #〔id〕」和商品摘要、右上角數字變 0。
 3. 失敗時在面板裡顯示錯誤訊息，不要用 alert()。
 4. 上週訂單表單上的 Netlify 設定（data-netlify、form-name、bot-field）移除；不再送到 Netlify。
-5. 在評價區下面新增「我的訂單」區塊（有 id="my-orders"）：登入後從 orders 讀自己的訂單（按 created_at 由新到舊），每筆顯示訂單編號、日期、商品摘要、總金額、狀態（pending 顯示「處理中」、shipped 顯示「已出貨」、其他原樣顯示）。沒登入時顯示「登入後可查看訂單」。下單成功後重新載入這個區塊。
+5. 在評價區下面新增「我的訂單」區塊（有 id="my-orders"）：登入後從 orders 讀自己的訂單（按 created_at 由新到舊），每筆顯示訂單編號、日期、商品摘要、總金額、狀態（pending 顯示「處理中」、shipped 顯示「已出貨」、其他原樣顯示）。沒登入時顯示「登入後可查看訂單」；登入但沒有訂單時顯示「還沒有訂單」。下單成功後重新載入這個區塊。
 ```
 
 ---
@@ -97,6 +99,7 @@
 | `Email not confirmed` | 不用問 Copilot：Supabase → Authentication → Sign In / Providers → Email → 關閉 Confirm email |
 | 畫面還在用 localStorage，`cart_items` 沒資料 | `購物車還是存在 localStorage。請把購物車的讀寫全部改成 Supabase 的 cart_items 資料表，移除 localStorage "pickleCart"，其他不動。` |
 | `new row violates row-level security policy` | `寫入 Supabase 時沒有帶 user_id。請在 insert 和 upsert 時把 user_id 設成目前登入者的 id（db.auth.getUser 或 getSession 取得），其他不動。` |
+| 「我的訂單」每筆出現兩次，或登入後一閃就消失 | `登入後畫面更新了兩次。請讓購物車和我的訂單只在 onAuthStateChange 裡載入一次，送出登入的地方只負責關掉小視窗，其他不動。` |
 | Console 有紅字 | `我看到這個錯誤：〔紅字〕，請修好，其他不動。` |
 | Copilot 改到不該改的 | 按 **Undo**，再貼：`只做我剛才那一段要求的事，其他地方不要動。` |
 | 老師的完成版可以對照 | [samples/pickle-charm-shop-supabase](../../samples/pickle-charm-shop-supabase/) |

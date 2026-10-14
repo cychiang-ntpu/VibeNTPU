@@ -148,7 +148,7 @@ Supabase 預設要求註冊後到信箱點確認連結才能登入。課堂上�
 ### 步驟 8：把 Supabase 接進網站（約 8 分鐘）
 
 1. 打開 [提示詞](prompts.md)，先貼最上面的 **「約定」**（這週的對話第一次貼）。
-2. 複製 **提示詞 1：接上 Supabase**，把裡面的 `【Project URL】` 和 `【anon key】` 換成你筆記裡的兩行，貼上 → Enter → **保留（Keep）**。
+2. 複製 **提示詞 1：接上 Supabase**，把裡面的 `【Project URL】` 和 `【anon key】` **連同【】一起**換成你筆記裡的兩行，貼上 → Enter → **保留（Keep）**。
 3. 在 `index.html` 按 `Ctrl+F` 搜尋 `supabase-js`。
 
 **完成後你應該看到：** `index.html` 的 `<head>` 或 `script.js` 前面多了一行載入 `@supabase/supabase-js` 的 `<script>`，以及一段寫著你的 URL 和 key 的程式。
