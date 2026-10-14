@@ -81,7 +81,7 @@
    items（一個陣列，每個元素是 { name, price, qty }，從購物車來）、total（總金額）。
    status 不用填，資料庫會預設為 pending。
    用 .select().single() 拿回新增的那一列，取得訂單編號 id。
-2. 成功後：清空 cart_items（刪除自己的所有列）、面板換成「訂單已送出，訂單編號 #〔id〕」和商品摘要、右上角數字變 0。
+2. 成功後：清空購物車（如果購物車還是上週的 localStorage 版本就清 localStorage；如果已改成 Supabase 的 cart_items 就刪除自己的所有列）、面板換成「訂單已送出，訂單編號 #〔id〕」和商品摘要、右上角數字變 0。
 3. 失敗時在面板裡顯示錯誤訊息，不要用 alert()。
 4. 上週訂單表單上的 Netlify 設定（data-netlify、form-name、bot-field）移除；不再送到 Netlify。
 5. 在評價區下面新增「我的訂單」區塊（有 id="my-orders"）：登入後從 orders 讀自己的訂單（按 created_at 由新到舊），每筆顯示訂單編號、日期、商品摘要、總金額、狀態（pending 顯示「處理中」、shipped 顯示「已出貨」、其他原樣顯示）。沒登入時顯示「登入後可查看訂單」。下單成功後重新載入這個區塊。
